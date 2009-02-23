@@ -1,0 +1,21 @@
+﻿* Speed up "abort" functionality in query thread.
+* Pregap
+* Focus window
+* Disable icon
+* Sizeable window + resize triangle
+* Activate window
+* Single click
+* Reimplement update_info_async
+* Escape key handling
+* Unknown allocation bug! in addTrack...
+* Button selection bug (feature?)
+
+* window blocking
+* foo_mb_request_thread::parse_xml: check tracks count
+* show window — window leaks! (enum?) flags?
+* check track-list count
+
+Костыли:
+list_view_edit::TableEdit_IsColumnEditable + DialogProc
+
+(* Fix Vista-style list view bug)
