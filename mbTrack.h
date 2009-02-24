@@ -1,5 +1,4 @@
-#ifndef __MBTRACK_H__
-#define __MBTRACK_H__
+#pragma once
 
 class mbTrack {
 public:
@@ -12,5 +11,3 @@ private:
 	char *id;
 	char *title;
 };
-
-#endif

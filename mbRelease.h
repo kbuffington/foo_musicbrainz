@@ -1,5 +1,4 @@
-#ifndef __MBRELEASE_H__
-#define __MBRELEASE_H__
+#pragma once
 
 class mbRelease
 {
@@ -25,5 +24,3 @@ private:
 	char *id;
 	char *date;
 };
-
-#endif

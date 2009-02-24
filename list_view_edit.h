@@ -1,5 +1,4 @@
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#pragma once
 
 class list_view_edit : public InPlaceEdit::CTableEditHelperV2_ListView {
 public:
@@ -14,7 +13,3 @@ protected:
 private:
 	HWND window;
 };
-
-BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, LPARAM lParam);
-
-#endif

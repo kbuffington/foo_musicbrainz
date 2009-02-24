@@ -1,5 +1,4 @@
-#ifndef __MBCOLLECTION_H__
-#define __MBCOLLECTION_H__
+#pragma once
 
 class mbCollection
 {
@@ -25,5 +24,3 @@ private:
 	unsigned int current_release;
 	metadb_handle_list p_data;
 };
-
-#endif
