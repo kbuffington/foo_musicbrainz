@@ -78,6 +78,7 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 			list_item.mask = LVIF_TEXT;
 			list_item.iSubItem = 0;
 
+			ListView_DeleteAllItems(release_list);
 			for (list_item.iItem = 0; list_item.iItem < (int)mbc->getReleasesCount(); list_item.iItem++)
 			{
 				list_item.pszText = str.ToUtf16(mbc->getRelease(list_item.iItem)->getArtist());
@@ -86,23 +87,13 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 				ListView_SetItemText(release_list, list_item.iItem, 2, str.ToUtf16(mbc->getRelease(list_item.iItem)->getDate()));
 			}
 
-			SendMessage(tagger_dialog, WM_FOO_MB_UPDATE_RELEASE, 0, 0);
-			break;
-		}
-
-	case WM_FOO_MB_UPDATE_RELEASE:
-		{
-			mbCollection *mbc = (mbCollection *)GetProp(tagger_dialog, L"Collection");
 			mbRelease *release = mbc->getRelease(mbc->getCurrentRelease());
 			wchar_t track_number_str[10];
-			LVITEM list_item;
-			uconvert str;
 			HWND track_list = GetDlgItem(tagger_dialog, IDC_TRACK_LIST);
 
 			list_item.mask = LVIF_TEXT;
 			list_item.iSubItem = 0;
 
-			ListView_DeleteAllItems(track_list);
 			for (list_item.iItem = 0; list_item.iItem < (int)release->getTracksCount(); list_item.iItem++)
 			{
 				//column 1 - track_number
@@ -112,6 +103,35 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 
 				//column 2 - title
 				ListView_SetItemText(track_list, list_item.iItem, 1, str.ToUtf16(release->getTrack(list_item.iItem)->getTitle()));
+			}
+
+			if (release->getTracksCount() == 0)
+			{
+				pfc::string8 url = "ws/1/release/";
+				url += URLEncode(mbc->getRelease(mbc->getCurrentRelease())->getId());
+				url += "?type=xml&inc=tracks"; 
+				threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url.get_ptr(), tagger_dialog, foo_mb_request_thread::flag_tracks_only, mbc->getCurrentRelease()), threaded_process::flag_show_progress | threaded_process::flag_show_abort, core_api::get_main_window(), "Quering information from MusicBrainz");
+			}
+
+			pfc::string8 url;
+			url = "<a href=\"http://musicbrainz.org/release/";
+			url += release->getId();
+			url += ".html\">MusicBrainz release page</a>";
+			uSetDlgItemText(tagger_dialog, IDC_URL, url);
+			break;
+		}
+
+	case WM_FOO_MB_UPDATE_RELEASE:
+		{
+			mbCollection *mbc = (mbCollection *)GetProp(tagger_dialog, L"Collection");
+			mbRelease *release = mbc->getRelease(mbc->getCurrentRelease());
+			uconvert str;
+			HWND track_list = GetDlgItem(tagger_dialog, IDC_TRACK_LIST);
+
+			for (int iItem = 0; iItem < (int)release->getTracksCount(); iItem++)
+			{
+				//column 2 - title
+				ListView_SetItemText(track_list, iItem, 1, str.ToUtf16(release->getTrack(iItem)->getTitle()));
 			}
 
 			if (release->getTracksCount() == 0)

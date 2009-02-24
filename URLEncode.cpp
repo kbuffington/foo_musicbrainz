@@ -2,7 +2,7 @@
 
 inline char toHex(char c)
 {
-	return c < 0xa ? ('0' + c) : ('a' - 0xa + c);
+	return c < 0xa ? '0' + c : 'a' - 0xa + c;
 }
 
 pfc::string8 URLEncode(const char *in)

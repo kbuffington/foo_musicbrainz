@@ -95,21 +95,16 @@ void foo_mb_request_thread::run(threaded_process_status & p_status,abort_callbac
 	try {
 		hSession = WinHttpOpen(L"foo_musicbrainz/" _T(COMPONENT_VERSION), WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 		if (hSession == NULL) throw exception_foo_mb_connection_error();
-		p_status.set_progress(p_status.progress_max*1/6);
 		p_abort.check();
 		hConnect = WinHttpConnect(hSession, L"musicbrainz.org", INTERNET_DEFAULT_HTTP_PORT, 0);
 		if (hConnect == NULL) throw exception_foo_mb_connection_error();
-		p_status.set_progress(p_status.progress_max*2/6);
 		p_abort.check();
 		hRequest = WinHttpOpenRequest(hConnect, L"GET", url, NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, 0);
 		if (hRequest == NULL) throw exception_foo_mb_connection_error();	
-		p_status.set_progress(p_status.progress_max*3/6);
 		p_abort.check();
 		if (!WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0)) throw exception_foo_mb_connection_error();
-		p_status.set_progress(p_status.progress_max*4/6);
 		p_abort.check();
 		if (!WinHttpReceiveResponse(hRequest, NULL) || !WinHttpQueryDataAvailable(hRequest, &size)) throw exception_foo_mb_connection_error();
-		p_status.set_progress(p_status.progress_max*5/6);
 		p_abort.check();
 		while (size > 0)
 		{
