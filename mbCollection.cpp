@@ -18,6 +18,7 @@ mbRelease *mbCollection::addRelease(const char *title, const char *id, const cha
 	}
 	releases = _releases;
 	size++;
+	disc_id = NULL;
 	return releases[size-1] = new mbRelease(title, id, artist, artist_id);
 }
 
@@ -90,6 +91,21 @@ metadb_handle_list *mbCollection::getData()
 	return &p_data;
 }
 
+void mbCollection::setDiscId(const char *_disc_id)
+{
+	if (disc_id != NULL)
+	{
+		delete [] disc_id;
+	}
+	disc_id = new char [strlen(_disc_id) + 1];
+	strcpy(disc_id, _disc_id);
+}
+
+char *mbCollection::getDiscId()
+{
+	return (disc_id ? disc_id : "");
+}
+
 mbCollection::mbCollection(HWND _window, metadb_handle_list_cref _p_data) : p_data(_p_data)
 {
 #ifdef _DEBUG
@@ -114,6 +130,10 @@ mbCollection::~mbCollection()
 	if (size > 0)
 	{
 		delete [] releases;
+	}
+	if (disc_id != NULL)
+	{
+		delete [] disc_id;
 	}
 	delete releases_table;
 	delete tracks_table;

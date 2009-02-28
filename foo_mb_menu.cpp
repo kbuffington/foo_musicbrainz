@@ -64,7 +64,6 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 
 			HWND tagger_dialog = CreateDialog(core_api::get_my_instance(), MAKEINTRESOURCE(IDD_TAGGER_DIALOG), core_api::get_main_window(), TaggerDialogProc);
 			SetProp(tagger_dialog, L"Collection", new mbCollection(tagger_dialog, p_data));
-			console::print(url);
 			threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url, tagger_dialog), threaded_process::flag_show_progress | threaded_process::flag_show_abort, core_api::get_main_window(), "Quering information from MusicBrainz");
 			break;
 		}
@@ -102,7 +101,6 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 
 			HWND tagger_dialog = CreateDialog(core_api::get_my_instance(), MAKEINTRESOURCE(IDD_TAGGER_DIALOG), core_api::get_main_window(), TaggerDialogProc);
 			SetProp(tagger_dialog, L"Collection", new mbCollection(tagger_dialog, p_data));
-			console::print(url);
 			threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url, tagger_dialog), threaded_process::flag_show_progress | threaded_process::flag_show_abort, core_api::get_main_window(), "Quering information from MusicBrainz");
 			break;
 		}

@@ -14,6 +14,7 @@ public:
 	char *getArtistId();
 	char *getDate();
 	unsigned int getTracksCount();
+	bool va;
 
 private:
 	unsigned int size;

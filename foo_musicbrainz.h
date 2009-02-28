@@ -29,3 +29,4 @@
 #include "foo_mb_menu.h"
 #include "foo_mb_request_thread.h"
 #include "uconvert.h"
+#include "foo_mb_file_info_filter_impl.h"

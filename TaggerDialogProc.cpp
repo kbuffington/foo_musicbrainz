@@ -39,32 +39,16 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 			ListView_InsertColumn(track_list, 1, &column_item);
 
 			column_item.mask = LVCF_WIDTH | LVCF_TEXT;
-			column_item.cx = 390;
+			column_item.cx = 280;
 			column_item.pszText = L"Title";
 			ListView_InsertColumn(track_list, 2, &column_item);
 
+			column_item.mask = LVCF_WIDTH | LVCF_TEXT;
+			column_item.cx = 110;
+			column_item.pszText = L"Artist";
+			ListView_InsertColumn(track_list, 3, &column_item);
+
 			ListView_DeleteColumn(track_list, 0);
-
-			//column_item.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM; 
-
-			//column_item.iSubItem = 0;
-			//column_item.pszText = L"#";
-			//column_item.cx = 100;
-			//if (i == 0) column_item.fmt = LVCFMT_RIGHT;
-			//else column_item.fmt = LVCFMT_LEFT;
-			//ListView_InsertColumn(track_list, i, &column_item);
-
-			//wchar_t *track_list_columns[] = { L"#", L"Title" };
-			//for (int i = 0; i < 2; i++) 
-			//{ 
-			//	column_item.iSubItem = i;
-			//	column_item.pszText = track_list_columns[i];
-			//	column_item.cx = 100;
-			//	if (i == 0) column_item.fmt = LVCFMT_RIGHT;
-			//	else column_item.fmt = LVCFMT_LEFT;
-			//	ListView_InsertColumn(track_list, i, &column_item);
-			//}
-
 			break;
 		}
 
@@ -100,24 +84,8 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 				wsprintf(track_number_str, L"%u", list_item.iItem+1);
 				list_item.pszText = track_number_str;
 				ListView_InsertItem(track_list, &list_item);
-
-				//column 2 - title
-				ListView_SetItemText(track_list, list_item.iItem, 1, str.ToUtf16(release->getTrack(list_item.iItem)->getTitle()));
 			}
-
-			if (release->getTracksCount() == 0)
-			{
-				pfc::string8 url = "ws/1/release/";
-				url += URLEncode(mbc->getRelease(mbc->getCurrentRelease())->getId());
-				url += "?type=xml&inc=tracks"; 
-				threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url.get_ptr(), tagger_dialog, foo_mb_request_thread::flag_tracks_only, mbc->getCurrentRelease()), threaded_process::flag_show_progress | threaded_process::flag_show_abort, core_api::get_main_window(), "Quering information from MusicBrainz");
-			}
-
-			pfc::string8 url;
-			url = "<a href=\"http://musicbrainz.org/release/";
-			url += release->getId();
-			url += ".html\">MusicBrainz release page</a>";
-			uSetDlgItemText(tagger_dialog, IDC_URL, url);
+			SendMessage(tagger_dialog, WM_FOO_MB_UPDATE_RELEASE, 0, 0);
 			break;
 		}
 
@@ -132,14 +100,7 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 			{
 				//column 2 - title
 				ListView_SetItemText(track_list, iItem, 1, str.ToUtf16(release->getTrack(iItem)->getTitle()));
-			}
-
-			if (release->getTracksCount() == 0)
-			{
-				pfc::string8 url = "ws/1/release/";
-				url += URLEncode(mbc->getRelease(mbc->getCurrentRelease())->getId());
-				url += "?type=xml&inc=tracks"; 
-				threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url.get_ptr(), tagger_dialog, foo_mb_request_thread::flag_tracks_only, mbc->getCurrentRelease()), threaded_process::flag_show_progress | threaded_process::flag_show_abort, core_api::get_main_window(), "Quering information from MusicBrainz");
+				ListView_SetItemText(track_list, iItem, 2, str.ToUtf16(release->getTrack(iItem)->getArtist()));
 			}
 
 			pfc::string8 url;
@@ -217,29 +178,10 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 
 		case IDOK:
 			{
-				mbRelease *release = ((mbCollection *)GetProp(tagger_dialog, L"Collection"))->getRelease(((mbCollection *)GetProp(tagger_dialog, L"Collection"))->getCurrentRelease());
-
-				pfc::list_t<const file_info*> info_list;
-				char track_number_str[10];
-				file_info_impl *info = new file_info_impl[release->getTracksCount()];
-
-				metadb_handle_list *data = ((mbCollection *)GetProp(tagger_dialog, L"Collection"))->getData();
-				
-				for (unsigned int i = 0; i < release->getTracksCount(); i++)
-				{
-					data->get_item(i)->get_info(info[i]);
-					info[i].meta_set("ARTIST", release->getArtist());
-					info[i].meta_set("ALBUM", release->getTitle());
-					info[i].meta_set("DATE", release->getDate());
-					info[i].meta_set("TITLE", release->getTrack(i)->getTitle());
-					sprintf(track_number_str, "%u", i+1);
-					info[i].meta_set("TRACKNUMBER", track_number_str);
-					sprintf(track_number_str, "%u", release->getTracksCount());
-					info[i].meta_set("TOTALTRACKS", track_number_str);
-					info_list.add_item(&info[i]);
-				}
-				static_api_ptr_t<metadb_io_v2>()->update_info_async_simple(*data, info_list, core_api::get_main_window(), metadb_io_v2::op_flag_delay_ui, NULL);
-				DestroyWindow(tagger_dialog);
+				mbCollection *collection = ((mbCollection *)GetProp(tagger_dialog, L"Collection"));
+				metadb_handle_list *tracklist = collection->getData();
+				//ShowWindow(tagger_dialog, SW_HIDE);
+				static_api_ptr_t<metadb_io_v2>()->update_info_async(*tracklist,new service_impl_t<foo_mb_file_info_filter_impl>(tagger_dialog),core_api::get_main_window(), metadb_io_v2::op_flag_delay_ui, NULL);
 				break;
 			}
 

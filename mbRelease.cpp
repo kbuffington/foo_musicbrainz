@@ -18,7 +18,6 @@ mbTrack *mbRelease::addTrack(const char *_title, const char *_id)
 	}
 	tracks = _tracks;
 	size++;
-	printf("%d\n", size);
 	return tracks[size-1] = new mbTrack(_title, _id);
 }
 
@@ -112,6 +111,7 @@ mbRelease::mbRelease(const char *_title, const char *_id, const char *_artist, c
 	strcpy(artist_id, _artist_id);
 
 	date = NULL;
+	va = false;
 }
 
 mbRelease::~mbRelease()

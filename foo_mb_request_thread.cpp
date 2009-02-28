@@ -4,8 +4,8 @@ PFC_DECLARE_EXCEPTION(exception_foo_mb_connection_error, pfc::exception, "Error 
 PFC_DECLARE_EXCEPTION(exception_foo_mb_xml_parsing, pfc::exception, "Error parsing XML, response from musicbrainz.org:\n\n")
 PFC_DECLARE_EXCEPTION(exception_foo_mb_no_releases, pfc::exception, "No releases.")
 
-foo_mb_request_thread::foo_mb_request_thread(const char *_url, HWND window, int _flags, int _release_number)
-	: tagger_dialog(window), flags(_flags), release_number(_release_number)
+foo_mb_request_thread::foo_mb_request_thread(const char *_url, HWND window)
+	: tagger_dialog(window)
 {
 	collection = ((mbCollection *)GetProp(tagger_dialog, L"Collection"));
 	int url_len = MultiByteToWideChar(CP_UTF8, 0, _url, -1, NULL, 0);
@@ -14,8 +14,39 @@ foo_mb_request_thread::foo_mb_request_thread(const char *_url, HWND window, int 
 	hSession = hConnect = hRequest = NULL;
 }
 
-void foo_mb_request_thread::parse_xml(char *xml_string) 
+void foo_mb_request_thread::get_parse_xml(wchar_t *url, int release_number) 
 {
+	pfc::string8 buffer;
+	char *tmp;
+	unsigned long size, downloaded;
+
+	hSession = WinHttpOpen(L"foo_musicbrainz/" _T(COMPONENT_VERSION), WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
+	if (hSession == NULL) throw exception_foo_mb_connection_error();
+	//p_abort.check();
+	hConnect = WinHttpConnect(hSession, L"musicbrainz.org", INTERNET_DEFAULT_HTTP_PORT, 0);
+	if (hConnect == NULL) throw exception_foo_mb_connection_error();
+	//p_abort.check();
+	hRequest = WinHttpOpenRequest(hConnect, L"GET", url, NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, 0);
+	if (hRequest == NULL) throw exception_foo_mb_connection_error();	
+	//p_abort.check();
+	if (!WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0)) throw exception_foo_mb_connection_error();
+	//p_abort.check();
+	if (!WinHttpReceiveResponse(hRequest, NULL) || !WinHttpQueryDataAvailable(hRequest, &size)) throw exception_foo_mb_connection_error();
+	//p_abort.check();
+	while (size > 0)
+	{
+		tmp = new char[size+1];
+		WinHttpReadData(hRequest, tmp, size, &downloaded);
+		tmp[downloaded] = '\0';
+		buffer += tmp;
+		delete [] tmp;
+		WinHttpQueryDataAvailable(hRequest, &size);
+		//p_abort.check();
+	};
+	if (hRequest != NULL) WinHttpCloseHandle(hRequest);
+	if (hConnect != NULL) WinHttpCloseHandle(hConnect);
+	if (hSession != NULL) WinHttpCloseHandle(hSession);
+
 	ticpp::Document xml;
 	mbRelease *mbr;
 	ticpp::Element *releases;
@@ -23,7 +54,7 @@ void foo_mb_request_thread::parse_xml(char *xml_string)
 	// Parsing XML
 	try
 	{
-		xml.Parse(xml_string, true, TIXML_ENCODING_UTF8);
+		xml.Parse((char *)buffer.get_ptr(), true, TIXML_ENCODING_UTF8);
 	}
 	// Not valid XML?
 	catch (ticpp::Exception)
@@ -53,7 +84,7 @@ void foo_mb_request_thread::parse_xml(char *xml_string)
 	ticpp::Iterator<ticpp::Element> release;
 	for (release = release.begin(releases); release != release.end(); release++)
 	{
-		if (flags & flag_tracks_only)
+		if (release_number >= 0)
 		{
 			mbr = collection->getRelease(release_number);
 		}
@@ -80,68 +111,60 @@ void foo_mb_request_thread::parse_xml(char *xml_string)
 
 		// Adding tracks
 		ticpp::Iterator<ticpp::Element> track;
-		for (track = track.begin(release->FirstChildElement("track-list")); track != track.end(); track++)
-		{
-			mbr->addTrack(track->FirstChildElement("title")->FirstChild()->Value().data(), track->GetAttribute("id").data());
+		try {
+			for (track = track.begin(release->FirstChildElement("track-list")); track != track.end(); track++)
+			{
+				mbTrack *mbt = mbr->addTrack(track->FirstChildElement("title")->FirstChild()->Value().data(), track->GetAttribute("id").data());
+				try {
+					mbt->setArtist(track->FirstChildElement("artist")->FirstChildElement("name")->FirstChild()->Value().data());
+					mbr->va = true;
+				} catch (ticpp::Exception e) {}
+			}
+		} catch (ticpp::Exception e) {
+			if (release_number >= 0)
+			{
+				//throw e;
+			}
 		}
 	}
 }
 
 void foo_mb_request_thread::run(threaded_process_status & p_status,abort_callback & p_abort)
 {
-	unsigned long size, downloaded;
-	pfc::string8 buffer;
-	char *tmp;
 	try {
-		hSession = WinHttpOpen(L"foo_musicbrainz/" _T(COMPONENT_VERSION), WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
-		if (hSession == NULL) throw exception_foo_mb_connection_error();
-		p_abort.check();
-		hConnect = WinHttpConnect(hSession, L"musicbrainz.org", INTERNET_DEFAULT_HTTP_PORT, 0);
-		if (hConnect == NULL) throw exception_foo_mb_connection_error();
-		p_abort.check();
-		hRequest = WinHttpOpenRequest(hConnect, L"GET", url, NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES, 0);
-		if (hRequest == NULL) throw exception_foo_mb_connection_error();	
-		p_abort.check();
-		if (!WinHttpSendRequest(hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0)) throw exception_foo_mb_connection_error();
-		p_abort.check();
-		if (!WinHttpReceiveResponse(hRequest, NULL) || !WinHttpQueryDataAvailable(hRequest, &size)) throw exception_foo_mb_connection_error();
-		p_abort.check();
-		while (size > 0)
+		get_parse_xml(url);
+		p_status.set_progress(p_status.progress_max / (collection->getReleasesCount() + 1));
+		for (unsigned int i = 0; i < collection->getReleasesCount(); i++)
 		{
-			tmp = new char[size+1];
-			WinHttpReadData(hRequest, tmp, size, &downloaded);
-			tmp[downloaded] = '\0';
-			buffer += tmp;
-			delete [] tmp;
-			WinHttpQueryDataAvailable(hRequest, &size);
-			p_abort.check();
-		};
-		p_status.set_progress(p_status.progress_max);
-		parse_xml((char *)buffer.get_ptr());
-		if (flags & flag_tracks_only)
-		{
-			PostMessage(tagger_dialog, WM_FOO_MB_UPDATE_RELEASE, 0, 0);
+			mbRelease *release = collection->getRelease(i);
+			if (release->getTracksCount() == 0)
+			{
+				uconvert str;
+				pfc::string8 str2;
+				str2 = "/ws/1/release/";
+				str2 += release->getId();
+				str2 += "?type=xml&inc=artist+tracks";
+				get_parse_xml(str.ToUtf16(str2), i);
+				p_status.set_progress(p_status.progress_max / (collection->getReleasesCount() + 1) * (1 + i));
+			}
 		}
-		else
-		{
-			PostMessage(tagger_dialog, WM_FOO_MB_UPDATE_RELEASES_LIST, 0, 0);
-		}
-		if (flags & flag_show_window) ShowWindow(tagger_dialog, SW_SHOW);
+		PostMessage(tagger_dialog, WM_FOO_MB_UPDATE_RELEASES_LIST, 0, 0);
+		ShowWindow(tagger_dialog, SW_SHOW);
 	} catch (exception_foo_mb_connection_error e) {
-		if (flags & flag_show_window) PostMessage(tagger_dialog, WM_CLOSE, 0, 0);
+		PostMessage(tagger_dialog, WM_CLOSE, 0, 0);
 		popup_message::g_show(e.g_what(), COMPONENT_TITLE, popup_message::icon_error);
 	} catch (exception_aborted) {
-		if (flags & flag_show_window) PostMessage(tagger_dialog, WM_CLOSE, 0, 0);
+		PostMessage(tagger_dialog, WM_CLOSE, 0, 0);
 	} catch (exception_foo_mb_xml_parsing e) {
-		if (flags & flag_show_window) PostMessage(tagger_dialog, WM_CLOSE, 0, 0);
+		PostMessage(tagger_dialog, WM_CLOSE, 0, 0);
 		pfc::string8 error_sting = e.what();
-		error_sting += buffer.get_ptr();
+		//error_sting += buffer.get_ptr();
 		popup_message::g_show(error_sting, COMPONENT_TITLE, popup_message::icon_error);
 	} catch (exception_foo_mb_no_releases e) {
-		if (flags & flag_show_window) PostMessage(tagger_dialog, WM_CLOSE, 0, 0);
+		PostMessage(tagger_dialog, WM_CLOSE, 0, 0);
 		popup_message::g_show(e.what(), COMPONENT_TITLE, popup_message::icon_error);
 	} catch (ticpp::Exception e) {
-		if (flags & flag_show_window) PostMessage(tagger_dialog, WM_CLOSE, 0, 0);
+		PostMessage(tagger_dialog, WM_CLOSE, 0, 0);
 		popup_message::g_show(e.what(), COMPONENT_TITLE, popup_message::icon_error);
 	}
 	if (hRequest != NULL) WinHttpCloseHandle(hRequest);

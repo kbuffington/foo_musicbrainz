@@ -46,6 +46,44 @@ END
 
 #endif    // APSTUDIO_INVOKED
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG1 DIALOGEX 0, 0, 185, 72
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Custom query"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,74,51,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,128,51,50,14
+    LTEXT           "Artist",IDC_STATIC,14,17,18,8
+    LTEXT           "Album",IDC_STATIC,13,33,20,8
+    EDITTEXT        IDC_EDIT1,47,14,124,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT2,47,31,124,14,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 178
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 65
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
 #endif    // Russian resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -73,8 +111,8 @@ BEGIN
     PUSHBUTTON      "Close",IDCANCEL,264,241,50,14
     GROUPBOX        "Releases",IDC_STATIC,7,7,307,75
     GROUPBOX        "Tracks",IDC_STATIC,7,87,307,148
-    CONTROL         "",IDC_TRACK_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,15,96,294,134
-    CONTROL         "",IDC_RELEASE_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,15,16,294,60
+    CONTROL         "",IDC_TRACK_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP | WS_CLIPCHILDREN,15,96,294,134
+    CONTROL         "",IDC_RELEASE_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP | WS_CLIPCHILDREN,15,16,294,60
     CONTROL         "",IDC_URL,"SysLink",WS_TABSTOP,15,245,171,8
 END
 

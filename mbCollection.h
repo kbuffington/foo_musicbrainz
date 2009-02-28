@@ -14,6 +14,8 @@ public:
 	void setCurrentRelease(unsigned int release);
 	unsigned int getCurrentRelease();
 	metadb_handle_list *getData();
+	void setDiscId(const char *_disc_id);
+	char *getDiscId();
 
 private:
 	unsigned int size;
@@ -23,4 +25,5 @@ private:
 	HWND window;
 	unsigned int current_release;
 	metadb_handle_list p_data;
+	char *disc_id;
 };
