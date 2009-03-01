@@ -1,72 +1,37 @@
 #include "foo_musicbrainz.h"
 
 mbTrack::mbTrack(const char *_title, const char *_id)
+: title(_title), id(_id)
 {
-#ifdef _DEBUG
-	console::print("mbTrack::mbTrack");
-#endif
-	title = new char [strlen(_title) + 1];
-	strcpy(title, _title);
-
-	id = new char [strlen(_id) + 1];
-	strcpy(id, _id);
-
-	artist = artist_id = NULL;
 }
 
-mbTrack::~mbTrack()
+const char *mbTrack::getArtist()
 {
-#ifdef _DEBUG
-	console::print("mbTrack::~mbTrack");
-#endif
-	delete [] title;
-	delete [] id;
-	if (artist != NULL)
-	{
-		delete [] artist;
-	}
-	if (artist_id != NULL)
-	{
-		delete [] artist_id;
-	}
+	return artist.get_ptr();
 }
 
-char *mbTrack::getTitle()
+const char *mbTrack::getArtistId()
 {
-	return title;
+	return artist_id.get_ptr();
 }
 
-char *mbTrack::getId()
+const char *mbTrack::getId()
 {
-	return id;
+	return id.get_ptr();
 }
 
-char *mbTrack::getArtist()
+const char *mbTrack::getTitle()
 {
-	return (artist ? artist : "");
+	return title.get_ptr();
 }
 
 void mbTrack::setArtist(const char *_artist)
 {
-	if (artist != NULL)
-	{
-		delete [] artist;
-	}
-	artist = new char [strlen(_artist) + 1];
-	strcpy(artist, _artist);
-}
-
-char *mbTrack::getArtistId()
-{
-	return (artist_id ? artist_id : "");
+	artist = _artist;
 }
 
 void mbTrack::setArtistId(const char *_artist_id)
 {
-	if (artist_id != NULL)
-	{
-		delete [] artist_id;
-	}
-	artist_id = new char [strlen(_artist_id) + 1];
-	strcpy(artist_id, _artist_id);
+	artist_id = _artist_id;
 }
+

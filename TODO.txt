@@ -13,11 +13,7 @@ Functionality:
 * Pregap
 * Check tracks count before writing tags
 * Merge requests?
-* VA releases
 * Get tags by MBID
-* Fix abort
-
-Костыли:
-list_view_edit::TableEdit_IsColumnEditable + DialogProc
-
-(* Fix Vista-style list view bug)
+* Real-time abort
+* Sort dates
+* list_view_edit::TableEdit_IsColumnEditable + DialogProc

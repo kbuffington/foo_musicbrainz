@@ -2,87 +2,23 @@
 
 PFC_DECLARE_EXCEPTION(exception_foo_mb_release_index_error, pfc::exception, "mbReleaseCollection: unexpected release index.")
 
+mbCollection::mbCollection(HWND _window, metadb_handle_list_cref _p_data)
+: window(_window), p_data(_p_data)
+{
+	releases_table = new list_view_edit(GetDlgItem(window, IDC_RELEASE_LIST));
+	tracks_table = new list_view_edit(GetDlgItem(window, IDC_TRACK_LIST));
+	current_release = 0;
+}
+
 mbRelease *mbCollection::addRelease(const char *title, const char *id, const char *artist, const char *artist_id)
 {
-#ifdef _DEBUG
-	console::print("mbCollection::addRelease");
-#endif
-	mbRelease **_releases = new mbRelease* [size+1];
-	for (unsigned int i = 0; i < size; i++)
-	{
-		_releases[i] = releases[i];
-	}
-	if (size > 0)
-	{
-		delete [] releases;
-	}
-	releases = _releases;
-	size++;
-	disc_id = NULL;
-	return releases[size-1] = new mbRelease(title, id, artist, artist_id);
-}
-
-mbRelease *mbCollection::getRelease(unsigned int i)
-{
-#ifdef _DEBUG
-	console::print("mbCollection::getRelease");
-#endif
-	if (i >= size) throw exception_foo_mb_release_index_error();
-	return releases[i];
-}
-
-unsigned int mbCollection::getReleasesCount()
-{
-#ifdef _DEBUG
-	console::print("mbCollection::size");
-#endif
-	return size;
-}
-
-HWND mbCollection::getWindow()
-{
-#ifdef _DEBUG
-	console::print("mbCollection::getWindow");
-#endif
-	return window;
-}
-
-list_view_edit *mbCollection::getReleasesTable()
-{
-#ifdef _DEBUG
-	console::print("mbCollection::getReleasesTable");
-#endif
-	return releases_table;
-}
-
-list_view_edit *mbCollection::getTracksTable()
-{
-#ifdef _DEBUG
-	console::print("mbCollection::getTracksTable");
-#endif
-	return tracks_table;
-}
-
-void mbCollection::setCurrentRelease(unsigned int release)
-{
-#ifdef _DEBUG
-	console::print("mbCollection::setCurrentRelease");
-#endif
-	if (release < size) 
-	{
-		current_release = release;
-	}
-	else
-	{
-		throw exception_foo_mb_release_index_error();
-	}
+	mbRelease *release = new mbRelease(title, id, artist, artist_id);
+	releases.add_item(release);
+	return release;
 }
 
 unsigned int mbCollection::getCurrentRelease()
 {
-#ifdef _DEBUG
-	console::print("mbCollection::getCurrentRelease");
-#endif
 	return current_release;
 }
 
@@ -91,49 +27,53 @@ metadb_handle_list *mbCollection::getData()
 	return &p_data;
 }
 
+const char *mbCollection::getDiscId()
+{
+	return disc_id.get_ptr();
+}
+
+mbRelease *mbCollection::getRelease(unsigned int i)
+{
+	if (i >= releases.get_count()) throw exception_foo_mb_release_index_error();
+	return releases[i];
+}
+
+unsigned int mbCollection::getReleasesCount()
+{
+	return releases.get_count();
+}
+
+list_view_edit *mbCollection::getReleasesTable()
+{
+	return releases_table;
+}
+
+list_view_edit *mbCollection::getTracksTable()
+{
+	return tracks_table;
+}
+
+HWND mbCollection::getWindow()
+{
+	return window;
+}
+
+void mbCollection::setCurrentRelease(unsigned int release)
+{
+	if (release >= releases.get_count()) throw exception_foo_mb_release_index_error();
+	current_release = release;
+}
+
 void mbCollection::setDiscId(const char *_disc_id)
 {
-	if (disc_id != NULL)
-	{
-		delete [] disc_id;
-	}
-	disc_id = new char [strlen(_disc_id) + 1];
-	strcpy(disc_id, _disc_id);
-}
-
-char *mbCollection::getDiscId()
-{
-	return (disc_id ? disc_id : "");
-}
-
-mbCollection::mbCollection(HWND _window, metadb_handle_list_cref _p_data) : p_data(_p_data)
-{
-#ifdef _DEBUG
-	console::print("mbCollection::mbCollection");
-#endif
-	window = _window;
-	releases_table = new list_view_edit(GetDlgItem(window, IDC_RELEASE_LIST));
-	tracks_table = new list_view_edit(GetDlgItem(window, IDC_TRACK_LIST));
-	size = 0;
-	current_release = 0;
+	disc_id = _disc_id;
 }
 
 mbCollection::~mbCollection()
 {
-#ifdef _DEBUG
-	console::print("mbCollection::~mbCollection");
-#endif
-	for (unsigned int i = 0; i < size; i++)
+	for (unsigned int i = 0; i < releases.get_count(); i++)
 	{
 		delete releases[i];
-	}
-	if (size > 0)
-	{
-		delete [] releases;
-	}
-	if (disc_id != NULL)
-	{
-		delete [] disc_id;
 	}
 	delete releases_table;
 	delete tracks_table;

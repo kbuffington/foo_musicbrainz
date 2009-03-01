@@ -1,15 +1,19 @@
 #include "foo_musicbrainz.h"
 
-foo_mb_file_info_filter_impl::foo_mb_file_info_filter_impl(HWND _tagger_dialog) {
+foo_mb_file_info_filter_impl::foo_mb_file_info_filter_impl(HWND _tagger_dialog)
+{
 	tagger_dialog = _tagger_dialog;
 	collection = ((mbCollection *)GetProp(tagger_dialog, L"Collection"));
 	release = collection->getRelease(collection->getCurrentRelease());
 	tracklist = collection->getData();
 }
 
-bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_filestats p_stats,file_info & p_info) {
-	char track_number_str[10];
+bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_filestats p_stats,file_info & p_info)
+{
+	file_info_impl info;
 	t_size i;
+	char track_number_str[10];
+	const char *a = info.meta_get("tracknumber", 0);
 	if (tracklist->bsearch_t(pfc::compare_t<metadb_handle_ptr,metadb_handle_ptr>,p_location,i)) {
 		p_info.meta_set("ALBUM", release->getTitle());
 		p_info.meta_set("DATE", release->getDate());
@@ -59,6 +63,7 @@ bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_f
 	}
 }
 
-foo_mb_file_info_filter_impl::~foo_mb_file_info_filter_impl() {
+foo_mb_file_info_filter_impl::~foo_mb_file_info_filter_impl()
+{
 	DestroyWindow(tagger_dialog);
 }

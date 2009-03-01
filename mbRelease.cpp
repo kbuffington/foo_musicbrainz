@@ -2,137 +2,64 @@
 
 PFC_DECLARE_EXCEPTION(exception_foo_mb_track_number_error, pfc::exception, COMPONENT_TITLE ": unexpected track number.")
 
+mbRelease::mbRelease(const char *_title, const char *_id, const char *_artist, const char *_artist_id)
+: title(_title), id(_id), artist(_artist), artist_id(_artist_id)
+{
+	va = false;
+}
+
 mbTrack *mbRelease::addTrack(const char *_title, const char *_id)
 {
-#ifdef _DEBUG
-	console::print("mbRelease::addTrack");
-#endif
-	mbTrack **_tracks = new mbTrack* [size+1];
-	for (unsigned int i = 0; i < size; i++)
-	{
-		_tracks[i] = tracks[i];
-	}
-	if (size > 0)
-	{
-		delete [] tracks;
-	}
-	tracks = _tracks;
-	size++;
-	return tracks[size-1] = new mbTrack(_title, _id);
+	mbTrack *track = new mbTrack(_title, _id);
+	tracks.add_item(track);
+	return track;
 }
 
 void mbRelease::setDate(const char *_date)
 {
-#ifdef _DEBUG
-	console::print("mbRelease::setDate");
-#endif
-	if (date != NULL)
-	{
-		delete [] date;
-	}
-	date = new char [strlen(_date) + 1];
-	strcpy(date, _date);
+	date = _date;
 }
 
 mbTrack *mbRelease::getTrack(unsigned int number)
 {
-#ifdef _DEBUG
-	console::print("mbRelease::getTrack");
-#endif
-	if (number >= size) throw exception_foo_mb_track_number_error();
+	if (number >= tracks.get_count()) throw exception_foo_mb_track_number_error();
 	return tracks[number];
 }
 
-char *mbRelease::getTitle()
+const char *mbRelease::getArtist()
 {
-#ifdef _DEBUG
-	console::print("mbRelease::getTitle");
-#endif
-	return title;
+	return artist.get_ptr();
 }
 
-char *mbRelease::getId()
+const char *mbRelease::getArtistId()
 {
-#ifdef _DEBUG
-	console::print("mbRelease::getId");
-#endif
-	return id;
+	return artist_id.get_ptr();
 }
 
-char *mbRelease::getArtist()
+const char *mbRelease::getDate()
 {
-#ifdef _DEBUG
-	console::print("mbRelease::getArtist");
-#endif
-	return artist;
+	return date.get_ptr();
 }
 
-char *mbRelease::getArtistId()
+const char *mbRelease::getId()
 {
-#ifdef _DEBUG
-	console::print("mbRelease::getArtistId");
-#endif
-	return artist_id;
+	return id.get_ptr();
 }
 
-char *mbRelease::getDate()
+const char *mbRelease::getTitle()
 {
-#ifdef _DEBUG
-	console::print("mbRelease::getDate");
-#endif
-	return (date ? date : "");
+	return title.get_ptr();
 }
 
 unsigned int mbRelease::getTracksCount()
 {
-#ifdef _DEBUG
-	console::print("mbRelease::getTracksCount");
-#endif
-	return size;
-}
-
-mbRelease::mbRelease(const char *_title, const char *_id, const char *_artist, const char *_artist_id)
-{
-#ifdef _DEBUG
-	console::print("mbRelease::mbRelease");
-#endif
-	size = 0;
-
-	title = new char [strlen(_title) + 1];
-	strcpy(title, _title);
-	
-	id = new char [strlen(_id) + 1];
-	strcpy(id, _id);
-	
-	artist = new char [strlen(_artist) + 1];
-	strcpy(artist, _artist);
-	
-	artist_id = new char [strlen(_artist_id) + 1];
-	strcpy(artist_id, _artist_id);
-
-	date = NULL;
-	va = false;
+	return tracks.get_count();
 }
 
 mbRelease::~mbRelease()
 {
-#ifdef _DEBUG
-	console::print("mbRelease::~mbRelease");
-#endif
-	for (unsigned int i = 0; i < size; i++)
+	for (unsigned int i = 0; i < tracks.get_count(); i++)
 	{
 		delete tracks[i];
-	}
-	if (size > 0)
-	{
-		delete [] tracks;
-	}
-	delete [] artist;
-	delete [] title;
-	delete [] artist_id;
-	delete [] id;
-	if (date != NULL)
-	{
-		delete [] date;
 	}
 }

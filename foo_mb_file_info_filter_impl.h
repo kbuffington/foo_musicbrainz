@@ -9,6 +9,5 @@ private:
 	mbRelease *release;
 	mbCollection *collection;
 	metadb_handle_list *tracklist;
-	//pfc::array_t<file_info_impl> m_infos;
 };
 

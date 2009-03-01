@@ -1,19 +1,19 @@
 #pragma once
 
-class mbTrack {
+class mbTrack
+{
 public:
 	mbTrack(const char *_title, const char *_id);
-	~mbTrack();
-	char *getTitle();
-	char *getId();
-	char *getArtist();
+	const char *getArtist();
+	const char *getArtistId();
+	const char *getId();
+	const char *getTitle();
 	void setArtist(const char *_artist);
-	char *getArtistId();
 	void setArtistId(const char *_artist_id);
 
 private:
-	char *id;
-	char *title;
-	char *artist;
-	char *artist_id;
+	pfc::string8 artist;
+	pfc::string8 artist_id;
+	pfc::string8 id;
+	pfc::string8 title;
 };

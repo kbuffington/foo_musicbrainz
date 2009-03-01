@@ -116,7 +116,10 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 		break;
 
 	case WM_DESTROY:
-		delete GetProp(tagger_dialog, L"Collection");
+		delete (mbCollection *)GetProp(tagger_dialog, L"Collection");
+		break;
+
+	case WM_NCDESTROY:
 		RemoveProp(tagger_dialog, L"Collection");
 		break;
 		
@@ -168,6 +171,7 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 		default:
 			return FALSE;
 		}
+		break;
 
 	case WM_COMMAND:
 		switch(LOWORD(wParam))
@@ -180,7 +184,15 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 			{
 				mbCollection *collection = ((mbCollection *)GetProp(tagger_dialog, L"Collection"));
 				metadb_handle_list *tracklist = collection->getData();
-				//ShowWindow(tagger_dialog, SW_HIDE);
+				ShowWindow(tagger_dialog, SW_HIDE);
+				//metadb_handle_list *t = new metadb_handle_list();
+				//metadb_handle_list list;
+				//list.set_count(tracklist->get_count());
+				//for (t_size n = 0; n < tracklist->get_count(); n++) {
+				//	list.add_item(tracklist->get_item(n));
+				//	console::printf("%s / %d", list.get_item(n)->get_location().get_path(), list.get_item(n)->get_location().get_subsong_index());
+				//}
+
 				static_api_ptr_t<metadb_io_v2>()->update_info_async(*tracklist,new service_impl_t<foo_mb_file_info_filter_impl>(tagger_dialog),core_api::get_main_window(), metadb_io_v2::op_flag_delay_ui, NULL);
 				break;
 			}
@@ -188,6 +200,7 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 		default:
 			return FALSE;
 		}
+		break;
 
 	default:
 		return FALSE;

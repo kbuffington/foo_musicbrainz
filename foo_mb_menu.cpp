@@ -82,9 +82,9 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 				}
 				artist = info->meta_get("ARTIST", 0);
 				album = info->meta_get("ALBUM", 0);
+				p_data.get_item(i)->metadb_unlock();
 				if (artist.is_empty() || album.is_empty()) continue;
 				else break;
-				p_data.get_item(i)->metadb_unlock();
 			}
 			if (artist.is_empty() || album.is_empty())
 			{
