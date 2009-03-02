@@ -45,7 +45,7 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 
 			column_item.mask = LVCF_WIDTH | LVCF_TEXT;
 			column_item.cx = 110;
-			column_item.pszText = L"Artist";
+			column_item.pszText = L"Track artist";
 			ListView_InsertColumn(track_list, 3, &column_item);
 
 			ListView_DeleteColumn(track_list, 0);
@@ -95,6 +95,17 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 			mbRelease *release = mbc->getRelease(mbc->getCurrentRelease());
 			uconvert str;
 			HWND track_list = GetDlgItem(tagger_dialog, IDC_TRACK_LIST);
+
+			if (release->va)
+			{
+				ListView_SetColumnWidth(track_list, 1, 280);
+				ListView_SetColumnWidth(track_list, 2, 110);
+			}
+			else
+			{
+				ListView_SetColumnWidth(track_list, 1, 390);
+				ListView_SetColumnWidth(track_list, 2, 0);
+			}
 
 			for (int iItem = 0; iItem < (int)release->getTracksCount(); iItem++)
 			{
@@ -146,10 +157,6 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 					SendMessage(tagger_dialog, WM_FOO_MB_UPDATE_RELEASE, 0, 0);
 				}
 			}
-			break;
-
-		case LVN_ITEMCHANGING:
-			console::printf("Selected item %u.%u. Changed: %u", ((LPNMITEMACTIVATE)lParam)->iItem, ((LPNMITEMACTIVATE)lParam)->iSubItem, ((LPNMITEMACTIVATE)lParam)->uChanged);
 			break;
 
 		case NM_CLICK:

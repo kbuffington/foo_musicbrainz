@@ -15,17 +15,6 @@ mbTrack *mbRelease::addTrack(const char *_title, const char *_id)
 	return track;
 }
 
-void mbRelease::setDate(const char *_date)
-{
-	date = _date;
-}
-
-mbTrack *mbRelease::getTrack(unsigned int number)
-{
-	if (number >= tracks.get_count()) throw exception_foo_mb_track_number_error();
-	return tracks[number];
-}
-
 const char *mbRelease::getArtist()
 {
 	return artist.get_ptr();
@@ -51,9 +40,30 @@ const char *mbRelease::getTitle()
 	return title.get_ptr();
 }
 
+mbTrack *mbRelease::getTrack(unsigned int number)
+{
+	if (number >= tracks.get_count()) throw exception_foo_mb_track_number_error();
+	return tracks[number];
+}
+
 unsigned int mbRelease::getTracksCount()
 {
 	return tracks.get_count();
+}
+
+void mbRelease::setArtist(const char *_artist)
+{
+	artist = _artist;
+}
+
+void mbRelease::setDate(const char *_date)
+{
+	date = _date;
+}
+
+void mbRelease::setTitle(const char *_title)
+{
+	title = _title;
 }
 
 mbRelease::~mbRelease()

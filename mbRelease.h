@@ -12,7 +12,9 @@ public:
 	const char *getTitle();
 	mbTrack *getTrack(unsigned int number);
 	unsigned int getTracksCount();
+	void setArtist(const char *_artist);
 	void setDate(const char *_date);
+	void setTitle(const char *_title);
 	bool va;
 	~mbRelease();
 

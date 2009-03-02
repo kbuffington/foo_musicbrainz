@@ -10,6 +10,7 @@ public:
 	const char *getTitle();
 	void setArtist(const char *_artist);
 	void setArtistId(const char *_artist_id);
+	void setTitle(const char *_title);
 
 private:
 	pfc::string8 artist;

@@ -35,3 +35,7 @@ void mbTrack::setArtistId(const char *_artist_id)
 	artist_id = _artist_id;
 }
 
+void mbTrack::setTitle(const char *_title)
+{
+	title = _title;
+}

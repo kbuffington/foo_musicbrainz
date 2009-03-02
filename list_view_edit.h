@@ -1,15 +1,26 @@
 #pragma once
 
-class list_view_edit : public InPlaceEdit::CTableEditHelperV2_ListView {
+class release_list_view_edit : public InPlaceEdit::CTableEditHelperV2_ListView {
 public:
-	HWND TableEdit_GetParentWnd() const;
-	list_view_edit(HWND _window);
+	release_list_view_edit(HWND _window);
 	void start(t_size item, t_size subItem);
-	void TableEdit_Finished();
+	HWND TableEdit_GetParentWnd() const;
+	bool TableEdit_Advance(t_size & item, t_size & subItem, t_uint32 whathappened);
+
+public:
+	HWND window;
+};
+
+class track_list_view_edit : public InPlaceEdit::CTableEditHelperV2_ListView {
+public:
+	track_list_view_edit(HWND _window);
+	void start(t_size item, t_size subItem);
+	HWND TableEdit_GetParentWnd() const;
+	bool TableEdit_Advance(t_size & item, t_size & subItem, t_uint32 whathappened);
 
 protected:
 	bool TableEdit_IsColumnEditable(t_size subItem) const;
 
-private:
+public:
 	HWND window;
 };

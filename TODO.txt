@@ -1,6 +1,5 @@
 ﻿Interface:
 * Speed up "abort" functionality in query thread.
-* Focus window
 * Disable icon
 * Sizeable window + resize triangle
 * Activate window
@@ -10,10 +9,7 @@
 * Button selection bug (feature?)
 
 Functionality:
-* Pregap
 * Check tracks count before writing tags
-* Merge requests?
 * Get tags by MBID
-* Real-time abort
 * Sort dates
-* list_view_edit::TableEdit_IsColumnEditable + DialogProc
+* Bug — not all tracks are updated

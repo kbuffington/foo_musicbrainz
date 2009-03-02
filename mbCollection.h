@@ -10,18 +10,16 @@ public:
 	const char *getDiscId();
 	mbRelease *getRelease(unsigned int i);
 	unsigned int getReleasesCount();
-	list_view_edit *getReleasesTable();
-	list_view_edit *getTracksTable();
-	HWND mbCollection::getWindow();
+	release_list_view_edit *getReleasesTable();
+	track_list_view_edit *getTracksTable();
 	void setCurrentRelease(unsigned int release);
 	void setDiscId(const char *_disc_id);
 	~mbCollection();
 
 private:
 	pfc::list_t <mbRelease *> releases;
-	list_view_edit *releases_table;
-	list_view_edit *tracks_table;
-	HWND window;
+	release_list_view_edit *releases_table;
+	track_list_view_edit *tracks_table;
 	unsigned int current_release;
 	metadb_handle_list p_data;
 	pfc::string8 disc_id;

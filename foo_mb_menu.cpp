@@ -32,6 +32,7 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 			const file_info *info;
 			__int64 samples;
 			char tracks_count[10];
+			int pregap = 0;
 
 			for (t_size i = 0; i < count; i++)
 			{
@@ -43,6 +44,17 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 					return;
 				}
 				samples = info->info_get_length_samples();
+				if (i == 0) {
+					const char *pregap_text = info->info_get("pregap");
+					if (strlen(pregap_text) == 8 && pregap_text[2] == ':' && pregap_text[5] == ':' &&
+						pregap_text[0] >= '0' && pregap_text[0] <= '9' && pregap_text[1] >= '0' && pregap_text[1] <= '9' && 
+						pregap_text[3] >= '0' && pregap_text[3] <= '9' && pregap_text[4] >= '0' && pregap_text[4] <= '9' && 
+						pregap_text[6] >= '0' && pregap_text[6] <= '9' && pregap_text[7] >= '0' && pregap_text[7] <= '9'
+						)
+					{
+						pregap = (((pregap_text[0]-'0')*10+(pregap_text[1]-'0'))*60 + (pregap_text[3]-'0')*10+(pregap_text[4]-'0'))*75 + (pregap_text[6]-'0')*10+(pregap_text[7]-'0');
+					}
+				}
 				p_data.get_item(i)->metadb_unlock();
 				if (samples % 588 != 0)
 				{
@@ -51,8 +63,9 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 					return;
 				} 
 				tracks_lengths[i] = (unsigned int)samples / 588;
+
 			}
-			char *discid = get_discid(count, tracks_lengths, 150);
+			char *discid = get_discid(count, tracks_lengths, 150 + pregap);
 			delete [] tracks_lengths;
 			
 			pfc::string8 url = "ws/1/release/?type=xml&discid=";
@@ -64,7 +77,7 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 
 			HWND tagger_dialog = CreateDialog(core_api::get_my_instance(), MAKEINTRESOURCE(IDD_TAGGER_DIALOG), core_api::get_main_window(), TaggerDialogProc);
 			SetProp(tagger_dialog, L"Collection", new mbCollection(tagger_dialog, p_data));
-			threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url, tagger_dialog), threaded_process::flag_show_progress | threaded_process::flag_show_abort, core_api::get_main_window(), "Quering information from MusicBrainz");
+			threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url, tagger_dialog), threaded_process::flag_show_progress | threaded_process::flag_show_abort, tagger_dialog, "Quering information from MusicBrainz");
 			break;
 		}
 	case 1:
@@ -101,7 +114,7 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 
 			HWND tagger_dialog = CreateDialog(core_api::get_my_instance(), MAKEINTRESOURCE(IDD_TAGGER_DIALOG), core_api::get_main_window(), TaggerDialogProc);
 			SetProp(tagger_dialog, L"Collection", new mbCollection(tagger_dialog, p_data));
-			threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url, tagger_dialog), threaded_process::flag_show_progress | threaded_process::flag_show_abort, core_api::get_main_window(), "Quering information from MusicBrainz");
+			threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url, tagger_dialog), threaded_process::flag_show_progress | threaded_process::flag_show_abort, tagger_dialog, "Quering information from MusicBrainz");
 			break;
 		}
 	case 2:
