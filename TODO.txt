@@ -13,3 +13,5 @@ Functionality:
 * Get tags by MBID
 * Sort dates
 * Bug — not all tracks are updated
+* Coloured columns
+* Selecting release while editing track bug

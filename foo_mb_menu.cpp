@@ -46,7 +46,7 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 				samples = info->info_get_length_samples();
 				if (i == 0) {
 					const char *pregap_text = info->info_get("pregap");
-					if (strlen(pregap_text) == 8 && pregap_text[2] == ':' && pregap_text[5] == ':' &&
+					if (pregap_text && strlen(pregap_text) == 8 && pregap_text[2] == ':' && pregap_text[5] == ':' &&
 						pregap_text[0] >= '0' && pregap_text[0] <= '9' && pregap_text[1] >= '0' && pregap_text[1] <= '9' && 
 						pregap_text[3] >= '0' && pregap_text[3] <= '9' && pregap_text[4] >= '0' && pregap_text[4] <= '9' && 
 						pregap_text[6] >= '0' && pregap_text[6] <= '9' && pregap_text[7] >= '0' && pregap_text[7] <= '9'
@@ -93,7 +93,8 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 					p_data.get_item(i)->metadb_unlock();
 					return;
 				}
-				artist = info->meta_get("ARTIST", 0);
+				artist = info->meta_get("ALBUM ARTIST", 0);
+				if (artist.is_empty()) artist = info->meta_get("ARTIST", 0);
 				album = info->meta_get("ALBUM", 0);
 				p_data.get_item(i)->metadb_unlock();
 				if (artist.is_empty() || album.is_empty()) continue;
@@ -101,7 +102,7 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 			}
 			if (artist.is_empty() || album.is_empty())
 			{
-				popup_message::g_show("Selected tracks do not have any Artist and Album tags.", COMPONENT_TITLE, popup_message::icon_error);
+				popup_message::g_show("Selected tracks do not have any Artist/Album Artist and Album tags.", COMPONENT_TITLE, popup_message::icon_error);
 				return;
 			}
 			url = "ws/1/release/?type=xml&artist=";
