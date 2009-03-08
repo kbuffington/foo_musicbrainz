@@ -3,11 +3,15 @@
 PFC_DECLARE_EXCEPTION(exception_foo_mb_release_index_error, pfc::exception, "mbReleaseCollection: unexpected release index.")
 
 mbCollection::mbCollection(HWND window, metadb_handle_list_cref _p_data)
-: p_data(_p_data)
 {
 	releases_table = new release_list_view_edit(GetDlgItem(window, IDC_RELEASE_LIST));
 	tracks_table = new track_list_view_edit(GetDlgItem(window, IDC_TRACK_LIST));
 	current_release = 0;
+	p_data.set_count(_p_data.get_count());
+	for (unsigned int i = 0; i < _p_data.get_count(); i++)
+	{
+		p_data[i] = _p_data[i];
+	}
 }
 
 mbRelease *mbCollection::addRelease(const char *title, const char *id, const char *artist, const char *artist_id)
@@ -22,7 +26,7 @@ unsigned int mbCollection::getCurrentRelease()
 	return current_release;
 }
 
-metadb_handle_list *mbCollection::getData()
+pfc::list_base_t<metadb_handle_ptr> *mbCollection::getData()
 {
 	return &p_data;
 }

@@ -10,11 +10,11 @@ foo_mb_file_info_filter_impl::foo_mb_file_info_filter_impl(HWND _tagger_dialog)
 
 bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_filestats p_stats,file_info & p_info)
 {
-	file_info_impl info;
-	t_size i;
 	char track_number_str[10];
-	const char *a = info.meta_get("tracknumber", 0);
-	if (tracklist->bsearch_t(pfc::compare_t<metadb_handle_ptr,metadb_handle_ptr>,p_location,i)) {
+	for (unsigned int i = 0; i < tracklist->get_count(); i++)
+	{
+		if (tracklist->get_item(i) != p_location) continue;
+
 		p_info.meta_set("ALBUM", release->getTitle());
 		p_info.meta_set("DATE", release->getDate());
 		p_info.meta_set("TITLE", release->getTrack(i)->getTitle());
@@ -24,6 +24,7 @@ bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_f
 		p_info.meta_set("TOTALTRACKS", track_number_str);
 		p_info.meta_set("MUSICBRAINZ_ALBUMID", release->getId());
 		p_info.meta_set("MUSICBRAINZ_TRACKID", release->getTrack(i)->getId());
+		p_info.meta_set("MUSICBRAINZ_DISCID", collection->getDiscId());
 		if (strcmp(collection->getDiscId(), "") != NULL)
 		{
 			p_info.meta_set("MUSICBRAINZ_DISCID", collection->getDiscId());
@@ -56,11 +57,9 @@ bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_f
 			p_info.meta_remove_field("ALBUM ARTIST");
 			p_info.meta_remove_field("MUSICBRAINZ_ALBUMARTISTID");
 		}
-		
 		return true;
-	} else {
-		return false;
 	}
+	return false;
 }
 
 foo_mb_file_info_filter_impl::~foo_mb_file_info_filter_impl()

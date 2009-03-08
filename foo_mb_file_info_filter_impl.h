@@ -8,6 +8,5 @@ private:
 	HWND tagger_dialog;
 	mbRelease *release;
 	mbCollection *collection;
-	metadb_handle_list *tracklist;
+	pfc::list_base_t<metadb_handle_ptr> *tracklist;
 };
-

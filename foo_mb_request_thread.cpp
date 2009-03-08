@@ -96,7 +96,12 @@ void foo_mb_request_thread::get_parse_xml(wchar_t *url, abort_callback & p_abort
 				for (release_event = release_event.begin(release->FirstChildElement("release-event-list")); release_event != release_event.end(); release_event++)
 				{
 					pfc::string8 str = release_event->GetAttribute("date").data();
-					if (strcmp(str, "") != 0 && str[0] != '0' && (strcmp(mbr->getDate(), "") == 0 || strcmp(str, mbr->getDate()) < 0))
+					if (strcmp(str, "") != 0 && str[0] != '0' && 
+						(strcmp(mbr->getDate(), "") == 0 ||
+						 strcmp(str, mbr->getDate()) < 0 ||
+						 (strlen(str) > strlen(mbr->getDate()) && memcmp(str, mbr->getDate(), strlen(mbr->getDate())) == 0)
+						 )
+						)
 					{
 						mbr->setDate(release_event->GetAttribute("date").data());
 					}

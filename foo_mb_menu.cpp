@@ -2,12 +2,17 @@
 
 unsigned foo_mb_menu::get_num_items()
 {
-	return 2;
+	return 3;
 }
 
 void foo_mb_menu::get_item_name(unsigned p_index,pfc::string_base & p_out)
 {
-	static const char *item_name[] = { "Get Tags From MusicBrainz (by TOC)", "Get Tags From MusicBrainz (by data)", "Get Tags From MusicBrainz (custom query)" };
+	static const char *item_name[] = {
+		"Get Tags From MusicBrainz (by TOC)",
+		"Get Tags From MusicBrainz (by data)",
+		"Get Tags From MusicBrainz (by MBID)",
+		"Get Tags From MusicBrainz (custom query)"
+	};
 	p_out = item_name[p_index];
 }
 
@@ -73,10 +78,12 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 			url += "&count=";
 			sprintf(tracks_count, "%d", count);
 			url += URLEncode(tracks_count);
-			delete [] discid;
 
 			HWND tagger_dialog = CreateDialog(core_api::get_my_instance(), MAKEINTRESOURCE(IDD_TAGGER_DIALOG), core_api::get_main_window(), TaggerDialogProc);
-			SetProp(tagger_dialog, L"Collection", new mbCollection(tagger_dialog, p_data));
+			mbCollection *mbc = new mbCollection(tagger_dialog, p_data);
+			mbc->setDiscId(discid);
+			delete [] discid;
+			SetProp(tagger_dialog, L"Collection", mbc);
 			threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url, tagger_dialog), threaded_process::flag_show_progress | threaded_process::flag_show_abort, tagger_dialog, "Quering information from MusicBrainz");
 			break;
 		}
@@ -119,21 +126,78 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 			break;
 		}
 	case 2:
+		{
+			const file_info *info;
+			pfc::string8 mbid, url;
+			const char *pmbid;
+			for (t_size i = 0; i < count; i++)
+			{
+				p_data.get_item(i)->metadb_lock();
+				if (!p_data.get_item(i)->get_info_locked(info))
+				{
+					p_data.get_item(i)->metadb_unlock();
+					return;
+				}
+				pmbid = info->meta_get("MUSICBRAINZ_ALBUMID", 0);
+				if (i == 0)
+				{
+					mbid = pmbid;
+					if (mbid.length() != 36)
+					{
+						popup_message::g_show("Some of selected tracks do not have or have different MusicBrainzAlbumId tags.", COMPONENT_TITLE, popup_message::icon_error);
+						p_data.get_item(i)->metadb_unlock();
+						return;
+					}
+				}
+				else if (pmbid == NULL)
+				{
+					popup_message::g_show("Some of selected tracks do not have MusicBrainzAlbumId tag.", COMPONENT_TITLE, popup_message::icon_error);
+					p_data.get_item(i)->metadb_unlock();
+					return;
+				}
+				else if (strcmp(mbid, pmbid) != 0)
+				{
+					popup_message::g_show("Selected tracks have different MusicBrainzAlbumId tags.", COMPONENT_TITLE, popup_message::icon_error);
+					p_data.get_item(i)->metadb_unlock();
+					return;
+				}
+				p_data.get_item(i)->metadb_unlock();
+			}
+
+			url = "ws/1/release/";
+			url += URLEncode(mbid);
+			url += "?type=xml&inc=artist+release-events+tracks";
+
+			HWND tagger_dialog = CreateDialog(core_api::get_my_instance(), MAKEINTRESOURCE(IDD_TAGGER_DIALOG), core_api::get_main_window(), TaggerDialogProc);
+			SetProp(tagger_dialog, L"Collection", new mbCollection(tagger_dialog, p_data));
+			threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url, tagger_dialog), threaded_process::flag_show_progress | threaded_process::flag_show_abort, tagger_dialog, "Quering information from MusicBrainz");
+			break;
+		}
+	default:
 		popup_message::g_show("Sorry, not yet implemented.", COMPONENT_TITLE, popup_message::icon_error);
-		break;
 	}
 
 }
 
 GUID foo_mb_menu::get_item_guid(unsigned p_index)
 {
-	static const GUID guid_foo_mb_menu[] = { { 0x3ca8395b, 0x694e, 0x4845, { 0xb5, 0xea, 0x56, 0x30, 0x5e, 0x7c, 0x24, 0x48 } }, { 0x77f1f5cd, 0xf295, 0x4ef4, { 0xba, 0x7b, 0xc7, 0x70, 0xaa, 0xc6, 0xd0, 0x1e } }, { 0x9c4dac6a, 0xe571, 0x4cd4, { 0x82, 0xd8, 0x51, 0x31, 0x44, 0x94, 0xde, 0xc5 } } };
+	static const GUID guid_foo_mb_menu[] = {
+		{ 0x3ca8395b, 0x694e, 0x4845, { 0xb5, 0xea, 0x56, 0x30, 0x5e, 0x7c, 0x24, 0x48 } },
+		{ 0x77f1f5cd, 0xf295, 0x4ef4, { 0xba, 0x7b, 0xc7, 0x70, 0xaa, 0xc6, 0xd0, 0x1e } },
+		{ 0xf453e537, 0x01e9, 0x4f2d, { 0x89, 0xdc, 0x42, 0x4d, 0x0e, 0xe5, 0x72, 0xfb } },
+		{ 0x9c4dac6a, 0xe571, 0x4cd4, { 0x82, 0xd8, 0x51, 0x31, 0x44, 0x94, 0xde, 0xc5 } }
+	};
 	return guid_foo_mb_menu[p_index];
 }
 
 bool foo_mb_menu::get_item_description(unsigned p_index,pfc::string_base & p_out)
 {
-	static const char *item_description[] = { "Queries MusicBrainz server for tags for a complete CD using TOC.", "Queries MusicBrainz server for tags for a complete CD using tracks data.", "Queries MusicBrainz server for tags for a complete CD using custom search query." };
+	static const char *item_description[] = {
+		"Queries MusicBrainz server for tags for a complete CD using TOC.",
+		"Queries MusicBrainz server for tags for a complete CD using tracks data.",
+		"Queries MusicBrainz server for tags for a complete CD using existing MusicBrainz Album ID tag.",
+		"Queries MusicBrainz server for tags for a complete CD using custom search query."
+	};
 	p_out = item_description[p_index];
 	return true;
 }
