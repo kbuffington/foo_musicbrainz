@@ -4,8 +4,6 @@ PFC_DECLARE_EXCEPTION(exception_foo_mb_release_index_error, pfc::exception, "mbR
 
 mbCollection::mbCollection(HWND window, metadb_handle_list_cref _p_data)
 {
-	releases_table = new release_list_view_edit(GetDlgItem(window, IDC_RELEASE_LIST));
-	tracks_table = new track_list_view_edit(GetDlgItem(window, IDC_TRACK_LIST));
 	current_release = 0;
 	p_data.set_count(_p_data.get_count());
 	for (unsigned int i = 0; i < _p_data.get_count(); i++)
@@ -36,6 +34,11 @@ const char *mbCollection::getDiscId()
 	return disc_id.get_ptr();
 }
 
+mbRelease *mbCollection::getRelease()
+{
+	return releases[current_release];
+}
+
 mbRelease *mbCollection::getRelease(unsigned int i)
 {
 	if (i >= releases.get_count()) throw exception_foo_mb_release_index_error();
@@ -45,16 +48,6 @@ mbRelease *mbCollection::getRelease(unsigned int i)
 unsigned int mbCollection::getReleasesCount()
 {
 	return releases.get_count();
-}
-
-release_list_view_edit *mbCollection::getReleasesTable()
-{
-	return releases_table;
-}
-
-track_list_view_edit *mbCollection::getTracksTable()
-{
-	return tracks_table;
 }
 
 void mbCollection::setCurrentRelease(unsigned int release)
@@ -74,6 +67,4 @@ mbCollection::~mbCollection()
 	{
 		delete releases[i];
 	}
-	delete releases_table;
-	delete tracks_table;
 }

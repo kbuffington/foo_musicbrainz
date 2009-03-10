@@ -8,8 +8,13 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 		{
 			HWND release_list = GetDlgItem(tagger_dialog, IDC_RELEASE_LIST);
 			HWND track_list = GetDlgItem(tagger_dialog, IDC_TRACK_LIST);
+			HWND type = GetDlgItem(tagger_dialog, IDC_TYPE);
+			HWND status = GetDlgItem(tagger_dialog, IDC_STATUS);
 			
 			LVCOLUMN column_item;
+			uconvert str;
+
+			SetProp(tagger_dialog, L"TrackList", new track_list_view_edit(GetDlgItem(tagger_dialog, IDC_TRACK_LIST)));
 			
 			// List view styles
 			ListView_SetExtendedListViewStyleEx(release_list, LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP, LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP);
@@ -49,6 +54,15 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 			ListView_InsertColumn(track_list, 3, &column_item);
 
 			ListView_DeleteColumn(track_list, 0);
+
+			for (int i = 0; i < MB_RELEASE_TYPES; i++)
+			{
+				SendMessage(type, CB_ADDSTRING, 0, (LPARAM)str.ToUtf16(mbRelease::Types[i]));
+			}
+			for (int i = 0; i < MB_RELEASE_STATUSES; i++)
+			{
+				SendMessage(status, CB_ADDSTRING, 0, (LPARAM)str.ToUtf16(mbRelease::Statuses[i]));
+			}
 			break;
 		}
 
@@ -71,7 +85,7 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 				ListView_SetItemText(release_list, list_item.iItem, 2, str.ToUtf16(mbc->getRelease(list_item.iItem)->getDate()));
 			}
 
-			mbRelease *release = mbc->getRelease(mbc->getCurrentRelease());
+			mbRelease *release = mbc->getRelease();
 			wchar_t track_number_str[10];
 			HWND track_list = GetDlgItem(tagger_dialog, IDC_TRACK_LIST);
 
@@ -92,10 +106,18 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 	case WM_FOO_MB_UPDATE_RELEASE:
 		{
 			mbCollection *mbc = (mbCollection *)GetProp(tagger_dialog, L"Collection");
-			mbRelease *release = mbc->getRelease(mbc->getCurrentRelease());
+			mbRelease *release = mbc->getRelease();
 			uconvert str;
-			HWND track_list = GetDlgItem(tagger_dialog, IDC_TRACK_LIST);
 
+			uSetDlgItemText(tagger_dialog, IDC_ARTIST, release->getArtist());
+			uSetDlgItemText(tagger_dialog, IDC_ALBUM, release->getTitle());
+			uSetDlgItemText(tagger_dialog, IDC_DATE, release->getDate());
+
+			SendMessage(GetDlgItem(tagger_dialog, IDC_TYPE), CB_SETCURSEL, (WPARAM)mbc->getRelease()->getType(), 0);
+			SendMessage(GetDlgItem(tagger_dialog, IDC_STATUS), CB_SETCURSEL, (WPARAM)mbc->getRelease()->getStatus(), 0);
+
+			// VA?
+			HWND track_list = GetDlgItem(tagger_dialog, IDC_TRACK_LIST);
 			if (release->va)
 			{
 				ListView_SetColumnWidth(track_list, 1, 280);
@@ -107,6 +129,7 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 				ListView_SetColumnWidth(track_list, 2, 0);
 			}
 
+			// Tracks
 			for (int iItem = 0; iItem < (int)release->getTracksCount(); iItem++)
 			{
 				//column 2 - title
@@ -114,6 +137,8 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 				ListView_SetItemText(track_list, iItem, 2, str.ToUtf16(release->getTrack(iItem)->getArtist()));
 			}
 
+
+			// Link
 			pfc::string8 url;
 			url = "<a href=\"http://musicbrainz.org/release/";
 			url += release->getId();
@@ -127,27 +152,18 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 		break;
 
 	case WM_DESTROY:
+		delete (track_list_view_edit *)GetProp(tagger_dialog, L"TrackList");
 		delete (mbCollection *)GetProp(tagger_dialog, L"Collection");
 		break;
 
 	case WM_NCDESTROY:
+		RemoveProp(tagger_dialog, L"TrackList");
 		RemoveProp(tagger_dialog, L"Collection");
 		break;
 		
-	case WM_NOTIFY:// 
-	/*	if (((LPNMHDR)lParam)->code <= LVN_FIRST && ((LPNMHDR)lParam)->code >= LVN_LAST && ((LPNMHDR)lParam)->code != LVN_ITEMCHANGING)
-		{
-			console::printf("0x%08x", ((LPNMHDR)lParam)->code);
-		}*/
+	case WM_NOTIFY:
 		switch (((LPNMHDR)lParam)->code)
 		{
-		case NM_DBLCLK:
-			if (((LPNMITEMACTIVATE)lParam)->iItem != -1 && ((LPNMHDR)lParam)->hwndFrom == GetDlgItem(tagger_dialog, IDC_RELEASE_LIST))
-			{
-				((mbCollection *)GetProp(tagger_dialog, L"Collection"))->getReleasesTable()->start(((LPNMITEMACTIVATE)lParam)->iItem, ((LPNMITEMACTIVATE)lParam)->iSubItem);
-			}
-			break;
-
 		case LVN_ITEMCHANGED:
 			if (((LPNMLISTVIEW)lParam)->hdr.hwndFrom == GetDlgItem(tagger_dialog, IDC_RELEASE_LIST) && ((LPNMLISTVIEW)lParam)->iItem != -1 && ((LPNMLISTVIEW)lParam)->uChanged & LVIS_DROPHILITED && ((LPNMLISTVIEW)lParam)->uNewState & LVIS_SELECTED)
 			{
@@ -162,7 +178,7 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 		case NM_CLICK:
 			if (((LPNMITEMACTIVATE)lParam)->iItem != -1 && ((LPNMHDR)lParam)->hwndFrom == GetDlgItem(tagger_dialog, IDC_TRACK_LIST) && ((LPNMITEMACTIVATE)lParam)->iSubItem != 0)
 			{
-				((mbCollection *)GetProp(tagger_dialog, L"Collection"))->getTracksTable()->start(((LPNMITEMACTIVATE)lParam)->iItem, ((LPNMITEMACTIVATE)lParam)->iSubItem);
+				((track_list_view_edit *)GetProp(tagger_dialog, L"TrackList"))->start(((LPNMITEMACTIVATE)lParam)->iItem, ((LPNMITEMACTIVATE)lParam)->iSubItem);
 				break;
 			}
 
@@ -181,7 +197,7 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 		break;
 
 	case WM_COMMAND:
-		switch(LOWORD(wParam))
+		switch (LOWORD(wParam))
 		{
 		case IDCANCEL:
 			DestroyWindow(tagger_dialog);
@@ -192,6 +208,40 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 				mbCollection *collection = ((mbCollection *)GetProp(tagger_dialog, L"Collection"));
 				ShowWindow(tagger_dialog, SW_HIDE);
 				static_api_ptr_t<metadb_io_v2>()->update_info_async(*collection->getData(),new service_impl_t<foo_mb_file_info_filter_impl>(tagger_dialog),core_api::get_main_window(), metadb_io_v2::op_flag_delay_ui, NULL);
+				break;
+			}
+
+		case IDC_TYPE:
+			{
+				switch (HIWORD(wParam))
+				{
+				case CBN_SELENDOK:
+					{
+						mbCollection *mbc = (mbCollection *)GetProp(tagger_dialog, L"Collection");
+						mbc->getRelease()->setType(SendMessage((HWND)lParam, CB_GETCURSEL, 0,0));
+						break;
+					}
+
+				default:
+					return FALSE;
+				}
+				break;
+			}
+
+		case IDC_STATUS:
+			{
+				switch (HIWORD(wParam))
+				{
+				case CBN_SELENDOK:
+					{
+						mbCollection *mbc = (mbCollection *)GetProp(tagger_dialog, L"Collection");
+						mbc->getRelease()->setStatus(SendMessage((HWND)lParam, CB_GETCURSEL, 0,0));
+						break;
+					}
+
+				default:
+					return FALSE;
+				}
 				break;
 			}
 

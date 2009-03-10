@@ -1,16 +1,5 @@
 #pragma once
 
-class release_list_view_edit : public InPlaceEdit::CTableEditHelperV2_ListView {
-public:
-	release_list_view_edit(HWND _window);
-	void start(t_size item, t_size subItem);
-	HWND TableEdit_GetParentWnd() const;
-	bool TableEdit_Advance(t_size & item, t_size & subItem, t_uint32 whathappened);
-
-public:
-	HWND window;
-};
-
 class track_list_view_edit : public InPlaceEdit::CTableEditHelperV2_ListView {
 public:
 	track_list_view_edit(HWND _window);

@@ -92,6 +92,35 @@ void foo_mb_request_thread::get_parse_xml(wchar_t *url, abort_callback & p_abort
 				release->FirstChildElement("artist")->GetAttribute("id").data()
 				);
 			try {
+				pfc::string8 type = release->GetAttribute("type").data();
+				if (!type.is_empty())
+				{
+					pfc::string8 status = type;
+					t_size space = type.find_first(" ");
+					if (space != ~0)
+					{
+						status = type.get_ptr()+space+1;
+						type.truncate(space);
+					}
+					for (unsigned int i = 0; i < MB_RELEASE_TYPES; i++)
+					{
+						if (strcmp(type, mbr->Types[i]) == 0)
+						{
+							mbr->setType(i);
+							break;
+						}
+					}
+					for (unsigned int i = 0; i < MB_RELEASE_STATUSES; i++)
+					{
+						if (strcmp(status, mbr->Statuses[i]) == 0)
+						{
+							mbr->setStatus(i);
+							break;
+						}
+					}
+				}
+			} catch (ticpp::Exception) {}
+			try {
 				ticpp::Iterator<ticpp::Element> release_event;
 				for (release_event = release_event.begin(release->FirstChildElement("release-event-list")); release_event != release_event.end(); release_event++)
 				{
