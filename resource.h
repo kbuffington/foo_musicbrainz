@@ -13,6 +13,7 @@
 #define IDC_DISC                        1017
 #define IDC_TYPE                        1018
 #define IDC_STATUS                      1019
+#define IDC_DISCSUBTITLE                1020
 #define IDC_ARTIST                      1023
 #define IDC_ALBUM                       1024
 #define IDC_LIST1                       1026

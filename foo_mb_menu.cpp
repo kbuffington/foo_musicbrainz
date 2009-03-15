@@ -1,4 +1,7 @@
+#include <regex>
 #include "foo_musicbrainz.h"
+
+using namespace std::tr1;
 
 unsigned foo_mb_menu::get_num_items()
 {
@@ -50,12 +53,9 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 				}
 				samples = info->info_get_length_samples();
 				if (i == 0) {
-					const char *pregap_text = info->info_get("pregap");
-					if (pregap_text && strlen(pregap_text) == 8 && pregap_text[2] == ':' && pregap_text[5] == ':' &&
-						pregap_text[0] >= '0' && pregap_text[0] <= '9' && pregap_text[1] >= '0' && pregap_text[1] <= '9' && 
-						pregap_text[3] >= '0' && pregap_text[3] <= '9' && pregap_text[4] >= '0' && pregap_text[4] <= '9' && 
-						pregap_text[6] >= '0' && pregap_text[6] <= '9' && pregap_text[7] >= '0' && pregap_text[7] <= '9'
-						)
+					pfc::string8 pregap_text = info->info_get("pregap");
+					regex rx("^\\d\\d:\\d\\d:\\d\\d$");
+					if (regex_match(pregap_text.get_ptr(), rx))
 					{
 						pregap = (((pregap_text[0]-'0')*10+(pregap_text[1]-'0'))*60 + (pregap_text[3]-'0')*10+(pregap_text[4]-'0'))*75 + (pregap_text[6]-'0')*10+(pregap_text[7]-'0');
 					}

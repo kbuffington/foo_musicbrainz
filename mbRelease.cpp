@@ -56,6 +56,16 @@ const char *mbRelease::getDate()
 	return date.get_ptr();
 }
 
+const char *mbRelease::getDisc()
+{
+	return disc.get_ptr();
+}
+
+const char *mbRelease::getDiscSubtitle()
+{
+	return discsubtitle.get_ptr();
+}
+
 const char *mbRelease::getId()
 {
 	return id.get_ptr();
@@ -95,6 +105,16 @@ void mbRelease::setArtist(const char *_artist)
 void mbRelease::setDate(const char *_date)
 {
 	date = _date;
+}
+
+void mbRelease::setDisc(const char *_disc)
+{
+	disc = _disc;
+}
+
+void mbRelease::setDiscSubtitle(const char *_discsubtitle)
+{
+	discsubtitle = _discsubtitle;
 }
 
 void mbRelease::setStatus(unsigned int _status)

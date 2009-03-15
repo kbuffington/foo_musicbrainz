@@ -1,4 +1,7 @@
+#include <regex>
 #include "foo_musicbrainz.h"
+
+using namespace std::tr1;
 
 PFC_DECLARE_EXCEPTION(exception_foo_mb_connection_error, pfc::exception, "Error connecting to musicbrainz.org.")
 PFC_DECLARE_EXCEPTION(exception_foo_mb_xml_parsing, pfc::exception, "Error parsing XML.")
@@ -85,12 +88,22 @@ void foo_mb_request_thread::get_parse_xml(wchar_t *url, abort_callback & p_abort
 		}
 		else
 		{
+			std::string full_title(release->FirstChildElement("title")->FirstChild()->Value());
+			regex rx("^(.+?)(?:\\s+\\(disc (\\d+)(?::\\s(.+))?\\))?$");
+			pfc::string8 title, discnumber, discsubtitle;
+			cmatch res;
+			regex_search(full_title.c_str(), res, rx);
+			title.set_string(res[1].first, res[1].second - res[1].first);
+			discnumber.set_string(res[2].first, res[2].second - res[2].first);
+			discsubtitle.set_string(res[3].first, res[3].second - res[3].first);
 			mbr = collection->addRelease(
-				release->FirstChildElement("title")->FirstChild()->Value().data(),
+				title,
 				release->GetAttribute("id").data(),
 				release->FirstChildElement("artist")->FirstChildElement("name")->FirstChild()->Value().data(),
 				release->FirstChildElement("artist")->GetAttribute("id").data()
 				);
+			mbr->setDisc(discnumber);
+			mbr->setDiscSubtitle(discsubtitle);
 			try {
 				pfc::string8 type = release->GetAttribute("type").data();
 				if (!type.is_empty())
@@ -104,7 +117,7 @@ void foo_mb_request_thread::get_parse_xml(wchar_t *url, abort_callback & p_abort
 					}
 					for (unsigned int i = 0; i < MB_RELEASE_TYPES; i++)
 					{
-						if (strcmp(type, mbr->Types[i]) == 0)
+						if (_stricmp(type, mbr->Types[i]) == 0)
 						{
 							mbr->setType(i);
 							break;
@@ -112,7 +125,7 @@ void foo_mb_request_thread::get_parse_xml(wchar_t *url, abort_callback & p_abort
 					}
 					for (unsigned int i = 0; i < MB_RELEASE_STATUSES; i++)
 					{
-						if (strcmp(status, mbr->Statuses[i]) == 0)
+						if (_stricmp(status, mbr->Statuses[i]) == 0)
 						{
 							mbr->setStatus(i);
 							break;

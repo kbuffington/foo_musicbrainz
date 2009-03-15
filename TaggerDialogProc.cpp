@@ -48,11 +48,6 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 			column_item.pszText = L"Title";
 			ListView_InsertColumn(track_list, 2, &column_item);
 
-			column_item.mask = LVCF_WIDTH | LVCF_TEXT;
-			column_item.cx = 110;
-			column_item.pszText = L"Track artist";
-			ListView_InsertColumn(track_list, 3, &column_item);
-
 			ListView_DeleteColumn(track_list, 0);
 
 			for (int i = 0; i < MB_RELEASE_TYPES; i++)
@@ -112,21 +107,27 @@ BOOL CALLBACK TaggerDialogProc(HWND tagger_dialog, UINT Message, WPARAM wParam, 
 			uSetDlgItemText(tagger_dialog, IDC_ARTIST, release->getArtist());
 			uSetDlgItemText(tagger_dialog, IDC_ALBUM, release->getTitle());
 			uSetDlgItemText(tagger_dialog, IDC_DATE, release->getDate());
+			uSetDlgItemText(tagger_dialog, IDC_DISC, release->getDisc());
+			uSetDlgItemText(tagger_dialog, IDC_DISCSUBTITLE, release->getDiscSubtitle());
 
 			SendMessage(GetDlgItem(tagger_dialog, IDC_TYPE), CB_SETCURSEL, (WPARAM)mbc->getRelease()->getType(), 0);
 			SendMessage(GetDlgItem(tagger_dialog, IDC_STATUS), CB_SETCURSEL, (WPARAM)mbc->getRelease()->getStatus(), 0);
 
 			// VA?
 			HWND track_list = GetDlgItem(tagger_dialog, IDC_TRACK_LIST);
-			if (release->va)
+			if (ListView_GetColumnWidth(track_list, 2) && !release->va)
 			{
-				ListView_SetColumnWidth(track_list, 1, 280);
-				ListView_SetColumnWidth(track_list, 2, 110);
-			}
-			else
-			{
+				ListView_DeleteColumn(track_list, 2);
 				ListView_SetColumnWidth(track_list, 1, 390);
-				ListView_SetColumnWidth(track_list, 2, 0);
+			}
+			else if (!ListView_GetColumnWidth(track_list, 2) && release->va)
+			{
+				LVCOLUMN column_item;
+				column_item.mask = LVCF_WIDTH | LVCF_TEXT;
+				column_item.pszText = L"Track artist";
+				column_item.cx = 110;
+				ListView_InsertColumn(track_list, 2, &column_item);
+				ListView_SetColumnWidth(track_list, 1, 280);
 			}
 
 			// Tracks
