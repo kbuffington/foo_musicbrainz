@@ -3,7 +3,7 @@
 class mbCollection
 {
 public:
-	mbCollection(HWND _window, metadb_handle_list_cref _p_data);
+	mbCollection(metadb_handle_list_cref _p_data);
 	mbRelease *addRelease(const char *title, const char *id, const char *artist, const char *artist_id);
 	unsigned int getCurrentRelease();
 	pfc::list_base_t<metadb_handle_ptr> *getData();

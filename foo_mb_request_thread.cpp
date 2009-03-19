@@ -7,10 +7,9 @@ PFC_DECLARE_EXCEPTION(exception_foo_mb_connection_error, pfc::exception, "Error 
 PFC_DECLARE_EXCEPTION(exception_foo_mb_xml_parsing, pfc::exception, "Error parsing XML.")
 PFC_DECLARE_EXCEPTION(exception_foo_mb_no_releases, pfc::exception, "No releases.")
 
-foo_mb_request_thread::foo_mb_request_thread(const char *_url, HWND window)
-	: tagger_dialog(window)
+foo_mb_request_thread::foo_mb_request_thread(const char *_url, HWND window, mbCollection *_mbc)
+	: tagger_dialog(window), mbc(_mbc)
 {
-	collection = ((mbCollection *)GetProp(tagger_dialog, L"Collection"));
 	int url_len = MultiByteToWideChar(CP_UTF8, 0, _url, -1, NULL, 0);
 	url = new wchar_t [url_len];
 	MultiByteToWideChar(CP_UTF8, 0, _url, -1, url, url_len);
@@ -84,7 +83,7 @@ void foo_mb_request_thread::get_parse_xml(wchar_t *url, abort_callback & p_abort
 	{
 		if (release_number >= 0)
 		{
-			mbr = collection->getRelease(release_number);
+			mbr = mbc->getRelease(release_number);
 		}
 		else
 		{
@@ -96,7 +95,7 @@ void foo_mb_request_thread::get_parse_xml(wchar_t *url, abort_callback & p_abort
 			title.set_string(res[1].first, res[1].second - res[1].first);
 			discnumber.set_string(res[2].first, res[2].second - res[2].first);
 			discsubtitle.set_string(res[3].first, res[3].second - res[3].first);
-			mbr = collection->addRelease(
+			mbr = mbc->addRelease(
 				title,
 				release->GetAttribute("id").data(),
 				release->FirstChildElement("artist")->FirstChildElement("name")->FirstChild()->Value().data(),
@@ -176,10 +175,10 @@ void foo_mb_request_thread::run(threaded_process_status & p_status,abort_callbac
 {
 	try {
 		get_parse_xml(url, p_abort);
-		p_status.set_progress(p_status.progress_max / (collection->getReleasesCount() + 1));
-		for (unsigned int i = 0; i < collection->getReleasesCount(); i++)
+		p_status.set_progress(p_status.progress_max / (mbc->getReleasesCount() + 1));
+		for (unsigned int i = 0; i < mbc->getReleasesCount(); i++)
 		{
-			mbRelease *release = collection->getRelease(i);
+			mbRelease *release = mbc->getRelease(i);
 			if (release->getTracksCount() == 0)
 			{
 				uconvert str;
@@ -188,7 +187,7 @@ void foo_mb_request_thread::run(threaded_process_status & p_status,abort_callbac
 				str2 += release->getId();
 				str2 += "?type=xml&inc=artist+tracks";
 				get_parse_xml(str.ToUtf16(str2), p_abort, i);
-				p_status.set_progress(p_status.progress_max / (collection->getReleasesCount() + 1) * (1 + i));
+				p_status.set_progress(p_status.progress_max / (mbc->getReleasesCount() + 1) * (1 + i));
 			}
 		}
 		PostMessage(tagger_dialog, WM_FOO_MB_UPDATE_RELEASES_LIST, 0, 0);

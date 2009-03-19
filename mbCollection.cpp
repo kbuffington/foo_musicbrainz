@@ -2,7 +2,7 @@
 
 PFC_DECLARE_EXCEPTION(exception_foo_mb_release_index_error, pfc::exception, "mbReleaseCollection: unexpected release index.")
 
-mbCollection::mbCollection(HWND window, metadb_handle_list_cref _p_data)
+mbCollection::mbCollection(metadb_handle_list_cref _p_data)
 {
 	current_release = 0;
 	p_data.set_count(_p_data.get_count());

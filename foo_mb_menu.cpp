@@ -79,12 +79,11 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 			sprintf(tracks_count, "%d", count);
 			url += URLEncode(tracks_count);
 
-			HWND tagger_dialog = CreateDialog(core_api::get_my_instance(), MAKEINTRESOURCE(IDD_TAGGER_DIALOG), core_api::get_main_window(), TaggerDialogProc);
-			mbCollection *mbc = new mbCollection(tagger_dialog, p_data);
+			mbCollection *mbc = new mbCollection(p_data);
 			mbc->setDiscId(discid);
 			delete [] discid;
-			SetProp(tagger_dialog, L"Collection", mbc);
-			threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url, tagger_dialog), threaded_process::flag_show_progress | threaded_process::flag_show_abort, tagger_dialog, "Quering information from MusicBrainz");
+
+			new CTaggerDialog(url, mbc);
 			break;
 		}
 	case 1:
@@ -120,9 +119,7 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 			sprintf(tracks_count, "%d", count);
 			url += URLEncode(tracks_count);
 
-			HWND tagger_dialog = CreateDialog(core_api::get_my_instance(), MAKEINTRESOURCE(IDD_TAGGER_DIALOG), core_api::get_main_window(), TaggerDialogProc);
-			SetProp(tagger_dialog, L"Collection", new mbCollection(tagger_dialog, p_data));
-			threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url, tagger_dialog), threaded_process::flag_show_progress | threaded_process::flag_show_abort, tagger_dialog, "Quering information from MusicBrainz");
+			new CTaggerDialog(url, new mbCollection(p_data));
 			break;
 		}
 	case 2:
@@ -168,9 +165,7 @@ void foo_mb_menu::context_command(unsigned p_index,metadb_handle_list_cref p_dat
 			url += URLEncode(mbid);
 			url += "?type=xml&inc=artist+release-events+tracks";
 
-			HWND tagger_dialog = CreateDialog(core_api::get_my_instance(), MAKEINTRESOURCE(IDD_TAGGER_DIALOG), core_api::get_main_window(), TaggerDialogProc);
-			SetProp(tagger_dialog, L"Collection", new mbCollection(tagger_dialog, p_data));
-			threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url, tagger_dialog), threaded_process::flag_show_progress | threaded_process::flag_show_abort, tagger_dialog, "Quering information from MusicBrainz");
+			new CTaggerDialog(url, new mbCollection(p_data));
 			break;
 		}
 	default:

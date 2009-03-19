@@ -210,10 +210,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TaggerDialogProc.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\uconvert.cpp"
 				>
 			</File>
@@ -272,10 +268,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\TaggerDialogProc.h"
-				>
-			</File>
-			<File
 				RelativePath=".\uconvert.h"
 				>
 			</File>
@@ -291,6 +283,14 @@
 			>
 			<File
 				RelativePath=".\foo_musicbrainz.rc"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Classes"
+			>
+			<File
+				RelativePath=".\CTaggerDialog.h"
 				>
 			</File>
 		</Filter>

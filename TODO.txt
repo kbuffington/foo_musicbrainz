@@ -2,8 +2,6 @@
 * Speed up "abort" functionality in query thread.
 * Disable icon
 * Sizeable window + resize triangle
-* Escape key handling
-* Button selection bug
 
 Functionality:
 * Check tracks count before writing tags

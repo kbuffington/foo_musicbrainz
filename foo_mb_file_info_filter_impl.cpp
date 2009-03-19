@@ -1,11 +1,11 @@
 #include "foo_musicbrainz.h"
 
-foo_mb_file_info_filter_impl::foo_mb_file_info_filter_impl(HWND _tagger_dialog)
+foo_mb_file_info_filter_impl::foo_mb_file_info_filter_impl(HWND _tagger_dialog, mbCollection *_mbc)
 {
 	tagger_dialog = _tagger_dialog;
-	collection = ((mbCollection *)GetProp(tagger_dialog, L"Collection"));
-	release = collection->getRelease();
-	tracklist = collection->getData();
+	mbc = _mbc;
+	release = mbc->getRelease();
+	tracklist = mbc->getData();
 }
 
 bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_filestats p_stats,file_info & p_info)
@@ -27,10 +27,10 @@ bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_f
 		p_info.meta_set("TOTALTRACKS", track_number_str);
 		p_info.meta_set("MUSICBRAINZ_ALBUMID", release->getId());
 		p_info.meta_set("MUSICBRAINZ_TRACKID", release->getTrack(i)->getId());
-		p_info.meta_set("MUSICBRAINZ_DISCID", collection->getDiscId());
-		if (strcmp(collection->getDiscId(), "") != NULL)
+		p_info.meta_set("MUSICBRAINZ_DISCID", mbc->getDiscId());
+		if (strcmp(mbc->getDiscId(), "") != NULL)
 		{
-			p_info.meta_set("MUSICBRAINZ_DISCID", collection->getDiscId());
+			p_info.meta_set("MUSICBRAINZ_DISCID", mbc->getDiscId());
 		}
 		if (strcmp(release->Types[release->getType()], "") != NULL)
 		{
