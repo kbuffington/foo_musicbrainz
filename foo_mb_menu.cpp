@@ -12,7 +12,7 @@ void foo_mb_menu::get_item_name(unsigned p_index,pfc::string_base & p_out)
 {
 	static const char *item_name[] = {
 		"Get Tags From MusicBrainz (by TOC)",
-		"Get Tags From MusicBrainz (by data)",
+		"Get Tags From MusicBrainz (by tags)",
 		"Get Tags From MusicBrainz (by MBID)",
 		"Get Tags From MusicBrainz (custom query)"
 	};
@@ -189,7 +189,7 @@ bool foo_mb_menu::get_item_description(unsigned p_index,pfc::string_base & p_out
 {
 	static const char *item_description[] = {
 		"Queries MusicBrainz server for tags for a complete CD using TOC.",
-		"Queries MusicBrainz server for tags for a complete CD using tracks data.",
+		"Queries MusicBrainz server for tags for a complete CD using tags.",
 		"Queries MusicBrainz server for tags for a complete CD using existing MusicBrainz Album ID tag.",
 		"Queries MusicBrainz server for tags for a complete CD using custom search query."
 	};

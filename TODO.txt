@@ -6,4 +6,3 @@
 Functionality:
 * Check tracks count before writing tags
 * Coloured columns
-* Selecting release while editing track bug

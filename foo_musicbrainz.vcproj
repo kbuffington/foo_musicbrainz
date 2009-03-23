@@ -210,10 +210,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\uconvert.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\URLEncode.cpp"
 				>
 			</File>
@@ -265,10 +261,6 @@
 			</File>
 			<File
 				RelativePath="..\..\SDKs\SHA-1\sha1.h"
-				>
-			</File>
-			<File
-				RelativePath=".\uconvert.h"
 				>
 			</File>
 			<File

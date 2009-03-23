@@ -26,11 +26,17 @@ public:
 		MSG_WM_CLOSE(OnClose)
 		NOTIFY_HANDLER_EX(IDC_RELEASE_LIST, LVN_ITEMCHANGED, OnReleaseListChange)
 		NOTIFY_HANDLER_EX(IDC_TRACK_LIST, NM_CLICK, OnTrackListClick)
+		NOTIFY_HANDLER_EX(IDC_URL, NM_CLICK, OnLink)
 		NOTIFY_HANDLER_EX(IDC_URL, NM_RETURN, OnLink)
 		COMMAND_ID_HANDLER_EX(IDCANCEL, OnCancel)
 		COMMAND_ID_HANDLER_EX(IDOK, OnOk)
 		COMMAND_HANDLER_EX(IDC_TYPE, CBN_SELENDOK, OnTypeChange)
 		COMMAND_HANDLER_EX(IDC_STATUS, CBN_SELENDOK, OnStatusChange)
+		COMMAND_HANDLER_EX(IDC_ARTIST, EN_UPDATE, OnArtistUpdate)
+		COMMAND_HANDLER_EX(IDC_ALBUM, EN_UPDATE, OnAlbumUpdate)
+		COMMAND_HANDLER_EX(IDC_DATE, EN_UPDATE, OnDateUpdate)
+		COMMAND_HANDLER_EX(IDC_DISC, EN_UPDATE, OnDiscUpdate)
+		COMMAND_HANDLER_EX(IDC_DISCSUBTITLE, EN_UPDATE, OnDiscSubtitleUpdate)
 		//CHAIN_MSG_MAP(CDialogImpl<CTaggerDialog>)
 	END_MSG_MAP()
 
@@ -44,7 +50,6 @@ public:
 		url = GetDlgItem(IDC_URL);
 		
 		LVCOLUMN column_item;
-		uconvert str;
 
 		track_list_view = new track_list_view_edit(track_list, mbc);
 		
@@ -53,19 +58,14 @@ public:
 		ListView_SetExtendedListViewStyleEx(track_list, LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP, LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP);
 
 		// Adding release list columns
-		column_item.mask = LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM; 
-		wchar_t *release_list_columns[] = { L"Artist", L"Release", L"Date" };
-		int col_size[] = { 180, 180, 70 };
-		for (int i = 0; i < 3; i++) 
-		{ 
-			column_item.iSubItem = i;
-			column_item.pszText = release_list_columns[i];
-			column_item.cx = col_size[i];
-			ListView_InsertColumn(release_list, i, &column_item);
-		}
+		listview_helper::insert_column(release_list, 0, "Artist", 115);
+		listview_helper::insert_column(release_list, 1, "Release", 115);
+		listview_helper::insert_column(release_list, 2, "Date", 49);
 
 		// Adding track list columns
 		// Fake column
+		listview_helper::insert_column(track_list, 0, "", 0);
+
 		column_item.mask = 0;
 		ListView_InsertColumn(track_list, 0, &column_item);
 
@@ -75,63 +75,47 @@ public:
 		column_item.pszText = L"#";
 		ListView_InsertColumn(track_list, 1, &column_item);
 
-		column_item.mask = LVCF_WIDTH | LVCF_TEXT;
-		column_item.cx = 390;
-		column_item.pszText = L"Title";
-		ListView_InsertColumn(track_list, 2, &column_item);
+		listview_helper::insert_column(track_list, 2, "Title", 260);
 
 		ListView_DeleteColumn(track_list, 0);
 
 		for (int i = 0; i < MB_RELEASE_TYPES; i++)
 		{
-			SendMessage(type, CB_ADDSTRING, 0, (LPARAM)str.ToUtf16(mbRelease::Types[i]));
+			pfc::stringcvt::string_os_from_utf8 str(mbRelease::Types[i]);
+			SendMessage(type, CB_ADDSTRING, 0, (LPARAM)str.get_ptr());
 		}
 		for (int i = 0; i < MB_RELEASE_STATUSES; i++)
 		{
-			SendMessage(status, CB_ADDSTRING, 0, (LPARAM)str.ToUtf16(mbRelease::Statuses[i]));
+			pfc::stringcvt::string_os_from_utf8 str(mbRelease::Statuses[i]);
+			SendMessage(status, CB_ADDSTRING, 0, (LPARAM)str.get_ptr());
 		}
 		return true;
 	}
 
 	LRESULT OnUpdateReleaseList(UINT Message, WPARAM wParam, LPARAM lParam, BOOL bHandled)
 	{
-		LVITEM list_item;
-		uconvert str;
-
-		list_item.mask = LVIF_TEXT;
-		list_item.iSubItem = 0;
-
-		ListView_DeleteAllItems(release_list);
-		for (list_item.iItem = 0; list_item.iItem < (int)mbc->getReleasesCount(); list_item.iItem++)
+		for (unsigned int i = 0; i < mbc->getReleasesCount(); i++)
 		{
-			list_item.pszText = str.ToUtf16(mbc->getRelease(list_item.iItem)->getArtist());
-			ListView_InsertItem(release_list, &list_item);
-			ListView_SetItemText(release_list, list_item.iItem, 1, str.ToUtf16(mbc->getRelease(list_item.iItem)->getTitle()));
-			ListView_SetItemText(release_list, list_item.iItem, 2, str.ToUtf16(mbc->getRelease(list_item.iItem)->getDate()));
+			listview_helper::insert_item(release_list, i, mbc->getRelease(i)->getArtist(), NULL);
+			listview_helper::set_item_text(release_list, i, 1, mbc->getRelease(i)->getTitle());
+			listview_helper::set_item_text(release_list, i, 2, mbc->getRelease(i)->getDate());
 		}
 
 		mbRelease *release = mbc->getRelease();
-		wchar_t track_number_str[10];
-		HWND track_list = GetDlgItem(IDC_TRACK_LIST);
+		char track_number_str[10];
 
-		list_item.mask = LVIF_TEXT;
-		list_item.iSubItem = 0;
-
-		for (list_item.iItem = 0; list_item.iItem < (int)release->getTracksCount(); list_item.iItem++)
+		for (unsigned int i = 0; i < release->getTracksCount(); i++)
 		{
-			//column 1 - track_number
-			wsprintf(track_number_str, L"%u", list_item.iItem+1);
-			list_item.pszText = track_number_str;
-			ListView_InsertItem(track_list, &list_item);
+			sprintf(track_number_str, "%u", i+1);
+			listview_helper::insert_item(track_list, i, track_number_str, NULL);
 		}
-		SendMessage(m_hWnd, WM_FOO_MB_UPDATE_RELEASE, 0, 0);
+		SendMessage(WM_FOO_MB_UPDATE_RELEASE, 0, 0);
 		return 0;
 	}
 
 	LRESULT OnUpdateRelease(UINT Message, WPARAM wParam, LPARAM lParam, BOOL bHandled)
 	{
 		mbRelease *release = mbc->getRelease();
-		uconvert str;
 
 		uSetDlgItemText(m_hWnd, IDC_ARTIST, release->getArtist());
 		uSetDlgItemText(m_hWnd, IDC_ALBUM, release->getTitle());
@@ -146,27 +130,21 @@ public:
 		
 		if (ListView_GetColumnWidth(track_list, 2) && !release->va)
 		{
+			ListView_SetColumnWidth(track_list, 1, 260);
 			ListView_DeleteColumn(track_list, 2);
-			ListView_SetColumnWidth(track_list, 1, 390);
 		}
 		else if (!ListView_GetColumnWidth(track_list, 2) && release->va)
 		{
-			LVCOLUMN column_item;
-			column_item.mask = LVCF_WIDTH | LVCF_TEXT;
-			column_item.pszText = L"Track artist";
-			column_item.cx = 195;
-			ListView_InsertColumn(track_list, 2, &column_item);
 			ListView_SetColumnWidth(track_list, 1, 195);
+			listview_helper::insert_column(track_list, 2, "Track artist", 130);
 		}
 
 		// Tracks
 		for (int iItem = 0; iItem < (int)release->getTracksCount(); iItem++)
 		{
-			//column 2 - title
-			ListView_SetItemText(track_list, iItem, 1, str.ToUtf16(release->getTrack(iItem)->getTitle()));
-			ListView_SetItemText(track_list, iItem, 2, str.ToUtf16(release->getTrack(iItem)->getArtist()));
+			listview_helper::set_item_text(track_list, iItem, 1, release->getTrack(iItem)->getTitle());
+			listview_helper::set_item_text(track_list, iItem, 2, release->getTrack(iItem)->getArtist());
 		}
-
 
 		// Link
 		pfc::string8 url;
@@ -181,7 +159,7 @@ public:
 	{
 		if (((LPNMITEMACTIVATE)pnmh)->iItem != -1 && ((LPNMITEMACTIVATE)pnmh)->iSubItem != 0)
 		{
-			track_list_view->start(((LPNMITEMACTIVATE)pnmh)->iItem, ((LPNMITEMACTIVATE)pnmh)->iSubItem);
+			track_list_view->Start(((LPNMITEMACTIVATE)pnmh)->iItem, ((LPNMITEMACTIVATE)pnmh)->iSubItem);
 		}
 		return 0;
 	}
@@ -192,6 +170,7 @@ public:
 		{
 			if (mbc->getCurrentRelease() != ((LPNMITEMACTIVATE)pnmh)->iItem)
 			{
+				if (track_list_view->IsActive()) track_list_view->Abort();
 				mbc->setCurrentRelease(((LPNMITEMACTIVATE)pnmh)->iItem);
 				SendMessage(WM_FOO_MB_UPDATE_RELEASE, 0, 0);
 			}
@@ -238,5 +217,39 @@ public:
 	void OnStatusChange(UINT uNotifyCode, int nID, CWindow wndCtl)
 	{
 		mbc->getRelease()->setStatus(SendMessage(wndCtl, CB_GETCURSEL, 0,0));
+	}
+
+	void OnArtistUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
+	{
+		pfc::string8 str;
+		uGetDlgItemText(m_hWnd, nID, str);
+		mbc->getRelease()->setArtist(str);
+		listview_helper::set_item_text(release_list, mbc->getCurrentRelease(), 0, str);
+	}
+
+	void OnAlbumUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
+	{
+		pfc::string8 str;
+		uGetDlgItemText(m_hWnd, nID, str);
+		mbc->getRelease()->setTitle(str);
+		listview_helper::set_item_text(release_list, mbc->getCurrentRelease(), 1, str);
+	}
+
+	void OnDateUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
+	{
+		pfc::string8 str;
+		uGetDlgItemText(m_hWnd, nID, str);
+		mbc->getRelease()->setDate(str);
+		listview_helper::set_item_text(release_list, mbc->getCurrentRelease(), 2, str);
+	}
+
+	void OnDiscUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
+	{
+		mbc->getRelease()->setDisc(uGetDlgItemText(m_hWnd, nID).get_ptr());
+	}
+
+	void OnDiscSubtitleUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
+	{
+		mbc->getRelease()->setDiscSubtitle(uGetDlgItemText(m_hWnd, nID).get_ptr());
 	}
 };

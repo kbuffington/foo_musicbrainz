@@ -25,6 +25,14 @@ bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_f
 		p_info.meta_set("TRACKNUMBER", track_number_str);
 		sprintf(track_number_str, "%u", release->getTracksCount());
 		p_info.meta_set("TOTALTRACKS", track_number_str);
+		if (strcmp(release->getDisc(), "") != NULL)
+		{
+			p_info.meta_set("DISCNUMBER", release->getDisc());
+		}
+		if (strcmp(release->getDiscSubtitle(), "") != NULL)
+		{
+			p_info.meta_set("DISCSUBTITLE", release->getDiscSubtitle());
+		}
 		p_info.meta_set("MUSICBRAINZ_ALBUMID", release->getId());
 		p_info.meta_set("MUSICBRAINZ_TRACKID", release->getTrack(i)->getId());
 		p_info.meta_set("MUSICBRAINZ_DISCID", mbc->getDiscId());

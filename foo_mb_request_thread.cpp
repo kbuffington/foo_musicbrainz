@@ -16,7 +16,7 @@ foo_mb_request_thread::foo_mb_request_thread(const char *_url, HWND window, mbCo
 	hSession = hConnect = hRequest = NULL;
 }
 
-void foo_mb_request_thread::get_parse_xml(wchar_t *url, abort_callback & p_abort, int release_number) 
+void foo_mb_request_thread::get_parse_xml(const wchar_t *url, abort_callback & p_abort, int release_number) 
 {
 	pfc::string8 buffer;
 	char *tmp;
@@ -181,12 +181,12 @@ void foo_mb_request_thread::run(threaded_process_status & p_status,abort_callbac
 			mbRelease *release = mbc->getRelease(i);
 			if (release->getTracksCount() == 0)
 			{
-				uconvert str;
-				pfc::string8 str2;
-				str2 = "/ws/1/release/";
-				str2 += release->getId();
-				str2 += "?type=xml&inc=artist+tracks";
-				get_parse_xml(str.ToUtf16(str2), p_abort, i);
+				pfc::string8 str;
+				str = "/ws/1/release/";
+				str += release->getId();
+				str += "?type=xml&inc=artist+tracks";
+				pfc::stringcvt::string_os_from_utf8 tmp(str);
+				get_parse_xml(tmp.get_ptr(), p_abort, i);
 				p_status.set_progress(p_status.progress_max / (mbc->getReleasesCount() + 1) * (1 + i));
 			}
 		}
