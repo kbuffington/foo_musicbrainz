@@ -4,6 +4,7 @@
 //
 #define IDD_TAGGER_DIALOG               101
 #define IDD_DIALOG1                     103
+#define IDD_PREFERENCES                 104
 #define IDC_RELEASE_LIST                1001
 #define IDC_TRACK_LIST                  1002
 #define IDC_URL                         1003
@@ -17,15 +18,18 @@
 #define IDC_ARTIST                      1023
 #define IDC_ALBUM                       1024
 #define IDC_LIST1                       1026
+#define IDC_SHORT_DATE                  1027
+#define IDC_WRITE_IDS                   1029
+#define IDC_NO_FEAT                     1030
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        104
+#define _APS_NEXT_RESOURCE_VALUE        105
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

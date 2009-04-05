@@ -3,6 +3,9 @@
 
 using namespace std::tr1;
 
+extern cfg_bool cfg_short_date;
+extern cfg_bool cfg_no_feat;
+
 PFC_DECLARE_EXCEPTION(exception_foo_mb_connection_error, pfc::exception, "Error connecting to musicbrainz.org.")
 PFC_DECLARE_EXCEPTION(exception_foo_mb_xml_parsing, pfc::exception, "Error parsing XML.")
 PFC_DECLARE_EXCEPTION(exception_foo_mb_no_releases, pfc::exception, "No releases.")
@@ -79,7 +82,7 @@ void foo_mb_request_thread::get_parse_xml(const wchar_t *url, abort_callback & p
 
 	// Adding releases
 	ticpp::Iterator<ticpp::Element> release;
-	for (release = release.begin(releases); release != release.end(); release++)
+	for (release = release.begin(releases); release != release.end(); ++release)
 	{
 		if (release_number >= 0)
 		{
@@ -134,7 +137,7 @@ void foo_mb_request_thread::get_parse_xml(const wchar_t *url, abort_callback & p
 			} catch (ticpp::Exception) {}
 			try {
 				ticpp::Iterator<ticpp::Element> release_event;
-				for (release_event = release_event.begin(release->FirstChildElement("release-event-list")); release_event != release_event.end(); release_event++)
+				for (release_event = release_event.begin(release->FirstChildElement("release-event-list")); release_event != release_event.end(); ++release_event)
 				{
 					pfc::string8 str = release_event->GetAttribute("date").data();
 					if (strcmp(str, "") != 0 && str[0] != '0' && 
@@ -144,7 +147,8 @@ void foo_mb_request_thread::get_parse_xml(const wchar_t *url, abort_callback & p
 						 )
 						)
 					{
-						mbr->setDate(release_event->GetAttribute("date").data());
+						if (cfg_short_date && str.length() > 4) str.truncate(4);
+						mbr->setDate(str);
 					}
 				}
 			} catch (ticpp::Exception) {}
@@ -153,9 +157,18 @@ void foo_mb_request_thread::get_parse_xml(const wchar_t *url, abort_callback & p
 		// Adding tracks
 		ticpp::Iterator<ticpp::Element> track;
 		//try {
-		for (track = track.begin(release->FirstChildElement("track-list")); track != track.end(); track++)
+		for (track = track.begin(release->FirstChildElement("track-list")); track != track.end(); ++track)
 		{
-			mbTrack *mbt = mbr->addTrack(track->FirstChildElement("title")->FirstChild()->Value().data(), track->GetAttribute("id").data());
+			pfc::string8 track_title(track->FirstChildElement("title")->FirstChild()->Value().data());
+			if (cfg_no_feat)
+			{
+				regex rx("^(.+?)(\\s+\\(feat\\.\\s+.+\\))?$");
+				cmatch res;
+				regex_search(track_title.get_ptr(), res, rx);
+				track_title.set_string(res[1].first, res[1].second - res[1].first);
+			}
+			mbTrack *mbt = mbr->addTrack(track_title.get_ptr(), track->GetAttribute("id").data());
+
 			if (track->FirstChildElement("artist", false))
 			{
 				mbt->setArtist(track->FirstChildElement("artist")->FirstChildElement("name")->FirstChild()->Value().data());

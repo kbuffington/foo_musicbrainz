@@ -178,10 +178,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\foo_mb_menu.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\foo_mb_request_thread.cpp"
 				>
 			</File>
@@ -206,6 +202,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\menu.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\preferences.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\SDKs\SHA-1\sha1.cpp"
 				>
 			</File>
@@ -225,10 +229,6 @@
 			</File>
 			<File
 				RelativePath=".\foo_mb_file_info_filter_impl.h"
-				>
-			</File>
-			<File
-				RelativePath=".\foo_mb_menu.h"
 				>
 			</File>
 			<File

@@ -5,7 +5,7 @@
 
 #define COMPONENT_TITLE "MusicBrainz Tagger"
 #define COMPONENT_DLL_NAME "foo_musicbrainz"
-#define COMPONENT_VERSION "0.1"
+#define COMPONENT_VERSION "0.2 beta 1"
 
 #define WM_FOO_MB_UPDATE_RELEASES_LIST WM_USER + 0x100
 #define WM_FOO_MB_UPDATE_RELEASE       WM_USER + 0x101
@@ -25,7 +25,6 @@
 #include "mbCollection.h"
 #include "list_view_edit.h"
 #include "URLEncode.h"
-#include "foo_mb_menu.h"
 #include "foo_mb_request_thread.h"
 #include "foo_mb_file_info_filter_impl.h"
 #include "CTaggerDialog.h"

@@ -40,7 +40,7 @@ public:
 		//CHAIN_MSG_MAP(CDialogImpl<CTaggerDialog>)
 	END_MSG_MAP()
 
-	bool OnInitDialog(HWND wParam, LPARAM lParam)
+	bool OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 	{
 		static_api_ptr_t<modeless_dialog_manager>()->add(m_hWnd);
 		release_list = GetDlgItem(IDC_RELEASE_LIST);

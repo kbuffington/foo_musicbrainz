@@ -65,6 +65,16 @@ BEGIN
     EDITTEXT        IDC_EDIT2,47,31,124,14,ES_AUTOHSCROLL
 END
 
+IDD_PREFERENCES DIALOGEX 0, 0, 274, 183
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Use year instead of full date",IDC_SHORT_DATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,7,107,10
+    CONTROL         "Write MusicBrainz IDs",IDC_WRITE_IDS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,19,85,10
+    CONTROL         "Remove (feat. Artist) part from track titles",IDC_NO_FEAT,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,31,152,10
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -80,6 +90,14 @@ BEGIN
         RIGHTMARGIN, 178
         TOPMARGIN, 7
         BOTTOMMARGIN, 65
+    END
+
+    IDD_PREFERENCES, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 267
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 176
     END
 END
 #endif    // APSTUDIO_INVOKED

@@ -1,5 +1,7 @@
 #include "foo_musicbrainz.h"
 
+extern cfg_bool cfg_write_ids;
+
 foo_mb_file_info_filter_impl::foo_mb_file_info_filter_impl(HWND _tagger_dialog, mbCollection *_mbc)
 {
 	tagger_dialog = _tagger_dialog;
@@ -33,12 +35,15 @@ bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_f
 		{
 			p_info.meta_set("DISCSUBTITLE", release->getDiscSubtitle());
 		}
-		p_info.meta_set("MUSICBRAINZ_ALBUMID", release->getId());
-		p_info.meta_set("MUSICBRAINZ_TRACKID", release->getTrack(i)->getId());
-		p_info.meta_set("MUSICBRAINZ_DISCID", mbc->getDiscId());
-		if (strcmp(mbc->getDiscId(), "") != NULL)
+		if (cfg_write_ids)
 		{
+			p_info.meta_set("MUSICBRAINZ_ALBUMID", release->getId());
+			p_info.meta_set("MUSICBRAINZ_TRACKID", release->getTrack(i)->getId());
 			p_info.meta_set("MUSICBRAINZ_DISCID", mbc->getDiscId());
+			if (strcmp(mbc->getDiscId(), "") != NULL)
+			{
+				p_info.meta_set("MUSICBRAINZ_DISCID", mbc->getDiscId());
+			}
 		}
 		if (strcmp(release->Types[release->getType()], "") != NULL)
 		{
@@ -60,21 +65,27 @@ bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_f
 			{
 				p_info.meta_set("ARTIST", release->getTrack(i)->getArtist());
 			}
-			if (strcmp(release->getTrack(i)->getArtistId(), "") == 0)
+			if (cfg_write_ids)
 			{
-				p_info.meta_set("MUSICBRAINZ_ARTISTID", release->getArtistId());
-			}
-			else
-			{
-				p_info.meta_set("MUSICBRAINZ_ARTISTID", release->getTrack(i)->getArtistId());
+				if (strcmp(release->getTrack(i)->getArtistId(), "") == 0)
+				{
+					p_info.meta_set("MUSICBRAINZ_ARTISTID", release->getArtistId());
+				}
+				else
+				{
+					p_info.meta_set("MUSICBRAINZ_ARTISTID", release->getTrack(i)->getArtistId());
+				}
 			}
 		}
 		else
 		{
 			p_info.meta_set("ARTIST", release->getArtist());
-			p_info.meta_set("MUSICBRAINZ_ARTISTID", release->getArtistId());
 			p_info.meta_remove_field("ALBUM ARTIST");
-			p_info.meta_remove_field("MUSICBRAINZ_ALBUMARTISTID");
+			if (cfg_write_ids)
+			{
+				p_info.meta_set("MUSICBRAINZ_ARTISTID", release->getArtistId());
+				p_info.meta_remove_field("MUSICBRAINZ_ALBUMARTISTID");
+			}
 		}
 		return true;
 	}
