@@ -282,6 +282,14 @@
 			Name="Classes"
 			>
 			<File
+				RelativePath=".\CCustomQueryMBID.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CCustomQueryTags.h"
+				>
+			</File>
+			<File
 				RelativePath=".\CTaggerDialog.h"
 				>
 			</File>

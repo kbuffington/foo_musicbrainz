@@ -10,7 +10,7 @@ private:
 	track_list_view_edit *track_list_view;
 
 public:
-	enum { IDD = IDD_TAGGER_DIALOG };
+	enum { IDD = IDD_TAGGER };
 
 	CTaggerDialog(pfc::string8 url, mbCollection *_mbc) : CDialogImpl<CTaggerDialog>()
 	{

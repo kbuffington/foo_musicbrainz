@@ -18,7 +18,7 @@ bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_f
 		if (tracklist->get_item(i) != p_location) continue;
 
 		p_info.meta_set("ALBUM", release->getTitle());
-		if (strcmp(release->getDate(), "") != NULL)
+		if (strcmp(release->getDate(), "") != 0)
 		{
 			p_info.meta_set("DATE", release->getDate());
 		}
@@ -27,11 +27,11 @@ bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_f
 		p_info.meta_set("TRACKNUMBER", track_number_str);
 		sprintf(track_number_str, "%u", release->getTracksCount());
 		p_info.meta_set("TOTALTRACKS", track_number_str);
-		if (strcmp(release->getDisc(), "") != NULL)
+		if (strcmp(release->getDisc(), "") != 0)
 		{
 			p_info.meta_set("DISCNUMBER", release->getDisc());
 		}
-		if (strcmp(release->getDiscSubtitle(), "") != NULL)
+		if (strcmp(release->getDiscSubtitle(), "") != 0)
 		{
 			p_info.meta_set("DISCSUBTITLE", release->getDiscSubtitle());
 		}
@@ -39,17 +39,16 @@ bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_f
 		{
 			p_info.meta_set("MUSICBRAINZ_ALBUMID", release->getId());
 			p_info.meta_set("MUSICBRAINZ_TRACKID", release->getTrack(i)->getId());
-			p_info.meta_set("MUSICBRAINZ_DISCID", mbc->getDiscId());
-			if (strcmp(mbc->getDiscId(), "") != NULL)
+			if (strcmp(mbc->getDiscId(), "") != 0)
 			{
 				p_info.meta_set("MUSICBRAINZ_DISCID", mbc->getDiscId());
 			}
 		}
-		if (strcmp(release->Types[release->getType()], "") != NULL)
+		if (strcmp(release->Types[release->getType()], "") != 0)
 		{
 			p_info.meta_set("MUSICBRAINZ_ALBUMTYPE", release->Types[release->getType()]);
 		}
-		if (strcmp(release->Statuses[release->getStatus()], "") != NULL)
+		if (strcmp(release->Statuses[release->getStatus()], "") != 0)
 		{
 			p_info.meta_set("MUSICBRAINZ_ALBUMSTATUS", release->Statuses[release->getStatus()]);
 		}

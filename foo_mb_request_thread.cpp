@@ -165,7 +165,9 @@ void foo_mb_request_thread::get_parse_xml(const wchar_t *url, abort_callback & p
 				regex rx("^(.+?)(\\s+\\(feat\\.\\s+.+\\))?$");
 				cmatch res;
 				regex_search(track_title.get_ptr(), res, rx);
-				track_title.set_string(res[1].first, res[1].second - res[1].first);
+				pfc::string8 tmp;
+				tmp.set_string(res[1].first, res[1].second - res[1].first);
+				track_title = tmp;
 			}
 			mbTrack *mbt = mbr->addTrack(track_title.get_ptr(), track->GetAttribute("id").data());
 

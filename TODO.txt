@@ -1,10 +1,9 @@
 ﻿Interface:
 * Speed up "abort" functionality in query thread.
-* Disable icon
 * Sizeable window + resize triangle
 
 Functionality:
 * Check tracks count before writing tags
 * Coloured columns
 * Split bonus disc subtitle
-* Search by custom data
+* Multiple queries
