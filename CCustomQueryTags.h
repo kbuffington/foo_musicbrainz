@@ -48,7 +48,7 @@ public:
 	
 	void OnUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
 	{
-		if (string_utf8_from_window(m_hWnd, IDC_ARTIST).is_empty() && string_utf8_from_window(m_hWnd, IDC_ALBUM).is_empty())
+		if (string_utf8_from_window(m_hWnd, IDC_ARTIST).is_empty() || string_utf8_from_window(m_hWnd, IDC_ALBUM).is_empty())
 		{
 			ok.EnableWindow(false);
 		}

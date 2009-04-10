@@ -1,6 +1,10 @@
 #include "foo_musicbrainz.h"
 
 extern cfg_bool cfg_write_ids;
+extern cfg_bool cfg_albumtype;
+extern cfg_bool cfg_albumstatus;
+extern cfg_string cfg_albumtype_data;
+extern cfg_string cfg_albumstatus_data;
 
 foo_mb_file_info_filter_impl::foo_mb_file_info_filter_impl(HWND _tagger_dialog, mbCollection *_mbc)
 {
@@ -44,18 +48,18 @@ bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_f
 				p_info.meta_set("MUSICBRAINZ_DISCID", mbc->getDiscId());
 			}
 		}
-		if (strcmp(release->Types[release->getType()], "") != 0)
+		if (strcmp(release->Types[release->getType()], "") != 0 && cfg_albumtype)
 		{
-			p_info.meta_set("MUSICBRAINZ_ALBUMTYPE", release->Types[release->getType()]);
+			p_info.meta_set(cfg_albumtype_data, release->Types[release->getType()]);
 		}
-		if (strcmp(release->Statuses[release->getStatus()], "") != 0)
+		if (strcmp(release->Statuses[release->getStatus()], "") != 0 && cfg_albumstatus)
 		{
-			p_info.meta_set("MUSICBRAINZ_ALBUMSTATUS", release->Statuses[release->getStatus()]);
+			p_info.meta_set(cfg_albumstatus_data, release->Statuses[release->getStatus()]);
 		}
 		if (release->va)
 		{
 			p_info.meta_set("ALBUM ARTIST", release->getArtist());
-			p_info.meta_set("MUSICBRAINZ_ALBUMARTISTID", release->getArtistId());
+			if (cfg_write_ids) p_info.meta_set("MUSICBRAINZ_ALBUMARTISTID", release->getArtistId());
 			if (strcmp(release->getTrack(i)->getArtist(), "") == 0)
 			{
 				p_info.meta_set("ARTIST", release->getArtist());
