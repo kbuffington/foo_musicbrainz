@@ -39,7 +39,6 @@ public:
 
 	void OnFinalMessage(HWND hwnd)
 	{
-		m_hWnd = NULL;
 		delete this;
 	}
 
@@ -97,7 +96,7 @@ public:
 	}
 };
 
-class foo_mb_preferences_page: public preferences_page_v2
+class foo_mb_preferences_page : public preferences_page_v2
 {
 public:
     HWND create(HWND parent)
@@ -137,14 +136,12 @@ public:
 		cfg_albumstatus = true;
 		cfg_albumtype_data = "MUSICBRAINZ_ALBUMTYPE";
 		cfg_albumstatus_data = "MUSICBRAINZ_ALBUMSTATUS";
-
     }
 
 	double get_sort_priority()
 	{
 		return 0;
 	}
-
 };
 
 static preferences_page_factory_t<foo_mb_preferences_page> g_foo_mb_preferences_page_factory;

@@ -6,9 +6,8 @@ extern cfg_bool cfg_albumstatus;
 extern cfg_string cfg_albumtype_data;
 extern cfg_string cfg_albumstatus_data;
 
-foo_mb_file_info_filter_impl::foo_mb_file_info_filter_impl(HWND _tagger_dialog, mbCollection *_mbc)
+foo_mb_file_info_filter_impl::foo_mb_file_info_filter_impl(ReleaseList *_mbc)
 {
-	tagger_dialog = _tagger_dialog;
 	mbc = _mbc;
 	release = mbc->getRelease();
 	tracklist = mbc->getData();
@@ -97,5 +96,5 @@ bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_f
 
 foo_mb_file_info_filter_impl::~foo_mb_file_info_filter_impl()
 {
-	DestroyWindow(tagger_dialog);
+	delete mbc;
 }

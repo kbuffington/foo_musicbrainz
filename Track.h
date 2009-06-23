@@ -1,9 +1,9 @@
 #pragma once
 
-class mbTrack
+class Track
 {
 public:
-	mbTrack(const char *_title, const char *_id);
+	Track(const char *_title, const char *_id);
 	const char *getArtist();
 	const char *getArtistId();
 	const char *getId();

@@ -1,7 +1,7 @@
 class CCustomQueryTags : public CDialogImpl<CCustomQueryTags>
 {
 private:
-	mbCollection *mbc;
+	ReleaseList *mbc;
 	unsigned int count;
 	CButton ok;
 	pfc::string8 artist;
@@ -10,7 +10,7 @@ private:
 public:
 	enum { IDD = IDD_CUSTOM_QUERY_TAGS };
 
-	CCustomQueryTags(mbCollection *_mbc, unsigned int _count, pfc::string8 &_artist, pfc::string8 &_album)
+	CCustomQueryTags(ReleaseList *_mbc, unsigned int _count, pfc::string8 &_artist, pfc::string8 &_album)
 		: CDialogImpl<CCustomQueryTags>(), mbc(_mbc), count(_count), artist(_artist), album(_album)
 	{
 		Create(core_api::get_main_window());
@@ -70,15 +70,11 @@ public:
 		pfc::string8 album = string_utf8_from_window(m_hWnd, IDC_ALBUM);
 		if (!artist.is_empty() && !album.is_empty())
 		{
-			pfc::string8 url = "ws/1/release/?type=xml&artist=";
-			char tracks_count[10];
-			url += URLEncode(artist);
-			url += "&title=";
-			url += URLEncode(album);
-			url += "&count=";
-			sprintf(tracks_count, "%d", count);
-			url += URLEncode(tracks_count);
-			new CTaggerDialog(url, mbc);
+			RequestURL url;
+			url.AddParam("artist", artist);
+			url.AddParam("title", album);
+			url.AddParam("count", count);
+			new CTaggerDialog(url.GetURL(), mbc);
 			DestroyWindow();
 		}
 	}

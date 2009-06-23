@@ -5,7 +5,7 @@ using namespace std::tr1;
 class CCustomQueryMBID : public CDialogImpl<CCustomQueryMBID>
 {
 private:
-	mbCollection *mbc;
+	ReleaseList *mbc;
 	unsigned int count;
 	CButton ok;
 	pfc::string8 mbid;
@@ -13,7 +13,7 @@ private:
 public:
 	enum { IDD = IDD_CUSTOM_QUERY_MBID };
 
-	CCustomQueryMBID(mbCollection *_mbc, unsigned int _count, pfc::string8 &_mbid) : CDialogImpl<CCustomQueryMBID>(), mbc(_mbc), count(_count), mbid(_mbid)
+	CCustomQueryMBID(ReleaseList *_mbc, unsigned int _count, pfc::string8 &_mbid) : CDialogImpl<CCustomQueryMBID>(), mbc(_mbc), count(_count), mbid(_mbid)
 	{
 		Create(core_api::get_main_window());
 	}
@@ -43,7 +43,6 @@ public:
 	void OnFinalMessage(HWND hwnd)
 	{
 		static_api_ptr_t<modeless_dialog_manager>()->remove(m_hWnd);
-		m_hWnd = NULL;
 		delete this;
 	}
 	
@@ -65,10 +64,9 @@ public:
 
 	void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl)
 	{
-		pfc::string8 url = "ws/1/release/";
-		url += URLEncode(string_utf8_from_window(m_hWnd, IDC_MBID));
-		url += "?type=xml&inc=artist+release-events+tracks";
-		new CTaggerDialog(url, mbc);
+		RequestURL url(string_utf8_from_window(m_hWnd, IDC_MBID));
+		url.AddParam("inc", "artist+release-events+tracks", false);
+		new CTaggerDialog(url.GetURL(), mbc);
 		DestroyWindow();
 	}
 };

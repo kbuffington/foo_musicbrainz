@@ -58,7 +58,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(SolutionDir)..\..\SDKs\foobar2000\foobar2000\shared\shared.lib Winhttp.lib"
+				AdditionalDependencies="$(SolutionDir)..\foobar2000\shared\shared.lib Winhttp.lib"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -90,7 +90,6 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="2"
-			UseOfATL="0"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -131,7 +130,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(SolutionDir)..\..\SDKs\foobar2000\foobar2000\shared\shared.lib Winhttp.lib"
+				AdditionalDependencies="$(SolutionDir)..\foobar2000\shared\shared.lib Winhttp.lib"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -157,7 +156,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy &quot;$(TargetPath)&quot; &quot;H:\foobar2000 test\components\&quot;&#x0D;&#x0A;"
+				CommandLine="copy &quot;$(TargetPath)&quot; &quot;H:\foobar2000 test\components\&quot;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -169,10 +168,6 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<File
-				RelativePath=".\discid.cpp"
-				>
-			</File>
 			<File
 				RelativePath=".\foo_mb_file_info_filter_impl.cpp"
 				>
@@ -190,18 +185,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\mbCollection.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\mbRelease.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\mbTrack.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\menu.cpp"
 				>
 			</File>
@@ -210,11 +193,27 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\SDKs\SHA-1\sha1.cpp"
+				RelativePath=".\Release.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\URLEncode.cpp"
+				RelativePath=".\ReleaseList.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RequestURL.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\SHA-1\sha1.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\TOC.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Track.cpp"
 				>
 			</File>
 		</Filter>
@@ -223,10 +222,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath=".\discid.h"
-				>
-			</File>
 			<File
 				RelativePath=".\foo_mb_file_info_filter_impl.h"
 				>
@@ -244,15 +239,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\mbCollection.h"
+				RelativePath=".\Release.h"
 				>
 			</File>
 			<File
-				RelativePath=".\mbRelease.h"
+				RelativePath=".\ReleaseList.h"
 				>
 			</File>
 			<File
-				RelativePath=".\mbTrack.h"
+				RelativePath=".\RequestURL.h"
 				>
 			</File>
 			<File
@@ -264,7 +259,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\URLEncode.h"
+				RelativePath=".\TOC.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Track.h"
 				>
 			</File>
 		</Filter>

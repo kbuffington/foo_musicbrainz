@@ -2,7 +2,7 @@
 
 class track_list_view_edit : public InPlaceEdit::CTableEditHelperV2_ListView {
 public:
-	track_list_view_edit(HWND _window, mbCollection *_mbc);
+	void Attach(HWND _window, ReleaseList *_mbc);
 	void Start(t_size item, t_size subItem);
 	void Abort();
 	bool IsActive();
@@ -13,6 +13,6 @@ protected:
 	void TableEdit_SetField(t_size item, t_size subItem, const char * value);
 
 private:
-	mbCollection *mbc;
+	ReleaseList *mbc;
 	HWND window;
 };

@@ -1,6 +1,6 @@
 #include "foo_musicbrainz.h"
 
-track_list_view_edit::track_list_view_edit(HWND _window, mbCollection *_mbc)
+void track_list_view_edit::Attach(HWND _window, ReleaseList *_mbc)
 {
 	window = _window;
 	mbc = _mbc;

@@ -1,18 +1,23 @@
 class CTaggerDialog : public CDialogImpl<CTaggerDialog>
 {
 private:
-	HWND release_list;
-	HWND track_list;
-	HWND type;
-	HWND status;
-	HWND url;
-	mbCollection *mbc;
-	track_list_view_edit *track_list_view;
+	CListViewCtrl release_list;
+	CListViewCtrl track_list;
+	CComboBox type;
+	CComboBox status;
+	CEdit artist;
+	CEdit album;
+	CEdit date;
+	CEdit disc;
+	CEdit discsubtitle;
+	CEdit url;
+	ReleaseList *mbc;
+	track_list_view_edit track_list_view;
 
 public:
 	enum { IDD = IDD_TAGGER };
 
-	CTaggerDialog(pfc::string8 url, mbCollection *_mbc) : CDialogImpl<CTaggerDialog>()
+	CTaggerDialog(pfc::string8 url, ReleaseList *_mbc) : CDialogImpl<CTaggerDialog>()
 	{
 		mbc = _mbc;
 		Create(core_api::get_main_window());
@@ -48,14 +53,16 @@ public:
 		type = GetDlgItem(IDC_TYPE);
 		status = GetDlgItem(IDC_STATUS);
 		url = GetDlgItem(IDC_URL);
-		
-		LVCOLUMN column_item;
-
-		track_list_view = new track_list_view_edit(track_list, mbc);
+		artist = GetDlgItem(IDC_ARTIST);
+		album = GetDlgItem(IDC_ALBUM);
+		date = GetDlgItem(IDC_DATE);
+		disc = GetDlgItem(IDC_DISC);
+		discsubtitle = GetDlgItem(IDC_DISCSUBTITLE);
+		track_list_view.Attach(track_list, mbc);
 		
 		// List view styles
-		ListView_SetExtendedListViewStyleEx(release_list, LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP, LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP);
-		ListView_SetExtendedListViewStyleEx(track_list, LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP, LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP);
+		release_list.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP, LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP);
+		track_list.SetExtendedListViewStyle(LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP, LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP);
 
 		// Adding release list columns
 		listview_helper::insert_column(release_list, 0, "Artist", 115);
@@ -65,29 +72,19 @@ public:
 		// Adding track list columns
 		// Fake column
 		listview_helper::insert_column(track_list, 0, "", 0);
-
-		column_item.mask = 0;
-		ListView_InsertColumn(track_list, 0, &column_item);
-
-		column_item.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT;
-		column_item.fmt = LVCFMT_RIGHT;
-		column_item.cx = 30;
-		column_item.pszText = L"#";
-		ListView_InsertColumn(track_list, 1, &column_item);
-
+		track_list.InsertColumn(1, L"#", LVCFMT_RIGHT, 30);
+		track_list.DeleteColumn(0);
 		listview_helper::insert_column(track_list, 2, "Title", 260);
-
-		ListView_DeleteColumn(track_list, 0);
 
 		for (int i = 0; i < MB_RELEASE_TYPES; i++)
 		{
-			pfc::stringcvt::string_os_from_utf8 str(mbRelease::Types[i]);
-			SendMessage(type, CB_ADDSTRING, 0, (LPARAM)str.get_ptr());
+			pfc::stringcvt::string_os_from_utf8 str(Release::Types[i]);
+			type.AddString(str);
 		}
 		for (int i = 0; i < MB_RELEASE_STATUSES; i++)
 		{
-			pfc::stringcvt::string_os_from_utf8 str(mbRelease::Statuses[i]);
-			SendMessage(status, CB_ADDSTRING, 0, (LPARAM)str.get_ptr());
+			pfc::stringcvt::string_os_from_utf8 str(Release::Statuses[i]);
+			status.AddString(str);
 		}
 		return true;
 	}
@@ -101,7 +98,7 @@ public:
 			listview_helper::set_item_text(release_list, i, 2, mbc->getRelease(i)->getDate());
 		}
 
-		mbRelease *release = mbc->getRelease();
+		Release *release = mbc->getRelease();
 		char track_number_str[10];
 
 		for (unsigned int i = 0; i < release->getTracksCount(); i++)
@@ -115,27 +112,26 @@ public:
 
 	LRESULT OnUpdateRelease(UINT Message, WPARAM wParam, LPARAM lParam, BOOL bHandled)
 	{
-		mbRelease *release = mbc->getRelease();
+		Release *release = mbc->getRelease();
 
-		uSetDlgItemText(m_hWnd, IDC_ARTIST, release->getArtist());
-		uSetDlgItemText(m_hWnd, IDC_ALBUM, release->getTitle());
-		uSetDlgItemText(m_hWnd, IDC_DATE, release->getDate());
-		uSetDlgItemText(m_hWnd, IDC_DISC, release->getDisc());
-		uSetDlgItemText(m_hWnd, IDC_DISCSUBTITLE, release->getDiscSubtitle());
+		uSetWindowText(artist, release->getArtist());
+		uSetWindowText(album, release->getTitle());
+		uSetWindowText(date, release->getDate());
+		uSetWindowText(disc, release->getDisc());
+		uSetWindowText(discsubtitle, release->getDiscSubtitle());
 
-		SendMessage(GetDlgItem(IDC_TYPE), CB_SETCURSEL, (WPARAM)mbc->getRelease()->getType(), 0);
-		SendMessage(GetDlgItem(IDC_STATUS), CB_SETCURSEL, (WPARAM)mbc->getRelease()->getStatus(), 0);
+		type.SetCurSel(mbc->getRelease()->getType());
+		status.SetCurSel(mbc->getRelease()->getStatus());
 
 		// VA?
-		
-		if (ListView_GetColumnWidth(track_list, 2) && !release->va)
+		if (track_list.GetColumnWidth(2) && !release->va)
 		{
-			ListView_SetColumnWidth(track_list, 1, 260);
-			ListView_DeleteColumn(track_list, 2);
+			track_list.SetColumnWidth(1, 260);
+			track_list.DeleteColumn(2);
 		}
-		else if (!ListView_GetColumnWidth(track_list, 2) && release->va)
+		else if (!track_list.GetColumnWidth(2) && release->va)
 		{
-			ListView_SetColumnWidth(track_list, 1, 195);
+			track_list.SetColumnWidth(1, 195);
 			listview_helper::insert_column(track_list, 2, "Track artist", 130);
 		}
 
@@ -147,11 +143,10 @@ public:
 		}
 
 		// Link
-		pfc::string8 url;
-		url = "<a href=\"http://musicbrainz.org/release/";
-		url += release->getId();
-		url += ".html\">MusicBrainz release page</a>";
-		uSetDlgItemText(m_hWnd, IDC_URL, url);
+		pfc::string8 url_string = "<a href=\"http://musicbrainz.org/release/";
+		url_string += release->getId();
+		url_string += ".html\">MusicBrainz release page</a>";
+		uSetWindowText(url, url_string);
 		return 0;
 	}
 
@@ -159,7 +154,7 @@ public:
 	{
 		if (((LPNMITEMACTIVATE)pnmh)->iItem != -1 && ((LPNMITEMACTIVATE)pnmh)->iSubItem != 0)
 		{
-			track_list_view->Start(((LPNMITEMACTIVATE)pnmh)->iItem, ((LPNMITEMACTIVATE)pnmh)->iSubItem);
+			track_list_view.Start(((LPNMITEMACTIVATE)pnmh)->iItem, ((LPNMITEMACTIVATE)pnmh)->iSubItem);
 		}
 		return 0;
 	}
@@ -170,7 +165,7 @@ public:
 		{
 			if (mbc->getCurrentRelease() != ((LPNMITEMACTIVATE)pnmh)->iItem)
 			{
-				if (track_list_view->IsActive()) track_list_view->Abort();
+				if (track_list_view.IsActive()) track_list_view.Abort();
 				mbc->setCurrentRelease(((LPNMITEMACTIVATE)pnmh)->iItem);
 				SendMessage(WM_FOO_MB_UPDATE_RELEASE, 0, 0);
 			}
@@ -192,9 +187,7 @@ public:
 	void OnFinalMessage(HWND hwnd)
 	{
 		static_api_ptr_t<modeless_dialog_manager>()->remove(m_hWnd);
-		delete track_list_view;
-		delete mbc;
-		m_hWnd = NULL;
+		if (mbc) delete mbc;
 		delete this;
 	}
 
@@ -205,24 +198,25 @@ public:
 
 	void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl)
 	{
-		ShowWindow(SW_HIDE);
-		static_api_ptr_t<metadb_io_v2>()->update_info_async(*mbc->getData(),new service_impl_t<foo_mb_file_info_filter_impl>(m_hWnd, mbc),core_api::get_main_window(), metadb_io_v2::op_flag_delay_ui, NULL);
+		static_api_ptr_t<metadb_io_v2>()->update_info_async(*mbc->getData(),new service_impl_t<foo_mb_file_info_filter_impl>(mbc),core_api::get_main_window(), metadb_io_v2::op_flag_delay_ui, NULL);
+		mbc = NULL;
+		DestroyWindow();
 	}
 
 	void OnTypeChange(UINT uNotifyCode, int nID, CWindow wndCtl)
 	{
-		mbc->getRelease()->setType(SendMessage(wndCtl, CB_GETCURSEL, 0,0));
+		mbc->getRelease()->setType(type.GetCurSel());
 	}
 
 	void OnStatusChange(UINT uNotifyCode, int nID, CWindow wndCtl)
 	{
-		mbc->getRelease()->setStatus(SendMessage(wndCtl, CB_GETCURSEL, 0,0));
+		mbc->getRelease()->setStatus(status.GetCurSel());
 	}
 
 	void OnArtistUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
 	{
 		pfc::string8 str;
-		uGetDlgItemText(m_hWnd, nID, str);
+		uGetWindowText(artist, str);
 		mbc->getRelease()->setArtist(str);
 		listview_helper::set_item_text(release_list, mbc->getCurrentRelease(), 0, str);
 	}
@@ -230,7 +224,7 @@ public:
 	void OnAlbumUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
 	{
 		pfc::string8 str;
-		uGetDlgItemText(m_hWnd, nID, str);
+		uGetWindowText(album, str);
 		mbc->getRelease()->setTitle(str);
 		listview_helper::set_item_text(release_list, mbc->getCurrentRelease(), 1, str);
 	}
@@ -238,7 +232,7 @@ public:
 	void OnDateUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
 	{
 		pfc::string8 str;
-		uGetDlgItemText(m_hWnd, nID, str);
+		uGetWindowText(date, str);
 		mbc->getRelease()->setDate(str);
 		listview_helper::set_item_text(release_list, mbc->getCurrentRelease(), 2, str);
 	}

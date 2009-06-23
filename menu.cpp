@@ -5,20 +5,23 @@
 
 using namespace std::tr1;
 
+extern cfg_bool cfg_write_ids;
+
 class foo_mb_menu : public contextmenu_item_simple
 {
 public:
 	unsigned get_num_items()
 	{
-		return 3;
+		return 4;
 	}
 
 	void get_item_name(unsigned p_index,pfc::string_base & p_out)
 	{
 		static const char *item_name[] = {
 			"Get Tags From MusicBrainz (by TOC)",
-			"Get Tags From MusicBrainz (by Artist/Album)",
-			"Get Tags From MusicBrainz (by MBID)",
+			"Get Tags From MusicBrainz (by Artist & Album)",
+			"Get Tags From MusicBrainz (by MusicBrainz Album ID)",
+			"Get Tags From MusicBrainz",
 		};
 		p_out = item_name[p_index];
 	}
@@ -41,10 +44,8 @@ public:
 		{
 		case 0:
 			{
-				unsigned int *tracks_lengths = new unsigned int [count];
+				TOC toc(count);
 				__int64 samples;
-				char tracks_count[10];
-				int pregap = 0;
 
 				for (t_size i = 0; i < count; i++)
 				{
@@ -52,42 +53,31 @@ public:
 					if (!p_data.get_item(i)->get_info_locked(info))
 					{
 						p_data.get_item(i)->metadb_unlock();
-						delete [] tracks_lengths;
 						return;
 					}
 					samples = info->info_get_length_samples();
-					if (i == 0) {
-						pfc::string8 pregap_text = info->info_get("pregap");
-						regex rx("^\\d\\d:\\d\\d:\\d\\d$");
-						if (regex_match(pregap_text.get_ptr(), rx))
-						{
-							pregap = (((pregap_text[0]-'0')*10+(pregap_text[1]-'0'))*60 + (pregap_text[3]-'0')*10+(pregap_text[4]-'0'))*75 + (pregap_text[6]-'0')*10+(pregap_text[7]-'0');
-						}
+					if (i == 0)
+					{
+						toc.setPregap(info->info_get("pregap"));
 					}
 					p_data.get_item(i)->metadb_unlock();
 					if (samples % 588 != 0)
 					{
 						popup_message::g_show("Track length in samples must be divisible by 588.", COMPONENT_TITLE, popup_message::icon_error);
-						delete [] tracks_lengths;
 						return;
-					} 
-					tracks_lengths[i] = (unsigned int)samples / 588;
+					}
+					toc.addTrack((unsigned int)samples / 588);
 
 				}
-				char *discid = get_discid(count, tracks_lengths, 150 + pregap);
-				delete [] tracks_lengths;
 				
-				pfc::string8 url = "ws/1/release/?type=xml&discid=";
-				url += discid;
-				url += "&count=";
-				sprintf(tracks_count, "%d", count);
-				url += URLEncode(tracks_count);
+				RequestURL url;
+				url.AddParam("discid", toc.getDiscID());
+				url.AddParam("count", count);
 
-				mbCollection *mbc = new mbCollection(p_data);
-				mbc->setDiscId(discid);
-				delete [] discid;
+				ReleaseList *mbc = new ReleaseList(p_data);
+				mbc->setDiscId(toc.getDiscID());
 
-				new CTaggerDialog(url, mbc);
+				new CTaggerDialog(url.GetURL(), mbc);
 				break;
 			}
 		case 1:
@@ -102,7 +92,6 @@ public:
 						p_data.get_item(i)->metadb_unlock();
 						return;
 					}
-
 
 					partist = info->meta_get("ALBUM ARTIST", 0);
 					if (partist == NULL) partist = info->meta_get("ARTIST", 0);
@@ -128,11 +117,12 @@ public:
 					}
 					p_data.get_item(i)->metadb_unlock();
 				}
-				new CCustomQueryTags(new mbCollection(p_data), count, artist, album);
+				new CCustomQueryTags(new ReleaseList(p_data), count, artist, album);
 				break;
 			}
 		case 2:
 			{
+				if (!cfg_write_ids.get_value()) return;
 				pfc::string8 mbid;
 				const char *pmbid;
 				for (t_size i = 0; i < count; i++)
@@ -164,7 +154,7 @@ public:
 					}
 					p_data.get_item(i)->metadb_unlock();
 				}
-				new CCustomQueryMBID(new mbCollection(p_data), count, mbid);
+				new CCustomQueryMBID(new ReleaseList(p_data), count, mbid);
 				break;
 			}
 		}
@@ -211,6 +201,10 @@ public:
 					}
 					p_data.get_item(i)->metadb_unlock();
 				}
+			}
+			if (p_index == 2 && !cfg_write_ids.get_value())
+			{
+				return false;
 			}
 			get_item_name(p_index,p_out);
 			return true;

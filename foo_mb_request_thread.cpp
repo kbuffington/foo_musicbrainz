@@ -10,7 +10,7 @@ PFC_DECLARE_EXCEPTION(exception_foo_mb_connection_error, pfc::exception, "Error 
 PFC_DECLARE_EXCEPTION(exception_foo_mb_xml_parsing, pfc::exception, "Error parsing XML.")
 PFC_DECLARE_EXCEPTION(exception_foo_mb_no_releases, pfc::exception, "No releases.")
 
-foo_mb_request_thread::foo_mb_request_thread(const char *_url, HWND window, mbCollection *_mbc)
+foo_mb_request_thread::foo_mb_request_thread(const char *_url, HWND window, ReleaseList *_mbc)
 	: tagger_dialog(window), mbc(_mbc)
 {
 	int url_len = MultiByteToWideChar(CP_UTF8, 0, _url, -1, NULL, 0);
@@ -53,7 +53,7 @@ void foo_mb_request_thread::get_parse_xml(const wchar_t *url, abort_callback & p
 	if (hSession != NULL) WinHttpCloseHandle(hSession);
 
 	ticpp::Document xml;
-	mbRelease *mbr;
+	Release *mbr;
 	ticpp::Element *releases;
 
 	// Parsing XML
@@ -117,22 +117,8 @@ void foo_mb_request_thread::get_parse_xml(const wchar_t *url, abort_callback & p
 						status = type.get_ptr()+space+1;
 						type.truncate(space);
 					}
-					for (unsigned int i = 0; i < MB_RELEASE_TYPES; i++)
-					{
-						if (_stricmp(type, mbr->Types[i]) == 0)
-						{
-							mbr->setType(i);
-							break;
-						}
-					}
-					for (unsigned int i = 0; i < MB_RELEASE_STATUSES; i++)
-					{
-						if (_stricmp(status, mbr->Statuses[i]) == 0)
-						{
-							mbr->setStatus(i);
-							break;
-						}
-					}
+					mbr->setType(type);
+					mbr->setStatus(status);
 				}
 			} catch (ticpp::Exception) {}
 			try {
@@ -169,11 +155,12 @@ void foo_mb_request_thread::get_parse_xml(const wchar_t *url, abort_callback & p
 				tmp.set_string(res[1].first, res[1].second - res[1].first);
 				track_title = tmp;
 			}
-			mbTrack *mbt = mbr->addTrack(track_title.get_ptr(), track->GetAttribute("id").data());
+			Track *mbt = mbr->addTrack(track_title.get_ptr(), track->GetAttribute("id").data());
 
 			if (track->FirstChildElement("artist", false))
 			{
 				mbt->setArtist(track->FirstChildElement("artist")->FirstChildElement("name")->FirstChild()->Value().data());
+				mbt->setArtistId(track->FirstChildElement("artist")->GetAttribute("id").data());
 				mbr->va = true;
 			}
 		}
@@ -193,7 +180,7 @@ void foo_mb_request_thread::run(threaded_process_status & p_status,abort_callbac
 		p_status.set_progress(p_status.progress_max / (mbc->getReleasesCount() + 1));
 		for (unsigned int i = 0; i < mbc->getReleasesCount(); i++)
 		{
-			mbRelease *release = mbc->getRelease(i);
+			Release *release = mbc->getRelease(i);
 			if (release->getTracksCount() == 0)
 			{
 				pfc::string8 str;

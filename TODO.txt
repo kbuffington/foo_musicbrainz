@@ -1,6 +1,7 @@
 ﻿Interface:
 * Speed up "abort" functionality in query thread.
 * Sizeable window + resize triangle
+* get by tags: add discnumber to album
 
 Functionality:
 * Check tracks count before writing tags

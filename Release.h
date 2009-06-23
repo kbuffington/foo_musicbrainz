@@ -3,11 +3,11 @@
 #define MB_RELEASE_TYPES 12
 #define MB_RELEASE_STATUSES 5
 
-class mbRelease
+class Release
 {
 public:
-	mbRelease(const char *_title, const char *_id, const char *_artist, const char *_artist_id);
-	mbTrack *addTrack(const char *_title, const char *_id);
+	Release(const char *_title, const char *_id, const char *_artist, const char *_artist_id);
+	Track *addTrack(const char *_title, const char *_id);
 	const char *getArtist();
 	const char *getArtistId();
 	const char *getDate();
@@ -17,23 +17,25 @@ public:
 	unsigned int getStatus();
 	const char *getTitle();
 	unsigned int getType();
-	mbTrack *getTrack(unsigned int number);
+	Track *getTrack(unsigned int number);
 	unsigned int getTracksCount();
 	void setArtist(const char *_artist);
 	void setDate(const char *_date);
 	void setDisc(const char *_disc);
 	void setDiscSubtitle(const char *_discsubtitle);
 	void setStatus(unsigned int _status);
+	void setStatus(const char *_status);
 	void setTitle(const char *_title);
 	void setType(unsigned int _type);
+	void setType(const char *_type);
 	bool va;
-	~mbRelease();
+	~Release();
 
-	static const char *mbRelease::Statuses[];
-	static const char *mbRelease::Types[];
+	static const char *Release::Statuses[];
+	static const char *Release::Types[];
 
 private:
-	pfc::list_t <mbTrack *> tracks;
+	pfc::list_t <Track *> tracks;
 	pfc::string8 artist;
 	pfc::string8 artist_id;
 	pfc::string8 date;
