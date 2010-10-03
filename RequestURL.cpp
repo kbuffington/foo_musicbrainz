@@ -32,6 +32,12 @@ const char *RequestURL::GetURL()
 	return url;
 }
 
+RequestURL::operator const wchar_t *()
+{
+	pfc::stringcvt::string_os_from_utf8 tmp(url);
+	return tmp;
+}
+
 inline char RequestURL::ToHex(char c)
 {
 	return c < 0xa ? '0' + c : 'a' - 0xa + c;

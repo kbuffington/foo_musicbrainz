@@ -183,12 +183,9 @@ void foo_mb_request_thread::run(threaded_process_status & p_status,abort_callbac
 			Release *release = mbc->getRelease(i);
 			if (release->getTracksCount() == 0)
 			{
-				pfc::string8 str;
-				str = "/ws/1/release/";
-				str += release->getId();
-				str += "?type=xml&inc=artist+tracks";
-				pfc::stringcvt::string_os_from_utf8 tmp(str);
-				get_parse_xml(tmp.get_ptr(), p_abort, i);
+				RequestURL request_url(release->getId());
+				request_url.AddParam("inc", "artist+tracks", false);
+				get_parse_xml(request_url, p_abort, i);
 				p_status.set_progress(p_status.progress_max / (mbc->getReleasesCount() + 1) * (1 + i));
 			}
 		}

@@ -8,6 +8,7 @@ public:
 	void AddParam(const char *param, const char *value, bool encode = true);
 	void AddParam(const char *param, int value, bool encode = true);
 	const char *GetURL();
+	operator const wchar_t *();
 
 private:
 	pfc::string8 url;
