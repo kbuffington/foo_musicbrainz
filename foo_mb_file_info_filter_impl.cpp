@@ -47,13 +47,13 @@ bool foo_mb_file_info_filter_impl::apply_filter(metadb_handle_ptr p_location,t_f
 				p_info.meta_set("MUSICBRAINZ_DISCID", mbc->getDiscId());
 			}
 		}
-		if (strcmp(release->Types[release->getType()], "") != 0 && cfg_albumtype)
+		if (strcmp(release->getTypeText(), "") != 0 && cfg_albumtype)
 		{
-			p_info.meta_set(cfg_albumtype_data, release->Types[release->getType()]);
+			p_info.meta_set(cfg_albumtype_data, release->getTypeText());
 		}
-		if (strcmp(release->Statuses[release->getStatus()], "") != 0 && cfg_albumstatus)
+		if (strcmp(release->getStatusText(), "") != 0 && cfg_albumstatus)
 		{
-			p_info.meta_set(cfg_albumstatus_data, release->Statuses[release->getStatus()]);
+			p_info.meta_set(cfg_albumstatus_data, release->getStatusText());
 		}
 		if (release->va)
 		{

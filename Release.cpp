@@ -81,6 +81,11 @@ unsigned int Release::getStatus()
 	return status;
 }
 
+const char *Release::getStatusText()
+{
+	return Statuses[status];
+}
+
 Track *Release::getTrack(unsigned int number)
 {
 	if (number >= tracks.get_count()) throw exception_foo_mb_track_number_error();
@@ -95,6 +100,11 @@ unsigned int Release::getTracksCount()
 unsigned int Release::getType()
 {
 	return type;
+}
+
+const char *Release::getTypeText()
+{
+	return Types[type];
 }
 
 void Release::setArtist(const char *_artist)

@@ -15,8 +15,10 @@ public:
 	const char *getDiscSubtitle();
 	const char *getId();
 	unsigned int getStatus();
+	const char *getStatusText();
 	const char *getTitle();
 	unsigned int getType();
+	const char *getTypeText();
 	Track *getTrack(unsigned int number);
 	unsigned int getTracksCount();
 	void setArtist(const char *_artist);
