@@ -6,7 +6,6 @@
 using namespace std::tr1;
 
 extern cfg_bool cfg_write_ids;
-
 class foo_mb_menu : public contextmenu_item_simple
 {
 public:
@@ -34,42 +33,16 @@ public:
 	void context_command(unsigned p_index,metadb_handle_list_cref p_data,const GUID& p_caller)
 	{
 		unsigned int count = p_data.get_count();
-		if (count > 99)
+		if (p_index <= 2 && count > 99)
 		{
 			popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
 			return;
 		}
-		const file_info *info;
 		switch (p_index)
 		{
 		case 0:
 			{
-				TOC toc(count);
-				__int64 samples;
-
-				for (t_size i = 0; i < count; i++)
-				{
-					p_data.get_item(i)->metadb_lock();
-					if (!p_data.get_item(i)->get_info_locked(info))
-					{
-						p_data.get_item(i)->metadb_unlock();
-						return;
-					}
-					samples = info->info_get_length_samples();
-					if (i == 0)
-					{
-						toc.setPregap(info->info_get("pregap"));
-					}
-					p_data.get_item(i)->metadb_unlock();
-					if (samples % 588 != 0)
-					{
-						popup_message::g_show("Track length in samples must be divisible by 588.", COMPONENT_TITLE, popup_message::icon_error);
-						return;
-					}
-					toc.addTrack((unsigned int)samples / 588);
-
-				}
-				
+				TOC toc(p_data);
 				RequestURL url;
 				url.AddParam("discid", toc.getDiscID());
 				url.AddParam("count", count);
@@ -82,6 +55,7 @@ public:
 			}
 		case 1:
 			{
+				const file_info *info;
 				pfc::string8 artist, album;
 				const char *partist, *palbum;
 				for (t_size i = 0; i < count; i++)
@@ -108,7 +82,7 @@ public:
 							break;
 						}
 					}
-					else if (partist == NULL || palbum == NULL || strcmp(artist, partist) != 0 || strcmp(album, palbum) != 0) 
+					else if (partist == NULL || palbum == NULL || strcmp(artist, partist) != 0 || strcmp(album, palbum) != 0)
 					{
 						artist.reset();
 						album.reset();
@@ -122,6 +96,7 @@ public:
 			}
 		case 2:
 			{
+				const file_info *info;
 				if (!cfg_write_ids.get_value()) return;
 				pfc::string8 mbid;
 				const char *pmbid;
@@ -146,7 +121,7 @@ public:
 							break;
 						}
 					}
-					else if (pmbid == NULL || strcmp(mbid, pmbid) != 0) 
+					else if (pmbid == NULL || strcmp(mbid, pmbid) != 0)
 					{
 						mbid.reset();
 						p_data.get_item(i)->metadb_unlock();

@@ -4,13 +4,41 @@
 
 using namespace std::tr1;
 
-TOC::TOC(int _num_tracks)
+TOC::TOC(metadb_handle_list_cref p_data)
 {
-	num_tracks = _num_tracks;
+	num_tracks = p_data.get_count();
 	pregap = 150;
 	discid = NULL;
 	cur_track = 0;
 	tracks_lengths = new unsigned int [num_tracks];
+	__int64 samples;
+	const file_info *info;
+
+	for (t_size i = 0; i < num_tracks; i++)
+	{
+		p_data.get_item(i)->metadb_lock();
+		if (!p_data.get_item(i)->get_info_locked(info))
+		{
+			p_data.get_item(i)->metadb_unlock();
+			return;
+		}
+		samples = info->info_get_length_samples();
+		if (i == 0)
+		{
+			const char *pregap = info->info_get("pregap");
+			if (pregap != NULL)
+			{
+				setPregap(pregap);
+			}
+		}
+		p_data.get_item(i)->metadb_unlock();
+		if (samples % 588 != 0)
+		{
+			popup_message::g_show("Track length in samples must be divisible by 588.", COMPONENT_TITLE, popup_message::icon_error);
+			return;
+		}
+		addTrack((unsigned int)samples / 588);
+	}
 }
 
 void TOC::addTrack(int length)
@@ -60,7 +88,7 @@ char *TOC::getDiscID() {
 
 		sprintf(tmp, "%02X", num_tracks);
 		SHA1Input(&sha, (unsigned char *)tmp, 2);
-		
+
 		for (int i = 0; i < 100; i++)
 		{
 			sprintf(tmp, "%08X", tracks[i]);
@@ -73,6 +101,11 @@ char *TOC::getDiscID() {
 	}
 
 	return discid;
+}
+
+unsigned int TOC::getNumTracks()
+{
+	return num_tracks;
 }
 
 /*
