@@ -11,7 +11,7 @@ class foo_mb_menu : public contextmenu_item_simple
 public:
 	unsigned get_num_items()
 	{
-		return 4;
+		return 3;
 	}
 
 	void get_item_name(unsigned p_index,pfc::string_base & p_out)
@@ -19,8 +19,7 @@ public:
 		static const char *item_name[] = {
 			"Get Tags From MusicBrainz (by TOC)",
 			"Get Tags From MusicBrainz (by Artist & Album)",
-			"Get Tags From MusicBrainz (by MusicBrainz Album ID)",
-			"Get Tags From MusicBrainz",
+			"Get Tags From MusicBrainz (by MusicBrainz Album ID)"
 		};
 		p_out = item_name[p_index];
 	}
@@ -133,7 +132,6 @@ public:
 				break;
 			}
 		}
-
 	}
 
 	GUID get_item_guid(unsigned p_index)
