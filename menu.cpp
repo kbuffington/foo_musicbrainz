@@ -11,7 +11,7 @@ class foo_mb_menu : public contextmenu_item_simple
 public:
 	unsigned get_num_items()
 	{
-		return 3;
+		return 4;
 	}
 
 	void get_item_name(unsigned p_index,pfc::string_base & p_out)
@@ -19,7 +19,8 @@ public:
 		static const char *item_name[] = {
 			"Get Tags From MusicBrainz (by TOC)",
 			"Get Tags From MusicBrainz (by Artist & Album)",
-			"Get Tags From MusicBrainz (by MusicBrainz Album ID)"
+			"Get Tags From MusicBrainz (by MusicBrainz Album ID)",
+			"Add TOC to MusicBrainz"
 		};
 		p_out = item_name[p_index];
 	}
@@ -131,6 +132,16 @@ public:
 				new CCustomQueryMBID(new ReleaseList(p_data), count, mbid);
 				break;
 			}
+		case 3:
+			{
+				TOC toc(p_data);
+
+				pfc::string8 url = "http:\/\/musicbrainz.org\/bare\/cdlookup.html?toc=";
+				url << toc.getTOC();
+				pfc::stringcvt::string_os_from_utf8 url_converter(url);
+				ShellExecute(nullptr, _T("open"), url_converter, nullptr, nullptr, SW_SHOW);
+				break;
+			}
 		}
 	}
 
@@ -139,7 +150,8 @@ public:
 		static const GUID guid_foo_mb_menu[] = {
 			{ 0x3ca8395b, 0x694e, 0x4845, { 0xb5, 0xea, 0x56, 0x30, 0x5e, 0x7c, 0x24, 0x48 } },
 			{ 0x77f1f5cd, 0xf295, 0x4ef4, { 0xba, 0x7b, 0xc7, 0x70, 0xaa, 0xc6, 0xd0, 0x1e } },
-			{ 0xf453e537, 0x01e9, 0x4f2d, { 0x89, 0xdc, 0x42, 0x4d, 0x0e, 0xe5, 0x72, 0xfb } }
+			{ 0xf453e537, 0x01e9, 0x4f2d, { 0x89, 0xdc, 0x42, 0x4d, 0x0e, 0xe5, 0x72, 0xfb } },
+			{ 0x4d5e632c, 0x34f3, 0x4fda, { 0x8f, 0x71, 0x35, 0xa4, 0xb2, 0x5b, 0xea, 0x94 } }
 		};
 		return guid_foo_mb_menu[p_index];
 	}
@@ -150,6 +162,7 @@ public:
 			"Queries MusicBrainz server for tags for a complete CD using TOC.",
 			"Queries MusicBrainz server for tags for a complete CD using Artist/Album.",
 			"Queries MusicBrainz server for tags for a complete CD using MusicBrainz Album ID.",
+			"Opens MusicBrainz TOC lookup page."
 		};
 		p_out = item_description[p_index];
 		return true;
@@ -161,7 +174,7 @@ public:
 		unsigned int count = p_data.get_count();
 		if (count <= 99)
 		{
-			if (p_index == 0)
+			if (p_index == 0 || p_index == 3)
 			{
 				const file_info *info;
 				for (t_size i = 0; i < count; i++)
@@ -179,7 +192,7 @@ public:
 			{
 				return false;
 			}
-			get_item_name(p_index,p_out);
+			get_item_name(p_index, p_out);
 			return true;
 		}
 		else

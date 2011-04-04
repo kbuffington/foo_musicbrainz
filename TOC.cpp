@@ -9,6 +9,7 @@ TOC::TOC(metadb_handle_list_cref p_data)
 	num_tracks = p_data.get_count();
 	pregap = 150;
 	discid = NULL;
+	tracks[0] = INT_MAX;
 	cur_track = 0;
 	tracks_lengths = new unsigned int [num_tracks];
 	__int64 samples;
@@ -63,6 +64,25 @@ void TOC::setPregap(pfc::string8 msf)
 	}
 }
 
+void TOC::calculateTracks()
+{
+	if (tracks[0] != INT_MAX)
+	{
+		return;
+	}
+
+	tracks[1] = pregap;
+	for (unsigned int i = 2; i < num_tracks+1; i++)
+	{
+		tracks[i] = tracks[i-1] + tracks_lengths[i-2];
+	}
+	tracks[0] = tracks[num_tracks] + tracks_lengths[num_tracks-1];
+	for (int i = num_tracks+1; i < 100; i++)
+	{
+		tracks[i] = 0;
+	}
+}
+
 char *TOC::getDiscID() {
 	if (discid == NULL)
 	{
@@ -72,16 +92,7 @@ char *TOC::getDiscID() {
 		unsigned char digest[20];
 		unsigned long discid_length;
 
-		tracks[1] = pregap;
-		for (unsigned int i = 2; i < num_tracks+1; i++)
-		{
-			tracks[i] = tracks[i-1] + tracks_lengths[i-2];
-		}
-		tracks[0] = tracks[num_tracks] + tracks_lengths[num_tracks-1];
-		for (int i = num_tracks+1; i < 100; i++)
-		{
-			tracks[i] = 0;
-		}
+		calculateTracks();
 
 		sprintf(tmp, "%02X", 1);
 		SHA1Input(&sha, (unsigned char *)tmp, 2);
@@ -106,6 +117,25 @@ char *TOC::getDiscID() {
 unsigned int TOC::getNumTracks()
 {
 	return num_tracks;
+}
+
+const char *TOC::getTOC()
+{
+	if (toc.is_empty())
+	{
+		calculateTracks();
+		char tmp[9];
+		toc << "1";
+		sprintf(tmp, " %d", num_tracks);
+		toc << tmp;
+		for (int i = 0; i <= num_tracks; i++)
+		{
+			sprintf(tmp, " %d", tracks[i]);
+			toc << tmp;
+		}
+	}
+
+	return toc.get_ptr();
 }
 
 /*

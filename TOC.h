@@ -6,6 +6,7 @@ public:
 	TOC(metadb_handle_list_cref p_data);
 	char *getDiscID();
 	unsigned int getNumTracks();
+	const char *getTOC();
 	~TOC();
 
 private:
@@ -15,6 +16,8 @@ private:
 	unsigned int cur_track;
 	unsigned int pregap;
 	char *discid;
+	pfc::string8 toc;
+	void calculateTracks();
 	void addTrack(int length);
 	void setPregap(int length);
 	void setPregap(pfc::string8 msf);

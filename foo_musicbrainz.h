@@ -5,7 +5,7 @@
 
 #define COMPONENT_TITLE "MusicBrainz Tagger"
 #define COMPONENT_DLL_NAME "foo_musicbrainz"
-#define COMPONENT_VERSION "0.2a"
+#define COMPONENT_VERSION "0.2.1"
 
 #define WM_FOO_MB_UPDATE_RELEASES_LIST WM_USER + 0x100
 #define WM_FOO_MB_UPDATE_RELEASE       WM_USER + 0x101
