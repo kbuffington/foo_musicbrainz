@@ -1,6 +1,6 @@
 #include <regex>
 #include "foo_musicbrainz.h"
-#include "../SHA-1/sha1.h"
+#include "sha1.h"
 
 using namespace std::tr1;
 

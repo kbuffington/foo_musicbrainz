@@ -45,7 +45,7 @@
     <ClCompile Include="RequestURL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\SHA-1\sha1.cpp">
+    <ClCompile Include="sha1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TOC.cpp">
@@ -80,7 +80,7 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\SDKs\SHA-1\sha1.h">
+    <ClInclude Include="sha1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TOC.h">
