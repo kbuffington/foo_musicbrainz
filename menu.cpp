@@ -96,40 +96,42 @@ public:
 			}
 		case 2:
 			{
-				const file_info *info;
+				// Stop if MBIDs are disabled
 				if (!cfg_write_ids.get_value()) return;
-				pfc::string8 mbid;
-				const char *pmbid;
-				for (t_size i = 0; i < count; i++)
-				{
-					p_data.get_item(i)->metadb_lock();
-					if (!p_data.get_item(i)->get_info_locked(info))
-					{
-						p_data.get_item(i)->metadb_unlock();
+
+				pfc::string8 album_id;
+				for (t_size i = 0; i < count; i++) {
+					auto item = p_data.get_item(i);
+					item->metadb_lock();
+					const file_info *info;
+					if (!item->get_info_locked(info)) {
+						item->metadb_unlock();
 						return;
 					}
+					auto current_album_id = info->meta_get("MUSICBRAINZ_ALBUMID", 0);
 
-					pmbid = info->meta_get("MUSICBRAINZ_ALBUMID", 0);
-					if (i == 0)
-					{
-						mbid = pmbid;
-						regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
-						if (!regex_search(mbid.get_ptr(), rx))
-						{
-							mbid.reset();
-							p_data.get_item(i)->metadb_unlock();
+					// Save album ID of the first item
+					if (i == 0) {
+						if (current_album_id == nullptr) {
+							item->metadb_unlock();
 							break;
 						}
-					}
-					else if (pmbid == NULL || strcmp(mbid, pmbid) != 0)
-					{
-						mbid.reset();
-						p_data.get_item(i)->metadb_unlock();
+						album_id = current_album_id;
+						regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+						if (!regex_search(album_id.get_ptr(), rx)) {
+							album_id.reset();
+							item->metadb_unlock();
+							break;
+						}
+					// Compare album ID of the rest of the items with first item
+					} else if (current_album_id == nullptr || strcmp(album_id, current_album_id) != 0) {
+						album_id.reset();
+						item->metadb_unlock();
 						break;
 					}
-					p_data.get_item(i)->metadb_unlock();
+					item->metadb_unlock();
 				}
-				new CCustomQueryMBID(new ReleaseList(p_data), count, mbid);
+				new CCustomQueryMBID(new ReleaseList(p_data), count, album_id);
 				break;
 			}
 		case 3:
