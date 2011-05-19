@@ -21,127 +21,131 @@ cfg_string cfg_albumtype_data(guid_cfg_albumtype_data, "MUSICBRAINZ_ALBUMTYPE");
 static const GUID guid_cfg_albumstatus_data = { 0x77182aac, 0x1caa, 0x4793, { 0xb7, 0x15, 0xcc, 0xf8, 0x97, 0xba, 0x11, 0x1a } };
 cfg_string cfg_albumstatus_data(guid_cfg_albumstatus_data, "MUSICBRAINZ_ALBUMSTATUS");
 
-class CPreferencesDialog : public CDialogImpl<CPreferencesDialog>
-{
+class PreferencesPageInstance : public CDialogImpl<PreferencesPageInstance>, public preferences_page_instance {
+private:
+	CButton short_date_checkbox;
+	CButton no_feat_checkbox;
+	CButton write_ids_checkbox;
+	CButton write_albumtype_checkbox;
+	CButton write_albumstatus_checkbox;
+	CEdit albumtype;
+	CEdit albumstatus;
+	preferences_page_callback::ptr on_change_callback;
+
 public:
+	PreferencesPageInstance(preferences_page_callback::ptr callback) : on_change_callback(callback) {}
+
 	enum { IDD = IDD_PREFERENCES };
 
 	BEGIN_MSG_MAP(CPreferencesDialog)
 		MSG_WM_INITDIALOG(OnInitDialog)
-		COMMAND_HANDLER_EX(IDC_SHORT_DATE, BN_CLICKED, OnShortDate)
-		COMMAND_HANDLER_EX(IDC_NO_FEAT, BN_CLICKED, OnNoFeat)
-		COMMAND_HANDLER_EX(IDC_WRITE_IDS, BN_CLICKED, OnWriteIDs)
+		COMMAND_HANDLER_EX(IDC_SHORT_DATE, BN_CLICKED, OnChanged)
+		COMMAND_HANDLER_EX(IDC_NO_FEAT, BN_CLICKED, OnChanged)
+		COMMAND_HANDLER_EX(IDC_WRITE_IDS, BN_CLICKED, OnChanged)
 		COMMAND_HANDLER_EX(IDC_ALBUMTYPE, BN_CLICKED, OnAlbumType)
 		COMMAND_HANDLER_EX(IDC_ALBUMSTATUS, BN_CLICKED, OnAlbumStatus)
-		COMMAND_HANDLER_EX(IDC_ALBUMTYPE_DATA, EN_UPDATE, OnAlbumTypeUpdate)
-		COMMAND_HANDLER_EX(IDC_ALBUMSTATUS_DATA, EN_UPDATE, OnAlbumStatusUpdate)
+		COMMAND_HANDLER_EX(IDC_ALBUMTYPE_DATA, EN_UPDATE, OnChanged)
+		COMMAND_HANDLER_EX(IDC_ALBUMSTATUS_DATA, EN_UPDATE, OnChanged)
 	END_MSG_MAP()
 
-	void OnFinalMessage(HWND hwnd)
-	{
-		delete this;
-	}
+	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam) {
+		short_date_checkbox = GetDlgItem(IDC_SHORT_DATE);
+		no_feat_checkbox = GetDlgItem(IDC_NO_FEAT);
+		write_ids_checkbox = GetDlgItem(IDC_WRITE_IDS);
+		write_albumtype_checkbox = GetDlgItem(IDC_ALBUMTYPE);
+		write_albumstatus_checkbox = GetDlgItem(IDC_ALBUMSTATUS);
+		albumtype = GetDlgItem(IDC_ALBUMTYPE_DATA);
+		albumstatus = GetDlgItem(IDC_ALBUMSTATUS_DATA);
 
-	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
-	{
-		CEdit cfg_edit_albumtype_data = GetDlgItem(IDC_ALBUMTYPE_DATA);
-		CEdit cfg_edit_albumstatus_data = GetDlgItem(IDC_ALBUMSTATUS_DATA);
-		((CButton)GetDlgItem(IDC_SHORT_DATE)).SetCheck(cfg_short_date.get_value());
-		((CButton)GetDlgItem(IDC_NO_FEAT)).SetCheck(cfg_no_feat.get_value());
-		((CButton)GetDlgItem(IDC_WRITE_IDS)).SetCheck(cfg_write_ids.get_value());
-		((CButton)GetDlgItem(IDC_ALBUMTYPE)).SetCheck(cfg_albumtype.get_value());
-		((CButton)GetDlgItem(IDC_ALBUMSTATUS)).SetCheck(cfg_albumstatus.get_value());
-		uSetWindowText(cfg_edit_albumtype_data, cfg_albumtype_data);
-		uSetWindowText(cfg_edit_albumstatus_data, cfg_albumstatus_data);
-		if (cfg_albumtype.get_value()) cfg_edit_albumtype_data.EnableWindow(1);
-		if (cfg_albumstatus.get_value()) cfg_edit_albumstatus_data.EnableWindow(1);
+		short_date_checkbox.SetCheck(cfg_short_date.get_value());
+		no_feat_checkbox.SetCheck(cfg_no_feat.get_value());
+		write_ids_checkbox.SetCheck(cfg_write_ids.get_value());
+		write_albumtype_checkbox.SetCheck(cfg_albumtype.get_value());
+		write_albumstatus_checkbox.SetCheck(cfg_albumstatus.get_value());
+		uSetWindowText(albumtype, cfg_albumtype_data);
+		uSetWindowText(albumstatus, cfg_albumstatus_data);
+		if (cfg_albumtype.get_value()) albumtype.EnableWindow(true);
+		if (cfg_albumstatus.get_value()) albumstatus.EnableWindow(true);
+
 		return 0;
 	}
 
-	void OnShortDate(UINT uNotifyCode, int nID, CButton wndCtl)
-	{
-		cfg_short_date = (bool)wndCtl.GetCheck();
+	bool has_changed() {
+		if ((bool)short_date_checkbox.GetCheck() != cfg_short_date.get_value()) return true;
+		if ((bool)no_feat_checkbox.GetCheck() != cfg_no_feat.get_value()) return true;
+		if ((bool)write_ids_checkbox.GetCheck() != cfg_write_ids.get_value()) return true;
+		if ((bool)write_albumtype_checkbox.GetCheck() != cfg_albumtype.get_value()) return true;
+		if ((bool)write_albumstatus_checkbox.GetCheck() != cfg_albumstatus.get_value()) return true;
+		
+		pfc::string8 temp;
+		uGetWindowText(albumtype, temp);
+		if (cfg_albumtype_data != temp) return true;
+		uGetWindowText(albumstatus, temp);
+		if (cfg_albumstatus_data != temp) return true;
+
+		return false;
 	}
 
-	void OnNoFeat(UINT uNotifyCode, int nID, CButton wndCtl)
-	{
-		cfg_no_feat = (bool)wndCtl.GetCheck();
+	t_uint32 get_state() {
+		t_uint32 state = preferences_state::resettable;
+		if (has_changed()) state |= preferences_state::changed;
+		return state;
 	}
 
-	void OnWriteIDs(UINT uNotifyCode, int nID, CButton wndCtl)
-	{
-		cfg_write_ids = (bool)wndCtl.GetCheck();
+	void apply() {
+		cfg_short_date = (bool)short_date_checkbox.GetCheck();
+		cfg_no_feat = (bool)no_feat_checkbox.GetCheck();
+		cfg_write_ids = (bool)write_ids_checkbox.GetCheck();
+		cfg_albumtype = (bool)write_albumtype_checkbox.GetCheck();
+		cfg_albumstatus = (bool)write_albumstatus_checkbox.GetCheck();
+		uGetWindowText(albumtype, cfg_albumtype_data);
+		uGetWindowText(albumstatus, cfg_albumstatus_data);
 	}
 
-	void OnAlbumType(UINT uNotifyCode, int nID, CButton wndCtl)
-	{
-		cfg_albumtype = (bool)wndCtl.GetCheck();
-		GetDlgItem(IDC_ALBUMTYPE_DATA).EnableWindow(cfg_albumtype.get_value());
+	void on_change() {
+		on_change_callback->on_state_changed();
 	}
 
-	void OnAlbumStatus(UINT uNotifyCode, int nID, CButton wndCtl)
-	{
-		cfg_albumstatus = (bool)wndCtl.GetCheck();
-		GetDlgItem(IDC_ALBUMSTATUS_DATA).EnableWindow(cfg_albumstatus.get_value());
+	void reset() {
+		short_date_checkbox.SetCheck(false);
+		no_feat_checkbox.SetCheck(false);
+		write_ids_checkbox.SetCheck(true);
+		write_albumtype_checkbox.SetCheck(true);
+		write_albumstatus_checkbox.SetCheck(true);
+		uSetWindowText(albumtype, "MUSICBRAINZ_ALBUMTYPE");
+		uSetWindowText(albumstatus, "MUSICBRAINZ_ALBUMSTATUS");
+		on_change();
 	}
 
-	void OnAlbumTypeUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
-	{
-		uGetWindowText(wndCtl, cfg_albumtype_data);
+	void OnChanged(UINT, int, HWND) {
+		on_change();
 	}
 
-	void OnAlbumStatusUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
-	{
-		uGetWindowText(wndCtl, cfg_albumstatus_data);
+	void OnAlbumType(UINT, int, CButton) {
+		albumtype.EnableWindow((bool)write_albumtype_checkbox.GetCheck());
+		on_change();
+	}
+
+	void OnAlbumStatus(UINT, int, CButton) {
+		albumstatus.EnableWindow((bool)write_albumstatus_checkbox.GetCheck());
+		on_change();
 	}
 };
 
-class foo_mb_preferences_page : public preferences_page_v2
-{
+class PreferencesPage : public preferences_page_impl<PreferencesPageInstance> {
 public:
-	HWND create(HWND parent)
-	{
-		CPreferencesDialog *PreferencesDialog = new CPreferencesDialog();
-		PreferencesDialog->Create(parent);
-		return PreferencesDialog->m_hWnd;
-	}
-
-	const char * get_name()
-	{
+	const char * get_name() {
 		return "MusicBrainz Tagger";
 	}
 
-	GUID get_guid()
-	{
-		static const GUID guid_foo_mb_preferences_page = { 0x79179a37, 0x5942, 0x4fdf, { 0xbb, 0xb7, 0x93, 0xfd, 0x35, 0xfc, 0xfe, 0x97 } };
-		return guid_foo_mb_preferences_page;
+	GUID get_guid() {
+		static const GUID guid = { 0x79179a37, 0x5942, 0x4fdf, { 0xbb, 0xb7, 0x93, 0xfd, 0x35, 0xfc, 0xfe, 0x97 } };
+		return guid;
 	}
 
-	GUID get_parent_guid()
-	{
+	GUID get_parent_guid() {
 		return preferences_page::guid_tagging;
-	}
-
-	bool reset_query()
-	{
-		return true;
-	}
-
-	void reset()
-	{
-		cfg_short_date = false;
-		cfg_no_feat = false;
-		cfg_write_ids = true;
-		cfg_albumtype = true;
-		cfg_albumstatus = true;
-		cfg_albumtype_data = "MUSICBRAINZ_ALBUMTYPE";
-		cfg_albumstatus_data = "MUSICBRAINZ_ALBUMSTATUS";
-	}
-
-	double get_sort_priority()
-	{
-		return 0;
 	}
 };
 
-static preferences_page_factory_t<foo_mb_preferences_page> g_foo_mb_preferences_page_factory;
+preferences_page_factory_t<PreferencesPage> _;
