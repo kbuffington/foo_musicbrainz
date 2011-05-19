@@ -46,6 +46,7 @@ public:
 				RequestURL url;
 				url.AddParam("discid", toc.getDiscID());
 				url.AddParam("count", count);
+				url.AddParam("cdstubs", "no");
 
 				ReleaseList *mbc = new ReleaseList(p_data);
 				mbc->setDiscId(toc.getDiscID());
