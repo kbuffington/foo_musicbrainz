@@ -99,35 +99,35 @@ public:
 class foo_mb_preferences_page : public preferences_page_v2
 {
 public:
-    HWND create(HWND parent)
+	HWND create(HWND parent)
 	{
 		CPreferencesDialog *PreferencesDialog = new CPreferencesDialog();
 		PreferencesDialog->Create(parent);
 		return PreferencesDialog->m_hWnd;
-    }
+	}
 
-    const char * get_name()
+	const char * get_name()
 	{
-        return "MusicBrainz Tagger";
-    }
+		return "MusicBrainz Tagger";
+	}
 
-    GUID get_guid()
+	GUID get_guid()
 	{
 		static const GUID guid_foo_mb_preferences_page = { 0x79179a37, 0x5942, 0x4fdf, { 0xbb, 0xb7, 0x93, 0xfd, 0x35, 0xfc, 0xfe, 0x97 } };
-        return guid_foo_mb_preferences_page;
-    }
+		return guid_foo_mb_preferences_page;
+	}
 
-    GUID get_parent_guid()
+	GUID get_parent_guid()
 	{
 		return preferences_page::guid_tagging;
-    }
+	}
 
-    bool reset_query()
+	bool reset_query()
 	{
-        return true;
-    }
+		return true;
+	}
 
-    void reset()
+	void reset()
 	{
 		cfg_short_date = false;
 		cfg_no_feat = false;
@@ -136,7 +136,7 @@ public:
 		cfg_albumstatus = true;
 		cfg_albumtype_data = "MUSICBRAINZ_ALBUMTYPE";
 		cfg_albumstatus_data = "MUSICBRAINZ_ALBUMSTATUS";
-    }
+	}
 
 	double get_sort_priority()
 	{
