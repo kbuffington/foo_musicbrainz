@@ -56,41 +56,43 @@ public:
 			}
 		case 1:
 			{
-				const file_info *info;
 				pfc::string8 artist, album;
-				const char *partist, *palbum;
-				for (t_size i = 0; i < count; i++)
-				{
-					p_data.get_item(i)->metadb_lock();
-					if (!p_data.get_item(i)->get_info_locked(info))
-					{
-						p_data.get_item(i)->metadb_unlock();
+				for (t_size i = 0; i < count; i++) {
+					auto item = p_data.get_item(i);
+					item->metadb_lock();
+					const file_info *info;
+					if (!item->get_info_locked(info)) {
+						item->metadb_unlock();
 						return;
 					}
 
-					partist = info->meta_get("ALBUM ARTIST", 0);
-					if (partist == NULL) partist = info->meta_get("ARTIST", 0);
-					palbum = info->meta_get("ALBUM", 0);
-					if (i == 0)
-					{
-						artist = partist;
-						album = palbum;
-						if (artist.is_empty() || album.is_empty())
-						{
+					auto current_artist = info->meta_get("ALBUM ARTIST", 0);
+					if (current_artist == nullptr) current_artist = info->meta_get("ARTIST", 0);
+					auto current_album = info->meta_get("ALBUM", 0);
+
+					if (current_artist == nullptr || current_album == nullptr) {
+						item->metadb_unlock();
+						break;
+					}
+
+					// Save album and artist of the first item
+					if (i == 0) {
+						artist = current_artist;
+						album = current_album;
+						if (artist.is_empty() || album.is_empty()) {
 							artist.reset();
 							album.reset();
-							p_data.get_item(i)->metadb_unlock();
+							item->metadb_unlock();
 							break;
 						}
-					}
-					else if (partist == NULL || palbum == NULL || strcmp(artist, partist) != 0 || strcmp(album, palbum) != 0)
-					{
+					// Break if artist or album of current item are different from the first one
+					} else if (strcmp(artist, current_artist) != 0 || strcmp(album, current_album) != 0) {
 						artist.reset();
 						album.reset();
-						p_data.get_item(i)->metadb_unlock();
+						item->metadb_unlock();
 							break;
 					}
-					p_data.get_item(i)->metadb_unlock();
+					item->metadb_unlock();
 				}
 				new CCustomQueryTags(new ReleaseList(p_data), count, artist, album);
 				break;
@@ -109,14 +111,16 @@ public:
 						item->metadb_unlock();
 						return;
 					}
+
 					auto current_album_id = info->meta_get("MUSICBRAINZ_ALBUMID", 0);
+
+					if (current_album_id == nullptr) {
+						item->metadb_unlock();
+						break;
+					}
 
 					// Save album ID of the first item
 					if (i == 0) {
-						if (current_album_id == nullptr) {
-							item->metadb_unlock();
-							break;
-						}
 						album_id = current_album_id;
 						regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
 						if (!regex_search(album_id.get_ptr(), rx)) {
@@ -124,8 +128,8 @@ public:
 							item->metadb_unlock();
 							break;
 						}
-					// Compare album ID of the rest of the items with first item
-					} else if (current_album_id == nullptr || strcmp(album_id, current_album_id) != 0) {
+					// Break if album ID of current item is different from the first one
+					} else if (strcmp(album_id, current_album_id) != 0) {
 						album_id.reset();
 						item->metadb_unlock();
 						break;
