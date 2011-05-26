@@ -75,8 +75,20 @@ Date::operator pfc::string8() const {
 	pfc::string8 str;
 
 	if (year != 0) str << year;
-	if (month != 0) str << '-' << month;
-	if (day != 0) str << '-' << day;
+	if (month != 0) {
+		str << "-";
+		if (month < 10) {
+			str << "0";
+		}
+		str << month;
+	}
+	if (day != 0) {
+		str << "-";
+		if (day < 10) {
+			str << "0";
+		}
+		str << day;
+	}
 
 	return str;
 }
