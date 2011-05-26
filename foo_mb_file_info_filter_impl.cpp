@@ -1,4 +1,7 @@
 #include "foo_musicbrainz.h"
+#include "foo_mb_file_info_filter_impl.h"
+#include "ReleaseList.h"
+#include "Track.h"
 
 extern cfg_bool cfg_write_ids;
 extern cfg_bool cfg_albumtype;

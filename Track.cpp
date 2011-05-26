@@ -1,4 +1,5 @@
 #include "foo_musicbrainz.h"
+#include "Track.h"
 
 Track::Track(const char *_title, const char *_id)
 : title(_title), id(_id)

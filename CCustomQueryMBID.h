@@ -1,5 +1,8 @@
+#pragma once
+
 #include <regex>
 #include "Query.h"
+#include "CTaggerDialog.h"
 
 using namespace std::tr1;
 using namespace foo_musicbrainz;

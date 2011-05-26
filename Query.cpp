@@ -1,6 +1,10 @@
 #include "foo_musicbrainz.h"
+#include <Winhttp.h>
 #include "Query.h"
 #include "Parser.h"
+#include "Release.h"
+#include "RequestURL.h"
+#include "Track.h"
 
 using namespace foo_musicbrainz;
 

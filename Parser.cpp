@@ -1,5 +1,6 @@
 #include "foo_musicbrainz.h"
 #include "Parser.h"
+#include "Release.h"
 #include "Date.h"
 
 namespace foo_musicbrainz {

@@ -1,4 +1,5 @@
 #include "foo_musicbrainz.h"
+#include "Release.h"
 #include "RequestThread.h"
 
 using namespace foo_musicbrainz;

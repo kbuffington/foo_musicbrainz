@@ -1,5 +1,7 @@
 #include <regex>
 #include "foo_musicbrainz.h"
+#include "TOC.h"
+#include "Track.h"
 #include "sha1.h"
 
 using namespace std::tr1;

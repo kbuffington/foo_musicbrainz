@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Release.h"
+
 class ReleaseList
 {
 public:

@@ -2,6 +2,7 @@
 
 #include "foo_musicbrainz.h"
 #include "Query.h"
+#include "ReleaseList.h"
 
 namespace foo_musicbrainz {
 	class RequestThread : public threaded_process_callback

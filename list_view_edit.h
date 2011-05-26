@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Track.h"
+
 class track_list_view_edit : public InPlaceEdit::CTableEditHelperV2_ListView {
 public:
 	void Attach(HWND _window, ReleaseList *_mbc);

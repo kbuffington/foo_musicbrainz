@@ -1,4 +1,6 @@
 #include "foo_musicbrainz.h"
+#include "ReleaseList.h"
+#include "Release.h"
 
 PFC_DECLARE_EXCEPTION(exception_foo_mb_release_index_error, pfc::exception, "ReleaseList: unexpected release index.")
 

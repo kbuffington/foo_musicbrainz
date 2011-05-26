@@ -1,3 +1,8 @@
+#pragma once
+
+#include "ReleaseList.h"
+#include "Track.h"
+
 class foo_mb_file_info_filter_impl : public file_info_filter {
 public:
 	foo_mb_file_info_filter_impl(ReleaseList *_mbc);

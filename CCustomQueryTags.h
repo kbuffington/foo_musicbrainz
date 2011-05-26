@@ -1,3 +1,8 @@
+#pragma once
+
+#include "RequestURL.h"
+#include "CTaggerDialog.h"
+
 class CCustomQueryTags : public CDialogImpl<CCustomQueryTags>
 {
 private:

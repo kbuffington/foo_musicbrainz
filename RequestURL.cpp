@@ -1,4 +1,5 @@
 #include "foo_musicbrainz.h"
+#include "RequestURL.h"
 
 RequestURL::RequestURL()
 {

@@ -1,3 +1,5 @@
+#pragma once
+
 #define GETTER(type, name) \
 	type get_##name() const { \
 		return this->name; \

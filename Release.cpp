@@ -1,4 +1,6 @@
 #include "foo_musicbrainz.h"
+#include "Release.h"
+#include "Track.h"
 
 PFC_DECLARE_EXCEPTION(exception_foo_mb_track_number_error, pfc::exception, COMPONENT_TITLE ": unexpected track number.")
 PFC_DECLARE_EXCEPTION(exception_foo_mb_release_type_error, pfc::exception, COMPONENT_TITLE ": unexpected release attribute.")

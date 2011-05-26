@@ -1,7 +1,12 @@
 #include <regex>
 #include "foo_musicbrainz.h"
+#include "ReleaseList.h"
+#include "RequestURL.h"
+#include "TOC.h"
+#include "Track.h"
 #include "CCustomQueryMBID.h"
 #include "CCustomQueryTags.h"
+#include "CTaggerDialog.h"
 
 using namespace std::tr1;
 

@@ -1,4 +1,7 @@
 #include "foo_musicbrainz.h"
+#include "ReleaseList.h"
+#include "Track.h"
+#include "list_view_edit.h"
 
 void track_list_view_edit::Attach(HWND _window, ReleaseList *_mbc)
 {

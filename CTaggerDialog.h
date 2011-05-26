@@ -1,5 +1,10 @@
+#pragma once
+
 #include "Query.h"
+#include "list_view_edit.h"
+#include "foo_mb_file_info_filter_impl.h"
 #include "RequestThread.h"
+#include "Track.h"
 
 class CTaggerDialog : public CDialogImpl<CTaggerDialog>
 {

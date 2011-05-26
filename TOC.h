@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Track.h"
+
 class TOC
 {
 public:

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Track.h"
+
 #define MB_RELEASE_TYPES 12
 #define MB_RELEASE_STATUSES 5
 
