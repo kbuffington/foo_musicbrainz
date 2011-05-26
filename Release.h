@@ -65,8 +65,12 @@ namespace foo_musicbrainz {
 		STRING_MEMBER(status)
 		STRING_MEMBER(country)
 		STRING_MEMBER(asin)
+		POINTER_MEMBER(ArtistCredit, artist_credit)
 
 	public:
-		Release() {};
+		Release() : artist_credit(nullptr) {};
+		~Release() {
+			POINTER_MEMBER_DESTRUCTOR(artist_credit)
+		}
 	};
 }

@@ -42,3 +42,22 @@
 #define STRING_MEMBER(name) \
 	MEMBER_BY_REFERENCE(pfc::string8, name) \
 	SETTER(const char *, name)
+
+#define POINTER_MEMBER(type, name) \
+	protected: \
+		type *name; \
+	public: \
+	void set_##name(type *value) { \
+		if (name != nullptr) { \
+			delete name; \
+		} \
+		name = value; \
+	} \
+	const type &get_##name() const { \
+		return *this->name; \
+	}
+
+#define POINTER_MEMBER_DESTRUCTOR(name) \
+	if (name != nullptr) { \
+		delete name; \
+	}
