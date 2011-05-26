@@ -8,9 +8,11 @@
 
 using namespace foo_musicbrainz;
 
-Query::Query(pfc::string8 id) {
-	url = "/ws/2/release/";
-	url << id;
+Query::Query(pfc::string8 id, pfc::string8 &includes) {
+	url << "/ws/2/release/" << id;
+	if (!includes.is_empty()) {
+		url << "?inc=" << includes;
+	}
 }
 
 #define TO_HEX(c) (c < 0xa ? '0' + c : 'a' - 0xa + c)

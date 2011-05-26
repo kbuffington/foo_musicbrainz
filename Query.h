@@ -6,7 +6,7 @@
 namespace foo_musicbrainz {
 	class Query {
 	public:
-		Query(pfc::string8 id);
+		Query(pfc::string8 id, pfc::string8 &includes = pfc::string8());
 		Release *get_release();
 		// void perform();
 

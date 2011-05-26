@@ -69,7 +69,9 @@ public:
 
 	void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl)
 	{
-		auto query = new foo_musicbrainz::Query(string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr());
+		pfc::string8 id = string_utf8_from_window(m_hWnd, IDC_MBID);
+		pfc::string8 includes = "artists+labels+recordings+release-groups";
+		auto query = new foo_musicbrainz::Query(id, includes);
 		new CTaggerDialog(query, mbc);
 		DestroyWindow();
 	}
