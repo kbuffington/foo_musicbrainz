@@ -10,14 +10,19 @@
 		this->name = value; \
 	}
 
+#define SETTER_BY_POINTER(type, name) \
+	void set_##name(type value) { \
+		this->name = *value; \
+	}
+
 #define GETTER_BY_REFERENCE(type, name) \
-	type &get##name() const { \
+	const type &get_##name() const { \
 		return this->name; \
 	}
 
 #define SETTER_BY_REFERENCE(type, name) \
-	void set##name(type &value) \
-		d->name = value; \
+	void set_##name(type &value) { \
+		this->name = value; \
 	}
 
 #define ACCESSOR(type, name) \
@@ -25,11 +30,15 @@
 	SETTER(type, name)
 
 #define ACCESSOR_BY_REFERENCE(type, name) \
-	GETTER(type, name) \
-	SETTER(type, name)
+	GETTER_BY_REFERENCE(type, name) \
+	SETTER_BY_REFERENCE(type, name)
 
 #define MEMBER_BY_REFERENCE(type, name) \
 	protected: \
 		type name; \
 	public: \
 	ACCESSOR_BY_REFERENCE(type, name)
+
+#define STRING_MEMBER(name) \
+	MEMBER_BY_REFERENCE(pfc::string8, name) \
+	SETTER(const char *, name)

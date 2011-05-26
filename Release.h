@@ -54,16 +54,17 @@ private:
 
 #include "foo_musicbrainz.h"
 #include "CoreEntity.h"
+#include "ArtistCredit.h"
 #include "Date.h"
 
 namespace foo_musicbrainz {
 	class Release : public CoreEntity {
-		MEMBER_BY_REFERENCE(pfc::string8, title)
+		STRING_MEMBER(title)
 		MEMBER_BY_REFERENCE(Date, date)
-		MEMBER_BY_REFERENCE(pfc::string8, barcode)
-		MEMBER_BY_REFERENCE(pfc::string8, status)
-		MEMBER_BY_REFERENCE(pfc::string8, country)
-		MEMBER_BY_REFERENCE(pfc::string8, asin)
+		STRING_MEMBER(barcode)
+		STRING_MEMBER(status)
+		STRING_MEMBER(country)
+		STRING_MEMBER(asin)
 
 	public:
 		Release() {};
