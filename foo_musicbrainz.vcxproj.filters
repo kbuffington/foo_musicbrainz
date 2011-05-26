@@ -66,9 +66,6 @@
     <ClCompile Include="ArtistCredit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EntityList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ReleaseGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
