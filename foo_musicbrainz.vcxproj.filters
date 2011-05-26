@@ -48,9 +48,6 @@
     <ClCompile Include="TOC.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Track.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CoreEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -67,6 +64,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ArtistCredit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ReleaseGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -129,6 +132,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ArtistCredit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MediumList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Medium.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Recording.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReleaseGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

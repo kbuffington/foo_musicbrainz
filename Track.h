@@ -1,20 +1,22 @@
 #pragma once
 
-class Track
-{
-public:
-	Track(const char *_title, const char *_id);
-	const char *getArtist();
-	const char *getArtistId();
-	const char *getId();
-	const char *getTitle();
-	void setArtist(const char *_artist);
-	void setArtistId(const char *_artist_id);
-	void setTitle(const char *_title);
+#include "foo_musicbrainz.h"
+#include "ArtistCredit.h"
+#include "Recording.h"
 
-private:
-	pfc::string8 artist;
-	pfc::string8 artist_id;
-	pfc::string8 id;
-	pfc::string8 title;
-};
+namespace foo_musicbrainz {
+	class Track {
+		MEMBER(int, position)
+		POINTER_MEMBER(ArtistCredit, artist_credit)
+		POINTER_MEMBER(Recording, recording)
+
+	public:
+		Track() :
+			artist_credit(nullptr),
+			recording(nullptr) {};
+		~Track() {
+			POINTER_MEMBER_DESTRUCTOR(artist_credit)
+			POINTER_MEMBER_DESTRUCTOR(recording)
+		}
+	};
+}
