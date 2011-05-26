@@ -92,7 +92,7 @@
 	size_t get_##name##_index() { \
 		return name; \
 	} \
-	private: \
-		static const char *name_plural[]; \
 		static const size_t name##_count = count; \
+		static const char *name_plural[]; \
+	private: \
 		size_t name;
