@@ -91,6 +91,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ArtistCredit.cpp" />
     <ClCompile Include="CoreEntity.cpp" />
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="foo_mb_file_info_filter_impl.cpp" />
@@ -109,6 +110,7 @@
     <ClCompile Include="Track.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ArtistCredit.h" />
     <ClInclude Include="CoreEntity.h" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="foo_mb_file_info_filter_impl.h" />
