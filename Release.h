@@ -22,11 +22,14 @@ namespace foo_musicbrainz {
 	public:
 		Release() :
 			CoreEntity(),
+			status(0),
 			artist_credit(nullptr),
-			medium_list(nullptr) {};
+			medium_list(nullptr),
+			release_group(nullptr) {};
 		~Release() {
 			POINTER_MEMBER_DESTRUCTOR(artist_credit)
 			POINTER_MEMBER_DESTRUCTOR(medium_list)
+			POINTER_MEMBER_DESTRUCTOR(release_group)
 		}
 	};
 }
