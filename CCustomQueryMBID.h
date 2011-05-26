@@ -1,6 +1,8 @@
 #include <regex>
+#include "Query.h"
 
 using namespace std::tr1;
+using namespace foo_musicbrainz;
 
 class CCustomQueryMBID : public CDialogImpl<CCustomQueryMBID>
 {
@@ -64,9 +66,8 @@ public:
 
 	void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl)
 	{
-		RequestURL url(string_utf8_from_window(m_hWnd, IDC_MBID));
-		url.AddParam("inc", "artist+release-events+tracks", false);
-		new CTaggerDialog(url.GetURL(), mbc);
+		auto query = new foo_musicbrainz::Query(string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr());
+		new CTaggerDialog(query, mbc);
 		DestroyWindow();
 	}
 };

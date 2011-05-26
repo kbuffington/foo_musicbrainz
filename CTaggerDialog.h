@@ -1,3 +1,6 @@
+#include "Query.h"
+#include "RequestThread.h"
+
 class CTaggerDialog : public CDialogImpl<CTaggerDialog>
 {
 private:
@@ -17,11 +20,11 @@ private:
 public:
 	enum { IDD = IDD_TAGGER };
 
-	CTaggerDialog(pfc::string8 url, ReleaseList *_mbc) : CDialogImpl<CTaggerDialog>()
+	CTaggerDialog(foo_musicbrainz::Query *query, ReleaseList *_mbc) : CDialogImpl<CTaggerDialog>(), mbc(_mbc)
 	{
-		mbc = _mbc;
 		Create(core_api::get_main_window());
-		threaded_process::g_run_modeless(new service_impl_t<foo_mb_request_thread>(url, m_hWnd, mbc), threaded_process::flag_show_progress | threaded_process::flag_show_abort, m_hWnd, "Quering information from MusicBrainz");
+		threaded_process::g_run_modeless(new service_impl_t<foo_musicbrainz::RequestThread>(query, m_hWnd, mbc),
+			threaded_process::flag_show_progress | threaded_process::flag_show_abort, m_hWnd, "Quering information from MusicBrainz");
 	}
 
 	BEGIN_MSG_MAP(CTaggerDialog)

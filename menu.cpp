@@ -51,7 +51,7 @@ public:
 				ReleaseList *mbc = new ReleaseList(p_data);
 				mbc->setDiscId(toc.getDiscID());
 
-				new CTaggerDialog(url.GetURL(), mbc);
+				// new CTaggerDialog(url.GetURL(), mbc);
 				break;
 			}
 		case 1:
@@ -94,7 +94,7 @@ public:
 					}
 					item->metadb_unlock();
 				}
-				new CCustomQueryTags(new ReleaseList(p_data), count, artist, album);
+				// new CCustomQueryTags(new ReleaseList(p_data), count, artist, album);
 				break;
 			}
 		case 2:

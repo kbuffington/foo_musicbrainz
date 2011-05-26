@@ -48,3 +48,22 @@ private:
 	pfc::string8 title;
 	unsigned int type;
 };
+
+
+#include "foo_musicbrainz.h"
+#include "CoreEntity.h"
+#include "Date.h"
+
+namespace foo_musicbrainz {
+	class Release : public CoreEntity {
+		MEMBER_BY_REFERENCE(pfc::string8, title)
+		MEMBER_BY_REFERENCE(Date, date)
+		MEMBER_BY_REFERENCE(pfc::string8, barcode)
+		MEMBER_BY_REFERENCE(pfc::string8, status)
+		MEMBER_BY_REFERENCE(pfc::string8, country)
+		MEMBER_BY_REFERENCE(pfc::string8, asin)
+
+	public:
+		Release() {};
+	};
+}

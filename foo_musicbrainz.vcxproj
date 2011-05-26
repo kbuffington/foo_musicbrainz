@@ -91,26 +91,35 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CoreEntity.cpp" />
+    <ClCompile Include="Date.cpp" />
     <ClCompile Include="foo_mb_file_info_filter_impl.cpp" />
-    <ClCompile Include="foo_mb_request_thread.cpp" />
     <ClCompile Include="foo_musicbrainz.cpp" />
     <ClCompile Include="list_view_edit.cpp" />
     <ClCompile Include="menu.cpp" />
+    <ClCompile Include="Parser.cpp" />
     <ClCompile Include="preferences.cpp" />
     <ClCompile Include="Release.cpp" />
     <ClCompile Include="ReleaseList.cpp" />
+    <ClCompile Include="Query.cpp" />
+    <ClCompile Include="RequestThread.cpp" />
     <ClCompile Include="RequestURL.cpp" />
     <ClCompile Include="sha1.cpp" />
     <ClCompile Include="TOC.cpp" />
     <ClCompile Include="Track.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CoreEntity.h" />
+    <ClInclude Include="Date.h" />
     <ClInclude Include="foo_mb_file_info_filter_impl.h" />
-    <ClInclude Include="foo_mb_request_thread.h" />
     <ClInclude Include="foo_musicbrainz.h" />
     <ClInclude Include="list_view_edit.h" />
+    <ClInclude Include="meta.h" />
+    <ClInclude Include="Parser.h" />
     <ClInclude Include="Release.h" />
     <ClInclude Include="ReleaseList.h" />
+    <ClInclude Include="Query.h" />
+    <ClInclude Include="RequestThread.h" />
     <ClInclude Include="RequestURL.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="sha1.h" />

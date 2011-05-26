@@ -74,7 +74,7 @@ public:
 			url.AddParam("artist", artist);
 			url.AddParam("title", album);
 			url.AddParam("count", count);
-			new CTaggerDialog(url.GetURL(), mbc);
+			// new CTaggerDialog(url.GetURL(), mbc);
 			DestroyWindow();
 		}
 	}
