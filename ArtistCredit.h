@@ -8,6 +8,8 @@ namespace foo_musicbrainz {
 		STRING_MEMBER(name)
 
 	public:
-		ArtistCredit() {};
+		ArtistCredit() :
+			CoreEntity() {}
+		~ArtistCredit() {}
 	};
 }

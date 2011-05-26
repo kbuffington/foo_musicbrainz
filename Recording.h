@@ -9,7 +9,8 @@ namespace foo_musicbrainz {
 		STRING_MEMBER(title)
 
 	public:
-		Recording() {};
+		Recording() :
+			CoreEntity() {};
 		~Recording() {}
 	};
 }

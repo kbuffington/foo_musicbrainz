@@ -1,3 +1,5 @@
+#pragma once
+
 #include "foo_musicbrainz.h"
 
 namespace foo_musicbrainz {
@@ -8,8 +10,8 @@ namespace foo_musicbrainz {
 		size_t count() const;
 		T *operator[](t_size index) const ;
 
-		EntityList();
-		~EntityList();
+		EntityList() {};
+		~EntityList() {};
 
 	protected:
 		pfc::list_t<T *> items;
