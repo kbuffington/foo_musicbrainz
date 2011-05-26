@@ -86,6 +86,9 @@ foo_musicbrainz::Release *Parser::release(const ticpp::Element *release_node) {
 		} else if (name == "artist-credit") {
 			auto artist_credit = Parser::artist_credit(child);
 			release->set_artist_credit(artist_credit);
+		} else if (name == "release-group") {
+			auto release_group = Parser::release_group(child);
+			release->set_release_group(release_group);
 		}
 	}
 

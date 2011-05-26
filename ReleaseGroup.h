@@ -10,6 +10,7 @@ namespace foo_musicbrainz {
 
 	public:
 		ReleaseGroup() :
+			CoreEntity(),
 			type(0) {};
 		~ReleaseGroup() {}
 	};
