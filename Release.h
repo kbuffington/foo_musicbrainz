@@ -3,6 +3,7 @@
 #include "foo_musicbrainz.h"
 #include "CoreEntity.h"
 #include "ArtistCredit.h"
+#include "LabelInfoList.h"
 #include "MediumList.h"
 #include "Date.h"
 #include "ReleaseGroup.h"
@@ -15,6 +16,7 @@ namespace foo_musicbrainz {
 		STRING_MEMBER(asin)
 		MEMBER_BY_REFERENCE(Date, date)
 		POINTER_MEMBER(ArtistCredit, artist_credit)
+		POINTER_MEMBER(LabelInfoList, label_info_list)
 		POINTER_MEMBER(MediumList, medium_list)
 		POINTER_MEMBER(ReleaseGroup, release_group)
 		STRING_LIST(status, statuses, 4)
@@ -28,10 +30,12 @@ namespace foo_musicbrainz {
 			CoreEntity(),
 			status(0),
 			artist_credit(nullptr),
+			label_info_list(nullptr),
 			medium_list(nullptr),
 			release_group(nullptr) {};
 		~Release() {
 			POINTER_MEMBER_DESTRUCTOR(artist_credit)
+			POINTER_MEMBER_DESTRUCTOR(label_info_list)
 			POINTER_MEMBER_DESTRUCTOR(medium_list)
 			POINTER_MEMBER_DESTRUCTOR(release_group)
 		}

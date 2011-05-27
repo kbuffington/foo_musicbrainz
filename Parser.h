@@ -2,6 +2,9 @@
 
 #include "foo_musicbrainz.h"
 #include "ArtistCredit.h"
+#include "Label.h"
+#include "LabelInfo.h"
+#include "LabelInfoList.h"
 #include "Medium.h"
 #include "MediumList.h"
 #include "Release.h"
@@ -14,6 +17,9 @@ namespace foo_musicbrainz {
 	class Parser {
 	public:
 		static ArtistCredit *artist_credit(const ticpp::Element *);
+		static Label *label(const ticpp::Element *);
+		static LabelInfo *label_info(const ticpp::Element *);
+		static LabelInfoList *label_info_list(const ticpp::Element *);
 		static Medium *medium(const ticpp::Element *);
 		static MediumList *medium_list(const ticpp::Element *);
 		static Release *release(const ticpp::Element *);

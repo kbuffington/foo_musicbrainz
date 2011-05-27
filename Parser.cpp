@@ -2,10 +2,14 @@
 #include "Parser.h"
 #include "Date.h"
 #include "ArtistCredit.h"
+#include "Label.h"
+#include "LabelInfo.h"
+#include "LabelInfoList.h"
 #include "Medium.h"
 #include "MediumList.h"
 #include "Release.h"
 #include "ReleaseGroup.h"
+#include "Recording.h"
 #include "Track.h"
 #include "TrackList.h"
 
@@ -27,6 +31,58 @@ ArtistCredit *Parser::artist_credit(const ticpp::Element *artist_credit_node) {
 	}
 		
 	return artist_credit;
+}
+
+Label *Parser::label(const ticpp::Element *label_node) {
+	auto label = new Label();
+
+	label->set_id(label_node->GetAttribute("id").data());
+
+	auto child = label_node->FirstChildElement(false);
+	for (; child; child = child->NextSiblingElement(false)) {
+		auto name = child->Value();
+		if (name == "name") {
+			label->set_name(child->GetText().data());
+		} else if (name == "sort-name") {
+			label->set_sort_name(child->GetText().data());
+		} else if (name == "label-code") {
+			label->set_label_code(child->GetText().data());
+		} 
+	}
+
+	return label;
+}
+
+LabelInfo *Parser::label_info(const ticpp::Element *label_info_node) {
+	auto label_info = new LabelInfo();
+
+	auto child = label_info_node->FirstChildElement(false);
+	for (; child; child = child->NextSiblingElement(false)) {
+		auto name = child->Value();
+		if (name == "catalog-number") {
+			label_info->set_catalog_number(child->GetText().data());
+		} else if (name == "label") {
+			auto label = Parser::label(child);
+			label_info->set_label(label);
+		}
+	}
+
+	return label_info;
+}
+
+LabelInfoList *Parser::label_info_list(const ticpp::Element *label_info_list_node) {
+	auto label_info_list = new LabelInfoList();
+
+	auto child = label_info_list_node->FirstChildElement(false);
+	for (; child; child = child->NextSiblingElement(false)) {
+		auto name = child->Value();
+		if (name == "label-info") {
+			auto label_info = Parser::label_info(child);
+			label_info_list->add(label_info);
+		}
+	}
+
+	return label_info_list;
 }
 
 Medium *Parser::medium(const ticpp::Element * medium_node) {
@@ -91,6 +147,9 @@ foo_musicbrainz::Release *Parser::release(const ticpp::Element *release_node) {
 		} else if (name == "release-group") {
 			auto release_group = Parser::release_group(child);
 			release->set_release_group(release_group);
+		} else if (name == "label-info-list") {
+			auto label_info_list = Parser::label_info_list(child);
+			release->set_label_info_list(label_info_list);
 		} else if (name == "medium-list") {
 			auto medium_list = Parser::medium_list(child);
 			release->set_medium_list(medium_list);
