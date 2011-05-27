@@ -98,14 +98,13 @@ foo_musicbrainz::Release *Parser::release(const ticpp::Element *release_node) {
 ReleaseGroup *Parser::release_group(const ticpp::Element *release_group_node) {
 	auto release_group = new ReleaseGroup();
 	release_group->set_id(release_group_node->GetAttribute("id").data());
+	release_group->set_type(release_group_node->GetAttribute("type").data());
 
 	auto child = release_group_node->FirstChildElement(false);
 	for (; child; child = child->NextSiblingElement(false)) {
 		auto name = child->Value();
 		if (name == "title") {
 			release_group->set_title(child->GetText().data());
-		} else if (name == "type") {
-			release_group->set_type(child->GetText().data());
 		}
 	}
 
