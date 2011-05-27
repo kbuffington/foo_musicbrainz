@@ -25,6 +25,12 @@ namespace foo_musicbrainz {
 			return (*this)[index];
 		}
 
+		T *extract(t_size index) {
+			T item* = (*this)[index];
+			items.remove_by_idx(index);
+			return item;
+		}
+
 		EntityList() {};
 		~EntityList() {
 			for (unsigned int i = 0; i < items.get_count(); i++) {

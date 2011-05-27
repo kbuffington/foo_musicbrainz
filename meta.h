@@ -61,6 +61,11 @@
 	} \
 	type *get_##name() const { \
 		return this->name; \
+	} \
+	type *extract_##name() { \
+		type *tmp = this->name; \
+		this->name = nullptr; \
+		return tmp; \
 	}
 
 #define POINTER_MEMBER_DESTRUCTOR(name) \
