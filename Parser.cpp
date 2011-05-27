@@ -91,6 +91,9 @@ foo_musicbrainz::Release *Parser::release(const ticpp::Element *release_node) {
 		} else if (name == "release-group") {
 			auto release_group = Parser::release_group(child);
 			release->set_release_group(release_group);
+		} else if (name == "medium-list") {
+			auto medium_list = Parser::medium_list(child);
+			release->set_medium_list(medium_list);
 		}
 	}
 
