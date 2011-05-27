@@ -77,121 +77,15 @@ void Query::get(pfc::string8 &buffer) {
 }
 
 void Query::parse(pfc::string8 &buffer, ticpp::Document &xml) {
-	//Release *mbr;
-	//ticpp::Element *releases;
-
 	// Parsing XML
 	try {
 		xml.Parse(buffer.get_ptr(), true, TIXML_ENCODING_UTF8);
-		// Not valid XML?
+	// Not valid XML?
 	} catch (ticpp::Exception) {
 		pfc::string8 error = "Error parsing XML, response from musicbrainz.org:\n\n";
 		error << buffer;
 		throw exception_foo_mb_xml_parsing(error);
 	}
-
-	//releases = xml.FirstChildElement("metadata")->FirstChildElement("release-list", false) ? xml.FirstChildElement("metadata")->FirstChildElement("release-list") : xml.FirstChildElement("metadata");
-	//
-	//try
-	//{
-	//	releases->FirstChildElement("release");
-	//}
-	//catch (ticpp::Exception)
-	//{
-	//	throw exception_foo_mb_no_releases();
-	//}
-
-	//// Adding releases
-	//ticpp::Iterator<ticpp::Element> release;
-	//for (release = release.begin(releases); release != release.end(); ++release)
-	//{
-	//	if (release_number >= 0)
-	//	{
-	//		mbr = mbc->getRelease(release_number);
-	//	}
-	//	else
-	//	{
-	//		std::string full_title(release->FirstChildElement("title")->FirstChild()->Value());
-	//		regex rx("^(.+?)(?:\\s+\\(disc (\\d+)(?::\\s(.+))?\\))?$");
-	//		pfc::string8 title, discnumber, discsubtitle;
-	//		cmatch res;
-	//		regex_search(full_title.c_str(), res, rx);
-	//		title.set_string(res[1].first, res[1].second - res[1].first);
-	//		discnumber.set_string(res[2].first, res[2].second - res[2].first);
-	//		discsubtitle.set_string(res[3].first, res[3].second - res[3].first);
-	//		mbr = mbc->addRelease(
-	//			title,
-	//			release->GetAttribute("id").data(),
-	//			release->FirstChildElement("artist")->FirstChildElement("name")->FirstChild()->Value().data(),
-	//			release->FirstChildElement("artist")->GetAttribute("id").data()
-	//			);
-	//		mbr->setDisc(discnumber);
-	//		mbr->setDiscSubtitle(discsubtitle);
-	//		try {
-	//			pfc::string8 type = release->GetAttribute("type").data();
-	//			if (!type.is_empty())
-	//			{
-	//				pfc::string8 status = type;
-	//				t_size space = type.find_first(" ");
-	//				if (space != ~0)
-	//				{
-	//					status = type.get_ptr()+space+1;
-	//					type.truncate(space);
-	//				}
-	//				mbr->setType(type);
-	//				mbr->setStatus(status);
-	//			}
-	//		} catch (ticpp::Exception) {}
-	//		try {
-	//			ticpp::Iterator<ticpp::Element> release_event;
-	//			for (release_event = release_event.begin(release->FirstChildElement("release-event-list")); release_event != release_event.end(); ++release_event)
-	//			{
-	//				pfc::string8 str = release_event->GetAttribute("date").data();
-	//				if (strcmp(str, "") != 0 && str[0] != '0' && 
-	//					(strcmp(mbr->getDate(), "") == 0 ||
-	//					 strcmp(str, mbr->getDate()) < 0 ||
-	//					 (strlen(str) > strlen(mbr->getDate()) && memcmp(str, mbr->getDate(), strlen(mbr->getDate())) == 0)
-	//					 )
-	//					)
-	//				{
-	//					if (cfg_short_date && str.length() > 4) str.truncate(4);
-	//					mbr->setDate(str);
-	//				}
-	//			}
-	//		} catch (ticpp::Exception) {}
-	//	}
-
-	//	// Adding tracks
-	//	ticpp::Iterator<ticpp::Element> track;
-	//	//try {
-	//	for (track = track.begin(release->FirstChildElement("track-list")); track != track.end(); ++track)
-	//	{
-	//		pfc::string8 track_title(track->FirstChildElement("title")->FirstChild()->Value().data());
-	//		if (cfg_no_feat)
-	//		{
-	//			regex rx("^(.+?)(\\s+\\(feat\\.\\s+.+\\))?$");
-	//			cmatch res;
-	//			regex_search(track_title.get_ptr(), res, rx);
-	//			pfc::string8 tmp;
-	//			tmp.set_string(res[1].first, res[1].second - res[1].first);
-	//			track_title = tmp;
-	//		}
-	//		Track *mbt = mbr->addTrack(track_title.get_ptr(), track->GetAttribute("id").data());
-
-	//		if (track->FirstChildElement("artist", false))
-	//		{
-	//			mbt->setArtist(track->FirstChildElement("artist")->FirstChildElement("name")->FirstChild()->Value().data());
-	//			mbt->setArtistId(track->FirstChildElement("artist")->GetAttribute("id").data());
-	//			mbr->va = true;
-	//		}
-	//	}
-	//	//} catch (ticpp::Exception e) {
-	//	//	if (release_number >= 0)
-	//	//	{
-	//	//		//throw e;
-	//	//	}
-	//	//}
-	// }
 }
 
 // TODO: abort checks, progress
