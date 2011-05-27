@@ -20,6 +20,7 @@ namespace foo_musicbrainz {
 		CEdit artist;
 		CEdit album;
 		CEdit date;
+		CEdit barcode;
 		CEdit url;
 		ReleaseList *mbc;
 		pfc::list_t<metadb_handle_ptr> tracks;
@@ -60,6 +61,7 @@ namespace foo_musicbrainz {
 			COMMAND_HANDLER_EX(IDC_ARTIST, EN_UPDATE, OnArtistUpdate)
 			COMMAND_HANDLER_EX(IDC_ALBUM, EN_UPDATE, OnAlbumUpdate)
 			COMMAND_HANDLER_EX(IDC_DATE, EN_UPDATE, OnDateUpdate)
+			COMMAND_HANDLER_EX(IDC_DATE, EN_UPDATE, on_barcode_update)
 			//CHAIN_MSG_MAP(CDialogImpl<TaggerDialog>)
 		END_MSG_MAP()
 
@@ -82,6 +84,7 @@ namespace foo_musicbrainz {
 			artist = GetDlgItem(IDC_ARTIST);
 			album = GetDlgItem(IDC_ALBUM);
 			date = GetDlgItem(IDC_DATE);
+			barcode = GetDlgItem(IDC_BARCODE);
 			track_list_view.Attach(track_list, mbc);
 		
 			// List view styles
@@ -135,11 +138,17 @@ namespace foo_musicbrainz {
 		void UpdateRelease() {
 			Release *release = get_current_release();
 
+			// Artist
 			uSetWindowText(artist, release->get_artist_credit()->get_name());
+			// Album
 			uSetWindowText(album, release->get_title());
+			// Date
 			uSetWindowText(date, static_cast<pfc::string8>(release->get_date()));
-
+			// Barcode
+			uSetWindowText(barcode, release->get_barcode());
+			// Type
 			type.SetCurSel(get_current_release()->get_release_group()->get_type_index());
+			// Status
 			status.SetCurSel(get_current_release()->get_status_index());
 
 			// VA?
@@ -269,6 +278,12 @@ namespace foo_musicbrainz {
 			uGetWindowText(date, str);
 			get_current_release()->set_date(Date(str));
 			listview_helper::set_item_text(release_list, current_release, 2, str);
+		}
+
+		void on_barcode_update(UINT, int, CWindow) {
+			pfc::string8 barcode_value;
+			uGetWindowText(date, barcode_value);
+			get_current_release()->set_barcode(barcode_value);
 		}
 	};
 }
