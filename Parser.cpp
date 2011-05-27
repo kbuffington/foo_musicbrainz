@@ -20,13 +20,13 @@ ArtistCredit *Parser::artist_credit(const ticpp::Element *artist_credit_node) {
 		->FirstChildElement("artist");
 
 	auto artist_credit = new ArtistCredit();
-	artist_credit->set_id(artist_node->GetAttribute("id").data());
+	artist_credit->set_id(Parser::id(artist_node));
 
 	auto child = artist_node->FirstChildElement(false);
 	for (; child; child = child->NextSiblingElement(false)) {
 		auto name = child->Value();
 		if (name == "name") {
-			artist_credit->set_name(child->GetText().data());
+			artist_credit->set_name(Parser::text(child));
 		}
 	}
 		
@@ -36,17 +36,17 @@ ArtistCredit *Parser::artist_credit(const ticpp::Element *artist_credit_node) {
 Label *Parser::label(const ticpp::Element *label_node) {
 	auto label = new Label();
 
-	label->set_id(label_node->GetAttribute("id").data());
+	label->set_id(Parser::id(label_node));
 
 	auto child = label_node->FirstChildElement(false);
 	for (; child; child = child->NextSiblingElement(false)) {
 		auto name = child->Value();
 		if (name == "name") {
-			label->set_name(child->GetText().data());
+			label->set_name(Parser::text(child));
 		} else if (name == "sort-name") {
-			label->set_sort_name(child->GetText().data());
+			label->set_sort_name(Parser::text(child));
 		} else if (name == "label-code") {
-			label->set_label_code(child->GetText().data());
+			label->set_label_code(Parser::text(child));
 		} 
 	}
 
@@ -60,7 +60,7 @@ LabelInfo *Parser::label_info(const ticpp::Element *label_info_node) {
 	for (; child; child = child->NextSiblingElement(false)) {
 		auto name = child->Value();
 		if (name == "catalog-number") {
-			label_info->set_catalog_number(child->GetText().data());
+			label_info->set_catalog_number(Parser::text(child));
 		} else if (name == "label") {
 			auto label = Parser::label(child);
 			label_info->set_label(label);
@@ -92,10 +92,9 @@ Medium *Parser::medium(const ticpp::Element * medium_node) {
 	for (; child; child = child->NextSiblingElement(false)) {
 		auto name = child->Value();
 		if (name == "position") {
-			auto position = atoi(child->GetText().data());
-			medium->set_position(position);
+			medium->set_position(Parser::integer(child));
 		} else if (name == "title") {
-			medium->set_title(child->GetText().data());
+			medium->set_title(Parser::text(child));
 		} else if (name == "track-list") {
 			auto track_list = Parser::track_list(child);
 			medium->set_track_list(track_list);
@@ -122,25 +121,25 @@ MediumList *Parser::medium_list(const ticpp::Element *medium_list_node) {
 
 foo_musicbrainz::Release *Parser::release(const ticpp::Element *release_node) {
 	auto release = new Release();
-	release->set_id(release_node->GetAttribute("id").data());
+	release->set_id(Parser::id(release_node));
 
 	auto child = release_node->FirstChildElement(false);
 	for (; child; child = child->NextSiblingElement(false)) {
 		auto name = child->Value();
 		if (name == "title") {
-			release->set_title(child->GetText().data());
+			release->set_title(Parser::text(child));
 		} else if (name == "title") {
-			release->set_title(child->GetText().data());
+			release->set_title(Parser::text(child));
 		} else if (name == "status") {
-			release->set_status(child->GetText().data());
+			release->set_status(Parser::text(child));
 		} else if (name == "date") {
-			release->set_date(Date(child->GetText().data()));
+			release->set_date(Date(Parser::text(child)));
 		} else if (name == "country") {
-			release->set_country(child->GetText().data());
+			release->set_country(Parser::text(child));
 		} else if (name == "barcode") {
-			release->set_barcode(child->GetText().data());
+			release->set_barcode(Parser::text(child));
 		} else if (name == "asin") {
-			release->set_asin(child->GetText().data());
+			release->set_asin(Parser::text(child));
 		} else if (name == "artist-credit") {
 			auto artist_credit = Parser::artist_credit(child);
 			release->set_artist_credit(artist_credit);
@@ -161,14 +160,14 @@ foo_musicbrainz::Release *Parser::release(const ticpp::Element *release_node) {
 
 ReleaseGroup *Parser::release_group(const ticpp::Element *release_group_node) {
 	auto release_group = new ReleaseGroup();
-	release_group->set_id(release_group_node->GetAttribute("id").data());
-	release_group->set_type(release_group_node->GetAttribute("type").data());
+	release_group->set_id(Parser::id(release_group_node));
+	release_group->set_type(Parser::text_attr(release_group_node, "type"));
 
 	auto child = release_group_node->FirstChildElement(false);
 	for (; child; child = child->NextSiblingElement(false)) {
 		auto name = child->Value();
 		if (name == "title") {
-			release_group->set_title(child->GetText().data());
+			release_group->set_title(Parser::text(child));
 		}
 	}
 
@@ -177,16 +176,15 @@ ReleaseGroup *Parser::release_group(const ticpp::Element *release_group_node) {
 
 Recording *Parser::recording(const ticpp::Element *recording_node) {
 	auto recording = new Recording();
-	recording->set_id(recording_node->GetAttribute("id").data());
+	recording->set_id(Parser::id(recording_node));
 
 	auto child = recording_node->FirstChildElement(false);
 	for (; child; child = child->NextSiblingElement(false)) {
 		auto name = child->Value();
 		if (name == "length") {
-			auto length = atoi(child->GetText().data());
-			recording->set_length(length);
+			recording->set_length(Parser::integer(child));
 		} else if (name == "title") {
-			recording->set_title(child->GetText().data());
+			recording->set_title(Parser::text(child));
 		} else if (name == "artist-credit") {
 			auto artist_credit = Parser::artist_credit(child);
 			recording->set_artist_credit(artist_credit);
@@ -203,8 +201,7 @@ Track *Parser::track(const ticpp::Element *track_node) {
 	for (; child; child = child->NextSiblingElement(false)) {
 		auto name = child->Value();
 		if (name == "position") {
-			auto position = atoi(child->GetText().data());
-			track->set_position(position);
+			track->set_position(Parser::integer(child));
 		} else if (name == "recording") {
 			auto recording = Parser::recording(child);
 			track->set_recording(recording);
@@ -227,4 +224,21 @@ TrackList *Parser::track_list(const ticpp::Element *track_list_node) {
 	}
 
 	return track_list;
+}
+
+pfc::string8 Parser::text_attr(const ticpp::Element *element, const char *name) {
+	return element->GetAttribute(name).data();
+}
+
+pfc::string8 Parser::id(const ticpp::Element *element) {
+	return Parser::text_attr(element, "id");
+}
+
+pfc::string8 Parser::text(const ticpp::Element *element) {
+	return element->GetText(false).data();
+}
+
+int Parser::integer(const ticpp::Element *element, int default_value) {
+	auto text = Parser::text(element);
+	return text.is_empty() ? default_value : atoi(text);
 }

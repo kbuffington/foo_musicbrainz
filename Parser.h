@@ -27,6 +27,11 @@ namespace foo_musicbrainz {
 		static Recording *recording(const ticpp::Element *);
 		static Track *track(const ticpp::Element *);
 		static TrackList *track_list(const ticpp::Element *);
+
+		static pfc::string8 text_attr(const ticpp::Element *, const char *);
+		static pfc::string8 id(const ticpp::Element *);
+		static pfc::string8 text(const ticpp::Element *);
+		static int integer(const ticpp::Element *, int default_value = 0);
 	};
 	
 }
