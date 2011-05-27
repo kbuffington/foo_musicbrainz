@@ -14,6 +14,7 @@ namespace foo_musicbrainz {
 	private:
 		CListViewCtrl release_list;
 		ListView medium_list;
+		ListView label_info_listview;
 		ListView track_list;
 		CComboBox type;
 		CComboBox status;
@@ -77,6 +78,7 @@ namespace foo_musicbrainz {
 			static_api_ptr_t<modeless_dialog_manager>()->add(m_hWnd);
 			release_list = GetDlgItem(IDC_RELEASE_LIST);
 			medium_list = GetDlgItem(IDC_MEDIUM_LIST);
+			label_info_listview = GetDlgItem(IDC_LABEL_INFO_LIST);
 			track_list = GetDlgItem(IDC_TRACK_LIST);
 			type = GetDlgItem(IDC_TYPE);
 			status = GetDlgItem(IDC_STATUS);
@@ -90,6 +92,7 @@ namespace foo_musicbrainz {
 			// List view styles
 			auto styles = LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP;
 			release_list.SetExtendedListViewStyle(styles, styles);
+			label_info_listview.SetExtendedListViewStyle(styles, styles);
 			medium_list.SetExtendedListViewStyle(styles, styles);
 			track_list.SetExtendedListViewStyle(styles, styles);
 
@@ -103,6 +106,10 @@ namespace foo_musicbrainz {
 			medium_list.InsertColumn(1, L"#", LVCFMT_RIGHT, 30);
 			medium_list.DeleteColumn(0);
 			listview_helper::insert_column(medium_list, 1, "Title", 49);
+
+			// Event list columns
+			listview_helper::insert_column(label_info_listview, 0, "Label", 80);
+			listview_helper::insert_column(label_info_listview, 1, "Cat#", 80);
 
 			// Adding track list columns
 			listview_helper::insert_column(track_list, 0, "", 0); // Fake column
@@ -173,12 +180,22 @@ namespace foo_musicbrainz {
 				current_medium = 0;
 			}
 
+			// Labels
+			auto label_info_list = get_current_release()->get_label_info_list();
+			label_info_listview.Resize(label_info_list->count());
+			for (size_t i = 0; i < label_info_list->count(); i++) {
+				auto label_item = label_info_list->get(i);
+				listview_helper::set_item_text(label_info_listview, i, 0, label_item->get_label()->get_name());
+				listview_helper::set_item_text(label_info_listview, i, 1, label_item->get_catalog_number());
+			}
+
 			// Link
 			pfc::string8 url_string = "<a href=\"http://musicbrainz.org/release/";
 			url_string += release->get_id();
 			url_string += "\">MusicBrainz release page</a>";
 			uSetWindowText(url, url_string);
 
+			// Tracks
 			update_tracks();
 		}
 
