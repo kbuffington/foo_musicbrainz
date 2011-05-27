@@ -118,6 +118,7 @@
     <ClInclude Include="LabelInfo.h" />
     <ClInclude Include="LabelInfoList.h" />
     <ClInclude Include="ListView.h" />
+    <ClInclude Include="Metadata.h" />
     <ClInclude Include="TagWriter.h" />
     <ClInclude Include="foo_musicbrainz.h" />
     <ClInclude Include="TrackListView.h" />

@@ -7,8 +7,10 @@
 #include "LabelInfoList.h"
 #include "Medium.h"
 #include "MediumList.h"
+#include "Metadata.h"
 #include "Release.h"
 #include "ReleaseGroup.h"
+#include "ReleaseList.h"
 #include "Recording.h"
 #include "Track.h"
 #include "TrackList.h"
@@ -22,8 +24,10 @@ namespace foo_musicbrainz {
 		static LabelInfoList *label_info_list(const ticpp::Element *);
 		static Medium *medium(const ticpp::Element *);
 		static MediumList *medium_list(const ticpp::Element *);
+		static Metadata *metadata(const ticpp::Element *);
 		static Release *release(const ticpp::Element *);
 		static ReleaseGroup *release_group(const ticpp::Element *);
+		static ReleaseList *release_list(const ticpp::Element *);
 		static Recording *recording(const ticpp::Element *);
 		static Track *track(const ticpp::Element *);
 		static TrackList *track_list(const ticpp::Element *);

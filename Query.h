@@ -1,14 +1,13 @@
 #pragma once
 
 #include "foo_musicbrainz.h"
-#include "Release.h"
+#include "Metadata.h"
 
 namespace foo_musicbrainz {
 	class Query {
 	public:
 		Query(pfc::string8 id, pfc::string8 &includes = pfc::string8());
-		Release *get_release();
-		// void perform();
+		Metadata *perform();
 
 	private:
 		pfc::string8 url_encode(pfc::string8 &);

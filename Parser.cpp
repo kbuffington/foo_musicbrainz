@@ -119,6 +119,24 @@ MediumList *Parser::medium_list(const ticpp::Element *medium_list_node) {
 	return medium_list;
 }
 
+Metadata *Parser::metadata(const ticpp::Element *metadata_node) {
+	auto metadata = new Metadata();
+
+	auto child = metadata_node->FirstChildElement(false);
+	for (; child; child = child->NextSiblingElement(false)) {
+		auto name = child->Value();
+		if (name == "release") {
+			auto release = Parser::release(child);
+			metadata->set_release(release);
+		} else if (name == "releas-liste") {
+			auto release_list = Parser::release_list(child);
+			metadata->set_release_list(release_list);
+		}
+	}
+
+	return metadata;
+}
+
 foo_musicbrainz::Release *Parser::release(const ticpp::Element *release_node) {
 	auto release = new Release();
 	release->set_id(Parser::id(release_node));
@@ -172,6 +190,21 @@ ReleaseGroup *Parser::release_group(const ticpp::Element *release_group_node) {
 	}
 
 	return release_group;
+}
+
+ReleaseList *Parser::release_list(const ticpp::Element *release_list_node) {
+	auto release_list = new ReleaseList();
+
+	auto child = release_list_node->FirstChildElement(false);
+	for (; child; child = child->NextSiblingElement(false)) {
+		auto name = child->Value();
+		if (name == "release") {
+			auto release = Parser::release(child);
+			release_list->add(release);
+		}
+	}
+
+	return release_list;
 }
 
 Recording *Parser::recording(const ticpp::Element *recording_node) {

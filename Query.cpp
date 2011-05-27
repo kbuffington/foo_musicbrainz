@@ -1,10 +1,8 @@
 #include "foo_musicbrainz.h"
 #include <Winhttp.h>
 #include "Query.h"
+#include "Metadata.h"
 #include "Parser.h"
-#include "Release.h"
-#include "RequestURL.h"
-#include "Track.h"
 
 using namespace foo_musicbrainz;
 
@@ -99,14 +97,14 @@ ticpp::Element *Query::parse(pfc::string8 &buffer, ticpp::Document &xml) {
 	}
 }
 
-Release *Query::get_release() {
+Metadata *Query::perform() {
 	pfc::string8 buffer;
 	get(buffer);
 	ticpp::Document xml;
 	auto metadata = parse(buffer, xml);
 
 	try {
-		return Parser::release(metadata->FirstChildElement("release"));
+		return Parser::metadata(metadata);
 	} catch (ticpp::Exception) {
 		throw XmlParseError();
 	}
