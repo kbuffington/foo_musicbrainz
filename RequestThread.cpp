@@ -6,10 +6,10 @@ using namespace foo_musicbrainz;
 
 RequestThread::RequestThread(Query *query, HWND window, ReleaseList *mbc) : query(query), window(window), mbc(mbc) {}
 
-namespace foo_musicbrainz {
 void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abort) {
 	try {
 		Release *release = query->get_release();
+		mbc->add(release);
 		PostMessage(window, WM_FOO_MB_UPDATE_RELEASES_LIST, 0, 0);
 		ShowWindow(window, SW_SHOW);
 	} catch (exception_foo_mb_connection_error e) {
@@ -29,5 +29,4 @@ void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abo
 		popup_message::g_show(e.what(), COMPONENT_TITLE, popup_message::icon_error);
 	}
 	delete query;
-}
 }

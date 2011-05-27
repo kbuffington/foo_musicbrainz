@@ -53,8 +53,10 @@ public:
 				url.AddParam("count", count);
 				url.AddParam("cdstubs", "no");
 
-				ReleaseList *mbc = new ReleaseList(p_data);
-				mbc->setDiscId(toc.getDiscID());
+				ReleaseList *mbc = new ReleaseList();
+				pfc::list_t<metadb_handle_ptr> tracks;
+				tracks.add_items(p_data);
+				pfc::string8 discid(toc.getDiscID());
 
 				// new CTaggerDialog(url.GetURL(), mbc);
 				break;
@@ -99,7 +101,9 @@ public:
 					}
 					item->metadb_unlock();
 				}
-				// new CCustomQueryTags(new ReleaseList(p_data), count, artist, album);
+				pfc::list_t<metadb_handle_ptr> tracks;
+				tracks.add_items(p_data);
+				new CCustomQueryTags(new ReleaseList(), tracks, artist, album);
 				break;
 			}
 		case 2:
@@ -141,7 +145,9 @@ public:
 					}
 					item->metadb_unlock();
 				}
-				new CCustomQueryMBID(new ReleaseList(p_data), count, album_id);
+				pfc::list_t<metadb_handle_ptr> tracks;
+				tracks.add_items(p_data);
+				new CCustomQueryMBID(new ReleaseList(), tracks, album_id);
 				break;
 			}
 		case 3:

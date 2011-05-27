@@ -11,14 +11,18 @@ class CCustomQueryMBID : public CDialogImpl<CCustomQueryMBID>
 {
 private:
 	ReleaseList *mbc;
-	unsigned int count;
+	pfc::list_t<metadb_handle_ptr> tracks;
 	CButton ok;
 	pfc::string8 mbid;
 
 public:
 	enum { IDD = IDD_CUSTOM_QUERY_MBID };
 
-	CCustomQueryMBID(ReleaseList *_mbc, unsigned int _count, pfc::string8 &_mbid) : CDialogImpl<CCustomQueryMBID>(), mbc(_mbc), count(_count), mbid(_mbid)
+	CCustomQueryMBID(ReleaseList *_mbc, pfc::list_t<metadb_handle_ptr> _tracks, pfc::string8 &_mbid)
+		: CDialogImpl<CCustomQueryMBID>(),
+		mbc(_mbc),
+		tracks(_tracks),
+		mbid(_mbid)
 	{
 		Create(core_api::get_main_window());
 	}
@@ -72,7 +76,7 @@ public:
 		pfc::string8 id = string_utf8_from_window(m_hWnd, IDC_MBID);
 		pfc::string8 includes = "artists+labels+recordings+release-groups";
 		auto query = new foo_musicbrainz::Query(id, includes);
-		new CTaggerDialog(query, mbc);
+		new CTaggerDialog(query, mbc, tracks);
 		DestroyWindow();
 	}
 };

@@ -7,7 +7,7 @@ class CCustomQueryTags : public CDialogImpl<CCustomQueryTags>
 {
 private:
 	ReleaseList *mbc;
-	unsigned int count;
+	pfc::list_t<metadb_handle_ptr> tracks;
 	CButton ok;
 	pfc::string8 artist;
 	pfc::string8 album;
@@ -15,8 +15,12 @@ private:
 public:
 	enum { IDD = IDD_CUSTOM_QUERY_TAGS };
 
-	CCustomQueryTags(ReleaseList *_mbc, unsigned int _count, pfc::string8 &_artist, pfc::string8 &_album)
-		: CDialogImpl<CCustomQueryTags>(), mbc(_mbc), count(_count), artist(_artist), album(_album)
+	CCustomQueryTags(ReleaseList *_mbc, pfc::list_t<metadb_handle_ptr> _tracks, pfc::string8 &_artist, pfc::string8 &_album)
+		: CDialogImpl<CCustomQueryTags>(),
+		mbc(_mbc),
+		tracks(_tracks),
+		artist(_artist),
+		album(_album)
 	{
 		Create(core_api::get_main_window());
 	}
@@ -78,7 +82,7 @@ public:
 			RequestURL url;
 			url.AddParam("artist", artist);
 			url.AddParam("title", album);
-			url.AddParam("count", count);
+			url.AddParam("count", tracks.get_count());
 			// new CTaggerDialog(url.GetURL(), mbc);
 			DestroyWindow();
 		}
