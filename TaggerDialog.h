@@ -29,12 +29,12 @@ namespace foo_musicbrainz {
 	public:
 		enum { IDD = IDD_TAGGER };
 
-		TaggerDialog(foo_musicbrainz::Query *query, ReleaseList *_mbc, pfc::list_t<metadb_handle_ptr> _tracks) :
+		TaggerDialog(foo_musicbrainz::Query *query, pfc::list_t<metadb_handle_ptr> _tracks) :
 			CDialogImpl<TaggerDialog>(),
-			mbc(_mbc),
 			tracks(_tracks),
 			current_release(0)
 		{
+			mbc = new ReleaseList();
 			Create(core_api::get_main_window());
 			threaded_process::g_run_modeless(new service_impl_t<foo_musicbrainz::RequestThread>(query, m_hWnd, mbc),
 				threaded_process::flag_show_progress | threaded_process::flag_show_abort, m_hWnd, "Quering information from MusicBrainz");

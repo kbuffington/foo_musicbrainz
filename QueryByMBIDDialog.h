@@ -7,7 +7,6 @@
 namespace foo_musicbrainz {
 	class QueryByMBIDDialog : public CDialogImpl<QueryByMBIDDialog> {
 	private:
-		ReleaseList *mbc;
 		pfc::list_t<metadb_handle_ptr> tracks;
 		CButton ok;
 		pfc::string8 mbid;
@@ -15,9 +14,8 @@ namespace foo_musicbrainz {
 	public:
 		enum { IDD = IDD_CUSTOM_QUERY_MBID };
 
-		QueryByMBIDDialog(ReleaseList *_mbc, pfc::list_t<metadb_handle_ptr> _tracks, pfc::string8 &_mbid)
+		QueryByMBIDDialog(pfc::list_t<metadb_handle_ptr> _tracks, pfc::string8 &_mbid)
 			: CDialogImpl<QueryByMBIDDialog>(),
-			mbc(_mbc),
 			tracks(_tracks),
 			mbid(_mbid)
 		{
@@ -40,7 +38,6 @@ namespace foo_musicbrainz {
 		}
 
 		void OnClose() {
-			delete mbc;
 			DestroyWindow();
 		}
 
@@ -58,7 +55,6 @@ namespace foo_musicbrainz {
 		}
 
 		void OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl) {
-			delete mbc;
 			DestroyWindow();
 		}
 
@@ -66,7 +62,7 @@ namespace foo_musicbrainz {
 			pfc::string8 id = string_utf8_from_window(m_hWnd, IDC_MBID);
 			pfc::string8 includes = "artists+labels+recordings+release-groups";
 			auto query = new foo_musicbrainz::Query(id, includes);
-			new TaggerDialog(query, mbc, tracks);
+			new TaggerDialog(query, tracks);
 			DestroyWindow();
 		}
 	};

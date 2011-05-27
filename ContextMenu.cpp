@@ -1,6 +1,5 @@
 #include <regex>
 #include "foo_musicbrainz.h"
-#include "ReleaseList.h"
 #include "RequestURL.h"
 #include "TOC.h"
 #include "Track.h"
@@ -46,7 +45,6 @@ namespace foo_musicbrainz {
 					url.AddParam("count", count);
 					url.AddParam("cdstubs", "no");
 
-					ReleaseList *mbc = new ReleaseList();
 					pfc::list_t<metadb_handle_ptr> tracks;
 					tracks.add_items(p_data);
 					pfc::string8 discid(toc.getDiscID());
@@ -95,7 +93,7 @@ namespace foo_musicbrainz {
 					}
 					pfc::list_t<metadb_handle_ptr> tracks;
 					tracks.add_items(p_data);
-					new QueryByTagsDialog(new ReleaseList(), tracks, artist, album);
+					new QueryByTagsDialog(tracks, artist, album);
 					break;
 				}
 				case 2: {
@@ -138,7 +136,7 @@ namespace foo_musicbrainz {
 					}
 					pfc::list_t<metadb_handle_ptr> tracks;
 					tracks.add_items(p_data);
-					new QueryByMBIDDialog(new ReleaseList(), tracks, album_id);
+					new QueryByMBIDDialog(tracks, album_id);
 					break;
 				}
 				case 3: {

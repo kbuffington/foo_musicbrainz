@@ -8,7 +8,6 @@
 namespace foo_musicbrainz {
 	class QueryByTagsDialog : public CDialogImpl<QueryByTagsDialog> {
 	private:
-		ReleaseList *mbc;
 		pfc::list_t<metadb_handle_ptr> tracks;
 		CButton ok;
 		pfc::string8 artist;
@@ -17,9 +16,8 @@ namespace foo_musicbrainz {
 	public:
 		enum { IDD = IDD_CUSTOM_QUERY_TAGS };
 
-		QueryByTagsDialog(ReleaseList *_mbc, pfc::list_t<metadb_handle_ptr> _tracks, pfc::string8 &_artist, pfc::string8 &_album)
+		QueryByTagsDialog(pfc::list_t<metadb_handle_ptr> _tracks, pfc::string8 &_artist, pfc::string8 &_album)
 			: CDialogImpl<QueryByTagsDialog>(),
-			mbc(_mbc),
 			tracks(_tracks),
 			artist(_artist),
 			album(_album)
@@ -44,7 +42,6 @@ namespace foo_musicbrainz {
 		}
 
 		void OnClose() {
-			delete mbc;
 			DestroyWindow();
 		}
 
@@ -63,7 +60,6 @@ namespace foo_musicbrainz {
 		}
 
 		void OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl) {
-			delete mbc;
 			DestroyWindow();
 		}
 
@@ -75,7 +71,7 @@ namespace foo_musicbrainz {
 				url.AddParam("artist", artist);
 				url.AddParam("title", album);
 				url.AddParam("count", tracks.get_count());
-				// new TaggerDialog(url.GetURL(), mbc);
+				// new TaggerDialog(url.GetURL());
 				DestroyWindow();
 			}
 		}
