@@ -24,6 +24,7 @@ namespace foo_musicbrainz {
 		ReleaseList *mbc;
 		pfc::list_t<metadb_handle_ptr> tracks;
 		TrackListView track_list_view;
+		bool loaded;
 		size_t current_release;
 
 	public:
@@ -32,6 +33,7 @@ namespace foo_musicbrainz {
 		TaggerDialog(foo_musicbrainz::Query *query, pfc::list_t<metadb_handle_ptr> _tracks) :
 			CDialogImpl<TaggerDialog>(),
 			tracks(_tracks),
+			loaded(false),
 			current_release(0)
 		{
 			mbc = new ReleaseList();
@@ -42,8 +44,7 @@ namespace foo_musicbrainz {
 
 		BEGIN_MSG_MAP(TaggerDialog)
 			MSG_WM_INITDIALOG(OnInitDialog)
-			MESSAGE_HANDLER(WM_FOO_MB_UPDATE_RELEASES_LIST, OnUpdateReleaseList)
-			MESSAGE_HANDLER(WM_FOO_MB_UPDATE_RELEASE, OnUpdateRelease)
+			MSG_WM_SHOWWINDOW(OnShowWindow)
 			MSG_WM_CLOSE(OnClose)
 			NOTIFY_HANDLER_EX(IDC_RELEASE_LIST, LVN_ITEMCHANGED, OnReleaseListChange)
 			NOTIFY_HANDLER_EX(IDC_TRACK_LIST, NM_CLICK, OnTrackListClick)
@@ -106,7 +107,11 @@ namespace foo_musicbrainz {
 			return true;
 		}
 
-		LRESULT OnUpdateReleaseList(UINT Message, WPARAM wParam, LPARAM lParam, BOOL bHandled) {
+		void OnShowWindow(BOOL bShow, UINT nStatus) {
+			SetMsgHandled(FALSE);
+			if (loaded) return;
+			loaded = true;
+			
 			for (unsigned int i = 0; i < mbc->count(); i++) {
 				listview_helper::insert_item(release_list, i, (*mbc)[i]->get_artist_credit()->get_name(), NULL);
 				listview_helper::set_item_text(release_list, i, 1, (*mbc)[i]->get_title());
@@ -121,11 +126,10 @@ namespace foo_musicbrainz {
 			//	sprintf(track_number_str, "%u", i+1);
 			//	listview_helper::insert_item(track_list, i, track_number_str, NULL);
 			//}
-			SendMessage(WM_FOO_MB_UPDATE_RELEASE, 0, 0);
-			return 0;
+			UpdateRelease();
 		}
 
-		LRESULT OnUpdateRelease(UINT Message, WPARAM wParam, LPARAM lParam, BOOL bHandled) {
+		void UpdateRelease() {
 			Release *release = get_current_release();
 
 			uSetWindowText(artist, release->get_artist_credit()->get_name());
@@ -157,7 +161,6 @@ namespace foo_musicbrainz {
 			url_string += release->get_id();
 			url_string += "\">MusicBrainz release page</a>";
 			uSetWindowText(url, url_string);
-			return 0;
 		}
 
 		LRESULT OnTrackListClick(LPNMHDR pnmh) {
@@ -172,7 +175,7 @@ namespace foo_musicbrainz {
 				if (current_release != ((LPNMITEMACTIVATE)pnmh)->iItem) {
 					if (track_list_view.IsActive()) track_list_view.Abort();
 					current_release = ((LPNMITEMACTIVATE)pnmh)->iItem;
-					SendMessage(WM_FOO_MB_UPDATE_RELEASE, 0, 0);
+					UpdateRelease();
 				}
 			}
 			return 0;

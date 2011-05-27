@@ -10,7 +10,6 @@ void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abo
 	try {
 		Release *release = query->get_release();
 		mbc->add(release);
-		PostMessage(window, WM_FOO_MB_UPDATE_RELEASES_LIST, 0, 0);
 		ShowWindow(window, SW_SHOW);
 	} catch (exception_foo_mb_connection_error e) {
 		PostMessage(window, WM_CLOSE, 0, 0);
