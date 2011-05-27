@@ -35,6 +35,9 @@ pfc::string8 Query::url_encode(pfc::string8 &in) {
 }
 
 void Query::get(pfc::string8 &buffer) {
+#ifdef DEBUG
+	console::printf("MusicBrainz tagger: accessing http://musicbrainz.org%s", url.get_ptr());
+#endif
 	pfc::stringcvt::string_os_from_utf8 url_wide(url);
 	HINTERNET hSession, hConnect, hRequest;
 
