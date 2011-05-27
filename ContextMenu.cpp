@@ -33,7 +33,7 @@ namespace foo_musicbrainz {
 
 		void context_command(unsigned p_index, metadb_handle_list_cref p_data, const GUID& p_caller) {
 			unsigned int count = p_data.get_count();
-			if (p_index <= 2 && count > 99) {
+			if ((p_index == 0 || p_index == 3) && count > 99) {
 				popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
 				return;
 			}
@@ -172,29 +172,45 @@ namespace foo_musicbrainz {
 			return true;
 		}
 
-		bool context_get_display(unsigned p_index, metadb_handle_list_cref p_data, pfc::string_base & p_out, unsigned & p_displayflags, const GUID & p_caller) {
-			PFC_ASSERT(p_index>=0 && p_index<get_num_items());
-			unsigned int count = p_data.get_count();
-			if (count <= 99) {
-				if (p_index == 0 || p_index == 3) {
-					const file_info *info;
-					for (t_size i = 0; i < count; i++) {
-						p_data.get_item(i)->metadb_lock();
-						if (!p_data.get_item(i)->get_info_locked(info) || info->info_get_length_samples() % 588 != 0) {
-							p_data.get_item(i)->metadb_unlock();
-							return false;
-						}
-						p_data.get_item(i)->metadb_unlock();
-					}
-				}
-				if (p_index == 2 && !Preferences::write_ids.get_value()) {
-					return false;
-				}
-				get_item_name(p_index, p_out);
-				return true;
-			} else {
+		bool context_get_display_toc(metadb_handle_list_cref p_data) {
+			t_size count = p_data.get_count();
+			if (count > 99) {
 				return false;
 			}
+			const file_info *info;
+			for (t_size i = 0; i < count; i++) {
+				p_data.get_item(i)->metadb_lock();
+				if (!p_data.get_item(i)->get_info_locked(info) || info->info_get_length_samples() % 588 != 0) {
+					p_data.get_item(i)->metadb_unlock();
+					return false;
+				}
+				p_data.get_item(i)->metadb_unlock();
+			}
+			return true;
+		}
+
+		bool context_get_display_tags(unsigned p_idex) {
+			return Preferences::write_ids.get_value();
+		}
+
+		bool context_get_display(unsigned p_index, metadb_handle_list_cref p_data, pfc::string_base & p_out, unsigned & p_displayflags, const GUID & p_caller) {
+			PFC_ASSERT(p_index>=0 && p_index<get_num_items());
+			bool result = true;
+			switch (p_index) {
+			case 0:
+				result = context_get_display_toc(p_data);
+				break;
+			case 1:
+				result = context_get_display_tags(p_index);
+				break;
+			case 3:
+				result = context_get_display_toc(p_data);
+				break;
+			}
+			if (result) {
+				get_item_name(p_index, p_out);
+			}
+			return result;
 		}
 	};
 
