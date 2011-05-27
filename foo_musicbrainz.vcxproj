@@ -97,7 +97,7 @@
     <ClCompile Include="foo_mb_file_info_filter_impl.cpp" />
     <ClCompile Include="foo_musicbrainz.cpp" />
     <ClCompile Include="list_view_edit.cpp" />
-    <ClCompile Include="menu.cpp" />
+    <ClCompile Include="ContextMenu.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="preferences.cpp" />
     <ClCompile Include="Release.cpp" />
