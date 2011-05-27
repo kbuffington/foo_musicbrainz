@@ -2,7 +2,7 @@
 
 #include <regex>
 #include "Query.h"
-#include "CTaggerDialog.h"
+#include "TaggerDialog.h"
 
 namespace foo_musicbrainz {
 	class QueryByMBIDDialog : public CDialogImpl<QueryByMBIDDialog> {
@@ -66,7 +66,7 @@ namespace foo_musicbrainz {
 			pfc::string8 id = string_utf8_from_window(m_hWnd, IDC_MBID);
 			pfc::string8 includes = "artists+labels+recordings+release-groups";
 			auto query = new foo_musicbrainz::Query(id, includes);
-			new CTaggerDialog(query, mbc, tracks);
+			new TaggerDialog(query, mbc, tracks);
 			DestroyWindow();
 		}
 	};

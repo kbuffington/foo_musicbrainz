@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
-    <Filter Include="Classes">
-      <UniqueIdentifier>{906a987c-c2fc-4db5-97c8-72849352cf79}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="foo_mb_file_info_filter_impl.cpp">
@@ -98,9 +95,6 @@
     <ClInclude Include="Track.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CTaggerDialog.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
     <ClInclude Include="CoreEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -144,6 +138,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="QueryByTagsDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TaggerDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

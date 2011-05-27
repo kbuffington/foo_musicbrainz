@@ -6,7 +6,7 @@
 #include "Track.h"
 #include "QueryByMBIDDialog.h"
 #include "QueryByTagsDialog.h"
-#include "CTaggerDialog.h"
+#include "TaggerDialog.h"
 
 using namespace std::tr1;
 using namespace foo_musicbrainz;
@@ -59,7 +59,7 @@ public:
 				tracks.add_items(p_data);
 				pfc::string8 discid(toc.getDiscID());
 
-				// new CTaggerDialog(url.GetURL(), mbc);
+				// new TaggerDialog(url.GetURL(), mbc);
 				break;
 			}
 		case 1:

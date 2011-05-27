@@ -3,7 +3,7 @@
 #include "foo_musicbrainz.h"
 #include "ReleaseList.h"
 #include "RequestURL.h"
-#include "CTaggerDialog.h"
+#include "TaggerDialog.h"
 
 namespace foo_musicbrainz {
 	class QueryByTagsDialog : public CDialogImpl<QueryByTagsDialog> {
@@ -75,7 +75,7 @@ namespace foo_musicbrainz {
 				url.AddParam("artist", artist);
 				url.AddParam("title", album);
 				url.AddParam("count", tracks.get_count());
-				// new CTaggerDialog(url.GetURL(), mbc);
+				// new TaggerDialog(url.GetURL(), mbc);
 				DestroyWindow();
 			}
 		}

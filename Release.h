@@ -20,6 +20,10 @@ namespace foo_musicbrainz {
 		STRING_LIST(status, statuses, 4)
 
 	public:
+		bool is_various() {
+			return false;
+		}
+
 		Release() :
 			CoreEntity(),
 			status(0),
