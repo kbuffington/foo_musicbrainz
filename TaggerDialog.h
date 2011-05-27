@@ -20,8 +20,6 @@ namespace foo_musicbrainz {
 		CEdit artist;
 		CEdit album;
 		CEdit date;
-		CEdit disc;
-		CEdit discsubtitle;
 		CEdit url;
 		ReleaseList *mbc;
 		pfc::list_t<metadb_handle_ptr> tracks;
@@ -83,8 +81,6 @@ namespace foo_musicbrainz {
 			artist = GetDlgItem(IDC_ARTIST);
 			album = GetDlgItem(IDC_ALBUM);
 			date = GetDlgItem(IDC_DATE);
-			disc = GetDlgItem(IDC_DISC);
-			discsubtitle = GetDlgItem(IDC_DISCSUBTITLE);
 			track_list_view.Attach(track_list, mbc);
 		
 			// List view styles
