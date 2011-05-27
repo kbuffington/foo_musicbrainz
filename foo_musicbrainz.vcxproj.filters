@@ -36,9 +36,6 @@
     <ClCompile Include="Release.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ReleaseList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="RequestURL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -101,9 +98,6 @@
     <ClInclude Include="Track.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CCustomQueryMBID.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
     <ClInclude Include="CCustomQueryTags.h">
       <Filter>Classes</Filter>
     </ClInclude>
@@ -147,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ReleaseGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryByMBIDDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

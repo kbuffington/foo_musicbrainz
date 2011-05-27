@@ -4,11 +4,12 @@
 #include "RequestURL.h"
 #include "TOC.h"
 #include "Track.h"
-#include "CCustomQueryMBID.h"
+#include "QueryByMBIDDialog.h"
 #include "CCustomQueryTags.h"
 #include "CTaggerDialog.h"
 
 using namespace std::tr1;
+using namespace foo_musicbrainz;
 
 extern cfg_bool cfg_write_ids;
 class foo_mb_menu : public contextmenu_item_simple
@@ -147,7 +148,7 @@ public:
 				}
 				pfc::list_t<metadb_handle_ptr> tracks;
 				tracks.add_items(p_data);
-				new CCustomQueryMBID(new ReleaseList(), tracks, album_id);
+				new QueryByMBIDDialog(new ReleaseList(), tracks, album_id);
 				break;
 			}
 		case 3:
