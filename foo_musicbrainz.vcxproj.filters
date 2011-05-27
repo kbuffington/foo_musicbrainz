@@ -146,6 +146,9 @@
     <ClInclude Include="TrackListView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ListView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="foo_musicbrainz.rc">
