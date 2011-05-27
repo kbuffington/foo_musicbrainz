@@ -48,27 +48,27 @@ int Date::compare(const Date &left, const Date &right) {
 }
 		
 inline bool operator>(const Date &left, const Date &right) {
-	Date::compare(left, right) == 1;
+	return Date::compare(left, right) == 1;
 }
 
 inline bool operator<(const Date &left, const Date &right) {
-	Date::compare(left, right) == -1;
+	return Date::compare(left, right) == -1;
 }
 
 inline bool operator>=(const Date &left, const Date &right) {
-	Date::compare(left, right) != -1;
+	return Date::compare(left, right) != -1;
 }
 
 inline bool operator<=(const Date &left, const Date &right) {
-	Date::compare(left, right) != 1;
+	return Date::compare(left, right) != 1;
 }
 
 inline bool operator==(const Date &left, const Date &right) {
-	Date::compare(left, right) == 0;
+	return Date::compare(left, right) == 0;
 }
 
 inline bool operator!=(const Date &left, const Date &right) {
-	Date::compare(left, right) != 0;
+	return Date::compare(left, right) != 0;
 }
 
 Date::operator pfc::string8() const {
