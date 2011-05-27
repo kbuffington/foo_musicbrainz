@@ -10,10 +10,8 @@
 #define IDC_TRACK_LIST                  1002
 #define IDC_URL                         1003
 #define IDC_DATE                        1016
-#define IDC_DISC                        1017
 #define IDC_TYPE                        1018
 #define IDC_STATUS                      1019
-#define IDC_DISCSUBTITLE                1020
 #define IDC_ARTIST                      1023
 #define IDC_ALBUM                       1024
 #define IDC_MBID                        1025
@@ -24,7 +22,7 @@
 #define IDC_ALBUMTYPE_DATA              1032
 #define IDC_ALBUMSTATUS                 1033
 #define IDC_ALBUMSTATUS_DATA            1034
-#define IDC_DISC_LIST                   1039
+#define IDC_MEDIUM_LIST                 1039
 #define IDC_LABEL_LIST                  1041
 #define IDC_BARCODE                     1042
 

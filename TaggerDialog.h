@@ -26,7 +26,7 @@ namespace foo_musicbrainz {
 		TrackListView track_list_view;
 		bool loaded;
 		size_t current_release;
-		size_t current_disc;
+		size_t current_medium;
 
 	public:
 		enum { IDD = IDD_TAGGER };
@@ -36,7 +36,7 @@ namespace foo_musicbrainz {
 			tracks(_tracks),
 			loaded(false),
 			current_release(0),
-			current_disc(0)
+			current_medium(0)
 		{
 			mbc = new ReleaseList();
 			Create(core_api::get_main_window());
@@ -67,13 +67,13 @@ namespace foo_musicbrainz {
 		}
 
 		Medium *get_current_medium() {
-			return get_current_release()->get_medium_list()->get(current_disc);
+			return get_current_release()->get_medium_list()->get(current_medium);
 		}
 
 		bool OnInitDialog(CWindow wndFocus, LPARAM lInitParam) {
 			static_api_ptr_t<modeless_dialog_manager>()->add(m_hWnd);
 			release_list = GetDlgItem(IDC_RELEASE_LIST);
-			medium_list = GetDlgItem(IDC_DISC_LIST);
+			medium_list = GetDlgItem(IDC_MEDIUM_LIST);
 			track_list = GetDlgItem(IDC_TRACK_LIST);
 			type = GetDlgItem(IDC_TYPE);
 			status = GetDlgItem(IDC_STATUS);
@@ -94,7 +94,7 @@ namespace foo_musicbrainz {
 			listview_helper::insert_column(release_list, 1, "Release", 115);
 			listview_helper::insert_column(release_list, 2, "Date", 49);
 
-			// Disc list columns
+			// Medium list columns
 			listview_helper::insert_column(medium_list, 0, "", 0); // Fake column
 			medium_list.InsertColumn(1, L"#", LVCFMT_RIGHT, 30);
 			medium_list.DeleteColumn(0);
@@ -158,7 +158,7 @@ namespace foo_musicbrainz {
 				listview_helper::insert_column(track_list, 2, "Track artist", 130);
 			}
 
-			// Discs
+			// Media
 			auto media = get_current_release()->get_medium_list();
 			medium_list.Resize(media->count());
 			for (size_t item = 0; item < media->count(); item++) {
