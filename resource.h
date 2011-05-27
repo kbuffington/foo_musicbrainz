@@ -24,6 +24,9 @@
 #define IDC_ALBUMTYPE_DATA              1032
 #define IDC_ALBUMSTATUS                 1033
 #define IDC_ALBUMSTATUS_DATA            1034
+#define IDC_DISC_LIST                   1039
+#define IDC_LABEL_LIST                  1041
+#define IDC_BARCODE                     1042
 
 // Next default values for new objects
 // 
@@ -32,7 +35,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        106
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1039
+#define _APS_NEXT_CONTROL_VALUE         1041
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

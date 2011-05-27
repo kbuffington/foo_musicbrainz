@@ -13,13 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Russian resources
+// Russian (Russia) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
-#ifdef _WIN32
 LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
 #pragma code_page(1251)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -73,7 +71,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_PREFERENCES, DIALOG
     BEGIN
@@ -85,18 +83,16 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // Russian resources
+#endif    // Russian (Russia) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #pragma code_page(1252)
-#endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -116,33 +112,33 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,128,44,50,14
 END
 
-IDD_TAGGER DIALOGEX 0, 0, 321, 361
+IDD_TAGGER DIALOGEX 0, 0, 383, 382
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "MusicBrainz Tagger"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Releases",IDC_STATIC,7,7,307,75
-    CONTROL         "",IDC_RELEASE_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_NOSORTHEADER | WS_CLIPCHILDREN | WS_BORDER | WS_TABSTOP,15,16,294,60
-    GROUPBOX        "Release info",IDC_STATIC,7,85,307,96
+    GROUPBOX        "Releases",IDC_STATIC,7,7,369,75
+    CONTROL         "",IDC_RELEASE_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_NOSORTHEADER | WS_CLIPCHILDREN | WS_BORDER | WS_TABSTOP,15,16,354,60
+    GROUPBOX        "Release info",IDC_STATIC,7,85,369,66
     RTEXT           "Artist",IDC_STATIC,32,101,18,8
-    EDITTEXT        IDC_ARTIST,52,99,255,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ARTIST,52,99,157,12,ES_AUTOHSCROLL
     RTEXT           "Album",IDC_STATIC,30,117,20,8
-    EDITTEXT        IDC_ALBUM,52,115,255,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_ALBUM,52,115,155,12,ES_AUTOHSCROLL
     RTEXT           "Date",IDC_STATIC,34,133,16,8
     EDITTEXT        IDC_DATE,52,131,111,12,ES_AUTOHSCROLL
-    RTEXT           "Disc number",IDC_STATIC,10,149,40,8
-    EDITTEXT        IDC_DISC,52,147,111,12,ES_AUTOHSCROLL
-    RTEXT           "Disc subtitle",IDC_STATIC,11,165,39,8
-    EDITTEXT        IDC_DISCSUBTITLE,52,163,111,12,ES_AUTOHSCROLL
-    LTEXT           "Type",IDC_STATIC,175,133,17,8
-    COMBOBOX        IDC_TYPE,195,131,111,12,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Status",IDC_STATIC,170,149,22,8
-    COMBOBOX        IDC_STATUS,195,147,111,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    GROUPBOX        "Tracks",IDC_STATIC,7,184,307,151
-    CONTROL         "",IDC_TRACK_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_NOSORTHEADER | WS_CLIPCHILDREN | WS_BORDER | WS_TABSTOP,15,194,294,134
-    CONTROL         "Link",IDC_URL,"SysLink",WS_TABSTOP,15,343,171,8
-    DEFPUSHBUTTON   "Update files",IDOK,208,340,50,14
-    PUSHBUTTON      "Close",IDCANCEL,264,340,50,14
+    LTEXT           "Type",IDC_STATIC,216,101,17,8
+    COMBOBOX        IDC_TYPE,241,99,111,12,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Status",IDC_STATIC,215,114,22,8
+    COMBOBOX        IDC_STATUS,241,116,111,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Tracks",IDC_STATIC,7,218,369,140
+    CONTROL         "",IDC_TRACK_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_NOSORTHEADER | WS_CLIPCHILDREN | WS_BORDER | WS_TABSTOP,22,226,354,125
+    CONTROL         "Link",IDC_URL,"SysLink",WS_TABSTOP,7,367,171,8
+    DEFPUSHBUTTON   "Update files",IDOK,270,361,50,14
+    PUSHBUTTON      "Close",IDCANCEL,326,361,50,14
+    CONTROL         "",IDC_DISC_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,150,178,50
+    RTEXT           "Barcode",IDC_STATIC,205,136,27,8
+    CONTROL         "",IDC_LABEL_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,198,151,178,50
+    EDITTEXT        IDC_BARCODE,237,134,116,14,ES_AUTOHSCROLL
 END
 
 IDD_CUSTOM_QUERY_MBID DIALOGEX 0, 0, 185, 68
@@ -163,7 +159,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_CUSTOM_QUERY_TAGS, DIALOG
     BEGIN
@@ -176,9 +172,9 @@ BEGIN
     IDD_TAGGER, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 314
+        RIGHTMARGIN, 376
         TOPMARGIN, 7
-        BOTTOMMARGIN, 354
+        BOTTOMMARGIN, 375
     END
 
     IDD_CUSTOM_QUERY_MBID, DIALOG
@@ -191,7 +187,7 @@ BEGIN
 END
 #endif    // APSTUDIO_INVOKED
 
-#endif    // English (U.S.) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
