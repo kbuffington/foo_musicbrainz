@@ -14,7 +14,7 @@ namespace foo_musicbrainz {
 	private:
 		CListViewCtrl release_list;
 		ListView medium_list;
-		CListViewCtrl track_list;
+		ListView track_list;
 		CComboBox type;
 		CComboBox status;
 		CEdit artist;
@@ -49,6 +49,7 @@ namespace foo_musicbrainz {
 			MSG_WM_SHOWWINDOW(OnShowWindow)
 			MSG_WM_CLOSE(OnClose)
 			NOTIFY_HANDLER_EX(IDC_RELEASE_LIST, LVN_ITEMCHANGED, OnReleaseListChange)
+			NOTIFY_HANDLER_EX(IDC_MEDIUM_LIST, LVN_ITEMCHANGED, OnMediumChange)
 			NOTIFY_HANDLER_EX(IDC_TRACK_LIST, NM_CLICK, OnTrackListClick)
 			NOTIFY_HANDLER_EX(IDC_URL, NM_CLICK, OnLink)
 			NOTIFY_HANDLER_EX(IDC_URL, NM_RETURN, OnLink)
@@ -125,17 +126,9 @@ namespace foo_musicbrainz {
 			for (unsigned int i = 0; i < mbc->count(); i++) {
 				listview_helper::insert_item(release_list, i, mbc->get(i)->get_artist_credit()->get_name(), NULL);
 				listview_helper::set_item_text(release_list, i, 1, (*mbc)[i]->get_title());
-				listview_helper::set_item_text(release_list, i, 2, static_cast<pfc::string8>((*mbc)[i]->get_date()).get_ptr());
+				listview_helper::set_item_text(release_list, i, 2, static_cast<pfc::string8>((*mbc)[i]->get_date()));
 			}
 
-			Release *release = get_current_release();
-			// char track_number_str[10];
-
-			//for (unsigned int i = 0; i < release->track_list(); i++)
-			//{
-			//	sprintf(track_number_str, "%u", i+1);
-			//	listview_helper::insert_item(track_list, i, track_number_str, NULL);
-			//}
 			UpdateRelease();
 		}
 
@@ -167,17 +160,46 @@ namespace foo_musicbrainz {
 				listview_helper::set_item_text(medium_list, item, 0, position);
 				listview_helper::set_item_text(medium_list, item, 1, media->get(item)->get_title());
 			}
+			if (current_medium >= media->count()) {
+				current_medium = 0;
+			}
 
 			// Link
 			pfc::string8 url_string = "<a href=\"http://musicbrainz.org/release/";
 			url_string += release->get_id();
 			url_string += "\">MusicBrainz release page</a>";
 			uSetWindowText(url, url_string);
+
+			update_tracks();
+		}
+
+		void update_tracks() {
+			auto tracks = get_current_medium()->get_track_list();
+			track_list.Resize(tracks->count());
+			for (size_t item = 0; item < tracks->count(); item++) {
+				pfc::string8 position;
+				position << tracks->get(item)->get_position();
+				listview_helper::set_item_text(track_list, item, 0, position);
+				auto track = tracks->get(item);
+				listview_helper::set_item_text(track_list, item, 1, track->get_recording()->get_title());
+				listview_helper::set_item_text(track_list, item, 2, track->get_recording()->get_artist_credit()->get_name());
+			}
 		}
 
 		LRESULT OnTrackListClick(LPNMHDR pnmh) {
 			if (((LPNMITEMACTIVATE)pnmh)->iItem != -1 && ((LPNMITEMACTIVATE)pnmh)->iSubItem != 0) {
 				track_list_view.Start(((LPNMITEMACTIVATE)pnmh)->iItem, ((LPNMITEMACTIVATE)pnmh)->iSubItem);
+			}
+			return 0;
+		}
+
+		LRESULT OnMediumChange(LPNMHDR pnmh) {
+			if (((LPNMLISTVIEW)pnmh)->iItem != -1 && ((LPNMLISTVIEW)pnmh)->uChanged & LVIS_DROPHILITED && ((LPNMLISTVIEW)pnmh)->uNewState & LVIS_SELECTED) {
+				if (current_medium != ((LPNMITEMACTIVATE)pnmh)->iItem) {
+					if (track_list_view.IsActive()) track_list_view.Abort();
+					current_medium = ((LPNMITEMACTIVATE)pnmh)->iItem;
+					update_tracks();
+				}
 			}
 			return 0;
 		}
