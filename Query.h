@@ -13,7 +13,7 @@ namespace foo_musicbrainz {
 	private:
 		pfc::string8 url_encode(pfc::string8 &);
 		void get(pfc::string8 &buffer);
-		void parse(pfc::string8 &buffer, ticpp::Document &xml);
+		ticpp::Element *parse(pfc::string8 &buffer, ticpp::Document &xml);
 
 		pfc::string8 url;
 	};

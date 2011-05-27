@@ -158,6 +158,9 @@
     <ClInclude Include="Label.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="exceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="foo_musicbrainz.rc">

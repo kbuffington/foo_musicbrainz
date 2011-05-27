@@ -13,7 +13,4 @@
 #include "../ticpp/ticpp.h"
 #include "meta.h"
 #include "Preferences.h"
-
-PFC_DECLARE_EXCEPTION(exception_foo_mb_connection_error, pfc::exception, "Error connecting to musicbrainz.org.")
-PFC_DECLARE_EXCEPTION(exception_foo_mb_xml_parsing, pfc::exception, "Error parsing XML.")
-PFC_DECLARE_EXCEPTION(exception_foo_mb_no_releases, pfc::exception, "No releases.")
+#include "exceptions.h"
