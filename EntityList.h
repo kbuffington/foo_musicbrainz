@@ -21,6 +21,10 @@ namespace foo_musicbrainz {
 			return items[index];
 		}
 
+		inline T *get(t_size index) const {
+			return (*this)[index];
+		}
+
 		EntityList() {};
 		~EntityList() {
 			for (unsigned int i = 0; i < items.get_count(); i++) {
