@@ -132,7 +132,7 @@
     <ClInclude Include="TOC.h" />
     <ClInclude Include="Track.h" />
     <ClInclude Include="QueryByMBIDDialog.h" />
-    <ClInclude Include="CCustomQueryTags.h" />
+    <ClInclude Include="QueryByTagsDialog.h" />
     <ClInclude Include="CTaggerDialog.h" />
     <ClInclude Include="TrackList.h" />
   </ItemGroup>

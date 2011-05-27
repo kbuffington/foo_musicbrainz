@@ -5,7 +5,7 @@
 #include "TOC.h"
 #include "Track.h"
 #include "QueryByMBIDDialog.h"
-#include "CCustomQueryTags.h"
+#include "QueryByTagsDialog.h"
 #include "CTaggerDialog.h"
 
 using namespace std::tr1;
@@ -104,7 +104,7 @@ public:
 				}
 				pfc::list_t<metadb_handle_ptr> tracks;
 				tracks.add_items(p_data);
-				new CCustomQueryTags(new ReleaseList(), tracks, artist, album);
+				new QueryByTagsDialog(new ReleaseList(), tracks, artist, album);
 				break;
 			}
 		case 2:

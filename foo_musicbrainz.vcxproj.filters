@@ -98,9 +98,6 @@
     <ClInclude Include="Track.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CCustomQueryTags.h">
-      <Filter>Classes</Filter>
-    </ClInclude>
     <ClInclude Include="CTaggerDialog.h">
       <Filter>Classes</Filter>
     </ClInclude>
@@ -144,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="QueryByMBIDDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QueryByTagsDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
