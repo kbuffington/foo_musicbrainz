@@ -134,8 +134,8 @@ namespace foo_musicbrainz {
 			//uSetWindowText(disc, release->getDisc());
 			//uSetWindowText(discsubtitle, release->getDiscSubtitle());
 
-			//type.SetCurSel(mbc->getRelease()->getType()); TODO: FIX
-			//status.SetCurSel(mbc->getRelease()->getStatus()); TODO: FIX
+			type.SetCurSel(get_current_release()->get_release_group()->get_type_index());
+			status.SetCurSel(get_current_release()->get_status_index());
 
 			// VA?
 			if (track_list.GetColumnWidth(2) && !release->is_various()) {
