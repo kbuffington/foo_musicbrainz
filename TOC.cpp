@@ -5,38 +5,33 @@
 #include "sha1.h"
 
 using namespace std::tr1;
+using namespace foo_musicbrainz;
 
-TOC::TOC(metadb_handle_list_cref p_data)
-{
+TOC::TOC(metadb_handle_list_cref p_data) {
 	num_tracks = p_data.get_count();
 	pregap = 150;
-	discid = NULL;
+	discid = nullptr;
 	tracks[0] = INT_MAX;
 	cur_track = 0;
 	tracks_lengths = new unsigned int [num_tracks];
 	__int64 samples;
 	const file_info *info;
 
-	for (t_size i = 0; i < num_tracks; i++)
-	{
+	for (t_size i = 0; i < num_tracks; i++) {
 		p_data.get_item(i)->metadb_lock();
-		if (!p_data.get_item(i)->get_info_locked(info))
-		{
+		if (!p_data.get_item(i)->get_info_locked(info)) {
 			p_data.get_item(i)->metadb_unlock();
 			return;
 		}
 		samples = info->info_get_length_samples();
-		if (i == 0)
-		{
+		if (i == 0) {
 			const char *pregap = info->info_get("pregap");
-			if (pregap != NULL)
-			{
+			if (pregap != nullptr) {
 				setPregap(pregap);
 			}
 		}
 		p_data.get_item(i)->metadb_unlock();
-		if (samples % 588 != 0)
-		{
+		if (samples % 588 != 0) {
 			popup_message::g_show("Track length in samples must be divisible by 588.", COMPONENT_TITLE, popup_message::icon_error);
 			return;
 		}
@@ -44,50 +39,40 @@ TOC::TOC(metadb_handle_list_cref p_data)
 	}
 }
 
-void TOC::addTrack(int length)
-{
-	if (cur_track < num_tracks)
-	{
+void TOC::addTrack(int length) {
+	if (cur_track < num_tracks) {
 		tracks_lengths[cur_track++] = length;
 	}
 }
 
-void TOC::setPregap(int length)
-{
+void TOC::setPregap(int length) {
 	pregap = length + 150;
 }
 
-void TOC::setPregap(pfc::string8 msf)
-{
+void TOC::setPregap(pfc::string8 msf) {
 	regex rx("^\\d\\d:\\d\\d:\\d\\d$");
-	if (regex_match(msf.get_ptr(), rx))
-	{
+	if (regex_match(msf.get_ptr(), rx)) {
 		setPregap((((msf[0]-'0')*10+(msf[1]-'0'))*60 + (msf[3]-'0')*10+(msf[4]-'0'))*75 + (msf[6]-'0')*10+(msf[7]-'0'));
 	}
 }
 
-void TOC::calculateTracks()
-{
-	if (tracks[0] != INT_MAX)
-	{
+void TOC::calculateTracks() {
+	if (tracks[0] != INT_MAX) {
 		return;
 	}
 
 	tracks[1] = pregap;
-	for (unsigned int i = 2; i < num_tracks+1; i++)
-	{
+	for (unsigned int i = 2; i < num_tracks+1; i++) {
 		tracks[i] = tracks[i-1] + tracks_lengths[i-2];
 	}
 	tracks[0] = tracks[num_tracks] + tracks_lengths[num_tracks-1];
-	for (int i = num_tracks+1; i < 100; i++)
-	{
+	for (int i = num_tracks+1; i < 100; i++) {
 		tracks[i] = 0;
 	}
 }
 
 char *TOC::getDiscID() {
-	if (discid == NULL)
-	{
+	if (discid == nullptr) {
 		SHA1Context sha;
 		SHA1Reset(&sha);
 		char tmp[9];
@@ -102,8 +87,7 @@ char *TOC::getDiscID() {
 		sprintf(tmp, "%02X", num_tracks);
 		SHA1Input(&sha, (unsigned char *)tmp, 2);
 
-		for (int i = 0; i < 100; i++)
-		{
+		for (int i = 0; i < 100; i++) {
 			sprintf(tmp, "%08X", tracks[i]);
 			SHA1Input(&sha, (unsigned char *)tmp, 8);
 		}
@@ -116,22 +100,18 @@ char *TOC::getDiscID() {
 	return discid;
 }
 
-unsigned int TOC::getNumTracks()
-{
+unsigned int TOC::getNumTracks() {
 	return num_tracks;
 }
 
-const char *TOC::getTOC()
-{
-	if (toc.is_empty())
-	{
+const char *TOC::getTOC() {
+	if (toc.is_empty()) {
 		calculateTracks();
 		char tmp[9];
 		toc << "1";
 		sprintf(tmp, " %d", num_tracks);
 		toc << tmp;
-		for (int i = 0; i <= num_tracks; i++)
-		{
+		for (size_t i = 0; i <= num_tracks; i++) {
 			sprintf(tmp, " %d", tracks[i]);
 			toc << tmp;
 		}
@@ -156,15 +136,13 @@ const char *TOC::getTOC()
  * Returns: destination as BASE64
  */
 
-unsigned char *TOC::rfc822_binary(void *src,unsigned long srcl,unsigned long &len)
-{
+unsigned char *TOC::rfc822_binary(void *src, unsigned long srcl, unsigned long &len) {
 	unsigned char *ret,*d;
 	unsigned char *s = (unsigned char *) src;
 	char *v = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._";
 	len = ((srcl + 2) / 3) * 4;
 	d = ret = new unsigned char [len + 1];
-	while (srcl) /* process tuplets */
-	{
+	while (srcl) { /* process tuplets */
 		*d++ = v[s[0] >> 2];	/* byte 1: high 6 bits (1) */
 				/* byte 2: low 2 bits (1), high 4 bits (2) */
 		*d++ = v[((s[0] << 4) + (--srcl ? (s[1] >> 4) : 0)) & 0x3f];
@@ -180,8 +158,7 @@ unsigned char *TOC::rfc822_binary(void *src,unsigned long srcl,unsigned long &le
 	return ret;			/* return the resulting string */
 }
 
-TOC::~TOC()
-{
+TOC::~TOC() {
 	delete [] tracks_lengths;
 	if (discid) delete [] discid;
 }
