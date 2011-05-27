@@ -128,6 +128,9 @@ Recording *Parser::recording(const ticpp::Element *recording_node) {
 			recording->set_length(length);
 		} else if (name == "title") {
 			recording->set_title(child->GetText().data());
+		} else if (name == "artist-credit") {
+			auto artist_credit = Parser::artist_credit(child);
+			recording->set_artist_credit(artist_credit);
 		}
 	}
 
