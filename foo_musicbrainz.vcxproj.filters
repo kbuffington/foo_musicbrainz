@@ -18,9 +18,6 @@
     <ClCompile Include="foo_musicbrainz.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="list_view_edit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Release.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,12 +60,12 @@
     <ClCompile Include="TagWriter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TrackListView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="foo_musicbrainz.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="list_view_edit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Release.h">
@@ -144,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TagWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackListView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

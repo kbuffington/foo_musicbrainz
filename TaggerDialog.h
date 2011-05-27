@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Query.h"
-#include "list_view_edit.h"
+#include "TrackListView.h"
 #include "TagWriter.h"
 #include "RequestThread.h"
 #include "Release.h"
@@ -23,7 +23,7 @@ namespace foo_musicbrainz {
 		CEdit url;
 		ReleaseList *mbc;
 		pfc::list_t<metadb_handle_ptr> tracks;
-		track_list_view_edit track_list_view;
+		TrackListView track_list_view;
 		size_t current_release;
 
 	public:
@@ -199,7 +199,7 @@ namespace foo_musicbrainz {
 
 		void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl) {
 			static_api_ptr_t<metadb_io_v2>()->update_info_async(tracks,
-				new service_impl_t<foo_mb_file_info_filter_impl>(mbc, tracks, current_release),
+				new service_impl_t<TagWriter>(mbc, tracks, current_release),
 				core_api::get_main_window(), metadb_io_v2::op_flag_delay_ui, nullptr);
 			mbc = NULL;
 			DestroyWindow();

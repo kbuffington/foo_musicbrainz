@@ -96,7 +96,7 @@
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="TagWriter.cpp" />
     <ClCompile Include="foo_musicbrainz.cpp" />
-    <ClCompile Include="list_view_edit.cpp" />
+    <ClCompile Include="TrackListView.cpp" />
     <ClCompile Include="ContextMenu.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Preferences.cpp" />
@@ -115,7 +115,7 @@
     <ClInclude Include="EntityList.h" />
     <ClInclude Include="TagWriter.h" />
     <ClInclude Include="foo_musicbrainz.h" />
-    <ClInclude Include="list_view_edit.h" />
+    <ClInclude Include="TrackListView.h" />
     <ClInclude Include="Medium.h" />
     <ClInclude Include="MediumList.h" />
     <ClInclude Include="meta.h" />
