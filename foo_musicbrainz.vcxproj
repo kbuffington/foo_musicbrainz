@@ -99,7 +99,7 @@
     <ClCompile Include="list_view_edit.cpp" />
     <ClCompile Include="ContextMenu.cpp" />
     <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="preferences.cpp" />
+    <ClCompile Include="Preferences.cpp" />
     <ClCompile Include="Release.cpp" />
     <ClCompile Include="ReleaseGroup.cpp" />
     <ClCompile Include="Query.cpp" />
@@ -120,6 +120,7 @@
     <ClInclude Include="MediumList.h" />
     <ClInclude Include="meta.h" />
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="Preferences.h" />
     <ClInclude Include="Recording.h" />
     <ClInclude Include="Release.h" />
     <ClInclude Include="ReleaseGroup.h" />

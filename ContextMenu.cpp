@@ -11,7 +11,6 @@
 using namespace std::tr1;
 using namespace foo_musicbrainz;
 
-extern cfg_bool cfg_write_ids;
 namespace foo_musicbrainz {
 	class ContextMenu : public contextmenu_item_simple {
 	public:
@@ -101,7 +100,7 @@ namespace foo_musicbrainz {
 				}
 				case 2: {
 					// Stop if MBIDs are disabled
-					if (!cfg_write_ids.get_value()) return;
+					if (!Preferences::write_ids.get_value()) return;
 
 					pfc::string8 album_id;
 					for (t_size i = 0; i < count; i++) {
@@ -190,7 +189,7 @@ namespace foo_musicbrainz {
 						p_data.get_item(i)->metadb_unlock();
 					}
 				}
-				if (p_index == 2 && !cfg_write_ids.get_value()) {
+				if (p_index == 2 && !Preferences::write_ids.get_value()) {
 					return false;
 				}
 				get_item_name(p_index, p_out);
