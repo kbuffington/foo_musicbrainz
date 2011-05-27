@@ -94,7 +94,7 @@
     <ClCompile Include="ArtistCredit.cpp" />
     <ClCompile Include="CoreEntity.cpp" />
     <ClCompile Include="Date.cpp" />
-    <ClCompile Include="foo_mb_file_info_filter_impl.cpp" />
+    <ClCompile Include="TagWriter.cpp" />
     <ClCompile Include="foo_musicbrainz.cpp" />
     <ClCompile Include="list_view_edit.cpp" />
     <ClCompile Include="ContextMenu.cpp" />
@@ -113,7 +113,7 @@
     <ClInclude Include="CoreEntity.h" />
     <ClInclude Include="Date.h" />
     <ClInclude Include="EntityList.h" />
-    <ClInclude Include="foo_mb_file_info_filter_impl.h" />
+    <ClInclude Include="TagWriter.h" />
     <ClInclude Include="foo_musicbrainz.h" />
     <ClInclude Include="list_view_edit.h" />
     <ClInclude Include="Medium.h" />

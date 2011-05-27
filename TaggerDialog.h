@@ -2,7 +2,7 @@
 
 #include "Query.h"
 #include "list_view_edit.h"
-#include "foo_mb_file_info_filter_impl.h"
+#include "TagWriter.h"
 #include "RequestThread.h"
 #include "Release.h"
 #include "ReleaseGroup.h"

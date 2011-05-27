@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="foo_mb_file_info_filter_impl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="foo_musicbrainz.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,11 +60,11 @@
     <ClCompile Include="Preferences.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TagWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="foo_mb_file_info_filter_impl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="foo_musicbrainz.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -144,6 +141,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Preferences.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TagWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
