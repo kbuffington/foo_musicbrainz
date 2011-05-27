@@ -38,6 +38,8 @@ Medium *Parser::medium(const ticpp::Element * medium_node) {
 		if (name == "position") {
 			auto position = atoi(child->GetText().data());
 			medium->set_position(position);
+		} else if (name == "title") {
+			medium->set_title(child->GetText().data());
 		} else if (name == "track-list") {
 			auto track_list = Parser::track_list(child);
 			medium->set_track_list(track_list);

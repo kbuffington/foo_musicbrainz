@@ -6,6 +6,7 @@
 namespace foo_musicbrainz {
 	class Medium {
 		MEMBER(int, position)
+		STRING_MEMBER(title)
 		POINTER_MEMBER(TrackList, track_list)
 
 	public:
