@@ -10,13 +10,33 @@ RequestThread::RequestThread(Query *query, HWND window, ReleaseList *mbc) : quer
 // TODO: abort checks, progress
 void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abort) {
 	try {
-		Metadata *metadata = query->perform();
+		// Extracting releases from all possible locations:
+		// /metadata/release
+		// /metadata/release-list/release
+		// /metadata/discid/release-list/release
+		auto metadata = query->perform();
 		auto release = metadata->extract_release();
+		if (release != nullptr) {
+			mbc->add(release);
+		} else {
+			auto release_list = metadata->get_release_list();
+			if (release_list == nullptr) {
+				auto discid = metadata->get_discid();
+				if (discid != nullptr) {
+					release_list = discid->get_release_list();
+				}
+			}
+			if (release_list != nullptr) {
+				while (release_list->count() > 0) {
+					mbc->add(release_list->extract(0));
+				}
+			}
+		}
+
 		delete metadata;
-		if (release == nullptr) {
+		if (mbc->count() == 0) {
 			throw NotFound();
 		}
-		mbc->add(release);
 		ShowWindow(window, SW_SHOW);
 	} catch (exception_aborted) {
 		PostMessage(window, WM_CLOSE, 0, 0);
