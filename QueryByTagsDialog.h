@@ -67,8 +67,10 @@ namespace foo_musicbrainz {
 			pfc::string8 album = string_utf8_from_window(m_hWnd, IDC_ALBUM);
 			if (!artist.is_empty() && !album.is_empty()) {
 				auto query = new Query("release");
-				query->add_param("artist", artist);
-				query->add_param("title", album);
+				pfc::string8 search;
+				search << "artist:\"" << artist << "\"";
+				search << " AND release:\"" << album << "\"";
+				query->add_param("query", search);
 				query->add_param("count", tracks.get_count());
 				new TaggerDialog(query, tracks);
 				DestroyWindow();
