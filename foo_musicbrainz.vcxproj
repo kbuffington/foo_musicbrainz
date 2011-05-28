@@ -111,6 +111,7 @@
     <ClInclude Include="ArtistCredit.h" />
     <ClInclude Include="CoreEntity.h" />
     <ClInclude Include="Date.h" />
+    <ClInclude Include="DiscID.h" />
     <ClInclude Include="EntityList.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="Label.h" />

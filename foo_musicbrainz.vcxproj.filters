@@ -158,6 +158,9 @@
     <ClInclude Include="Metadata.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DiscID.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="foo_musicbrainz.rc">

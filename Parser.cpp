@@ -2,6 +2,7 @@
 #include "Parser.h"
 #include "Date.h"
 #include "ArtistCredit.h"
+#include "DiscID.h"
 #include "Label.h"
 #include "LabelInfo.h"
 #include "LabelInfoList.h"
@@ -31,6 +32,25 @@ ArtistCredit *Parser::artist_credit(const ticpp::Element *artist_credit_node) {
 	}
 		
 	return artist_credit;
+}
+
+DiscID *Parser::discid(const ticpp::Element *discid_node) {
+	auto discid = new DiscID();
+
+	discid->set_id(Parser::id(discid_node));
+
+	auto child = discid_node->FirstChildElement(false);
+	for (; child; child = child->NextSiblingElement(false)) {
+		auto name = child->Value();
+		if (name == "sectors") {
+			discid->set_sectors(Parser::integer(child));
+		} else if (name == "release-list") {
+			auto release_list = Parser::release_list(child);
+			discid->set_release_list(release_list);
+		}
+	}
+
+	return discid;
 }
 
 Label *Parser::label(const ticpp::Element *label_node) {
@@ -125,10 +145,13 @@ Metadata *Parser::metadata(const ticpp::Element *metadata_node) {
 	auto child = metadata_node->FirstChildElement(false);
 	for (; child; child = child->NextSiblingElement(false)) {
 		auto name = child->Value();
-		if (name == "release") {
+		if (name == "disc") {
+			auto discid = Parser::discid(child);
+			metadata->set_discid(discid);
+		} else if (name == "release") {
 			auto release = Parser::release(child);
 			metadata->set_release(release);
-		} else if (name == "releas-liste") {
+		} else if (name == "release-list") {
 			auto release_list = Parser::release_list(child);
 			metadata->set_release_list(release_list);
 		}

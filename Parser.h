@@ -2,6 +2,7 @@
 
 #include "foo_musicbrainz.h"
 #include "ArtistCredit.h"
+#include "DiscID.h"
 #include "Label.h"
 #include "LabelInfo.h"
 #include "LabelInfoList.h"
@@ -19,6 +20,7 @@ namespace foo_musicbrainz {
 	class Parser {
 	public:
 		static ArtistCredit *artist_credit(const ticpp::Element *);
+		static DiscID *discid(const ticpp::Element *);
 		static Label *label(const ticpp::Element *);
 		static LabelInfo *label_info(const ticpp::Element *);
 		static LabelInfoList *label_info_list(const ticpp::Element *);
