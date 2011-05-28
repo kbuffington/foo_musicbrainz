@@ -252,7 +252,7 @@ namespace foo_musicbrainz {
 
 		void OnFinalMessage(HWND hwnd) {
 			static_api_ptr_t<modeless_dialog_manager>()->remove(m_hWnd);
-			if (mbc) delete mbc;
+			delete mbc;
 			delete this;
 		}
 
@@ -261,10 +261,10 @@ namespace foo_musicbrainz {
 		}
 
 		void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl) {
+			auto release = mbc->extract(current_release);
 			static_api_ptr_t<metadb_io_v2>()->update_info_async(tracks,
-				new service_impl_t<TagWriter>(mbc, tracks, current_release),
+				new service_impl_t<TagWriter>(release, tracks),
 				core_api::get_main_window(), metadb_io_v2::op_flag_delay_ui, nullptr);
-			mbc = NULL;
 			DestroyWindow();
 		}
 

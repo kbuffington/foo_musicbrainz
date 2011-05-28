@@ -1,15 +1,13 @@
 #include "foo_musicbrainz.h"
 #include "TagWriter.h"
-#include "ReleaseList.h"
 #include "Track.h"
 
 using namespace foo_musicbrainz;
 
-TagWriter::TagWriter(ReleaseList *mbc, pfc::list_t<metadb_handle_ptr> tracks, size_t selected_release)
-	: mbc(mbc),
+TagWriter::TagWriter(Release *release, pfc::list_t<metadb_handle_ptr> tracks)
+	: release(release),
 	tracklist(tracks)
 {
-	release = (*mbc)[selected_release];
 }
 
 bool TagWriter::apply_filter(metadb_handle_ptr p_location, t_filestats p_stats, file_info & p_info) {
@@ -88,5 +86,5 @@ bool TagWriter::apply_filter(metadb_handle_ptr p_location, t_filestats p_stats, 
 }
 
 TagWriter::~TagWriter() {
-	delete mbc;
+	delete release;
 }
