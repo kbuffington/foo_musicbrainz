@@ -1,0 +1,9 @@
+/Debug/
+/Release/
+/ipch/
+/*.vcxproj.user
+/*.aps
+/*.suo
+/*.sdf
+/*.opensdf
+/*.sln.docstates
