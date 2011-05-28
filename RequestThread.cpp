@@ -7,7 +7,6 @@ using namespace foo_musicbrainz;
 
 RequestThread::RequestThread(Query *query, HWND window, ReleaseList *mbc) : query(query), window(window), mbc(mbc) {}
 
-// TODO: abort checks, progress
 void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abort) {
 	Metadata *metadata = nullptr;
 	try {
@@ -28,7 +27,13 @@ void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abo
 				}
 			}
 			if (release_list != nullptr) {
-				for (auto i = 0; i < release_list->count(); i++) {
+				auto count = release_list->count();
+				for (auto i = 0; i < count; i++) {
+					// Progress
+					p_status.set_progress(p_status.progress_max * (i + 1) / (count + 1));
+					// Abort check
+					p_abort.check();
+
 					release = release_list->get(i);
 					Query query("release", release->get_id());
 					query.add_param("inc", "artists+labels+recordings+release-groups+artist-credits", false);
