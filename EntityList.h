@@ -26,7 +26,7 @@ namespace foo_musicbrainz {
 		}
 
 		T *extract(t_size index) {
-			T item* = (*this)[index];
+			T *item = (*this)[index];
 			items.remove_by_idx(index);
 			return item;
 		}
