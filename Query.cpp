@@ -116,11 +116,5 @@ Metadata *Query::perform() {
 	pfc::string8 buffer;
 	get(buffer);
 	ticpp::Document xml;
-	auto metadata = parse(buffer, xml);
-
-	try {
-		return Parser::metadata(metadata);
-	} catch (ticpp::Exception) {
-		throw XmlParseError();
-	}
+	return Parser::metadata(parse(buffer, xml));
 }

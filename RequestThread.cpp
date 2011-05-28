@@ -9,12 +9,13 @@ RequestThread::RequestThread(Query *query, HWND window, ReleaseList *mbc) : quer
 
 // TODO: abort checks, progress
 void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abort) {
+	Metadata *metadata = nullptr;
 	try {
 		// Extracting releases from all possible locations:
 		// /metadata/release
 		// /metadata/release-list/release
 		// /metadata/discid/release-list/release
-		auto metadata = query->perform();
+		metadata = query->perform();
 		auto release = metadata->extract_release();
 		if (release != nullptr) {
 			mbc->add(release);
@@ -27,13 +28,18 @@ void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abo
 				}
 			}
 			if (release_list != nullptr) {
-				while (release_list->count() > 0) {
-					mbc->add(release_list->extract(0));
+				for (auto i = 0; i < release_list->count(); i++) {
+					release = release_list->get(i);
+					Query query("release", release->get_id());
+					query.add_param("inc", "artists+labels+recordings+release-groups+artist-credits", false);
+					auto release = query.perform()->extract_release();
+					if (release != nullptr) {
+						mbc->add(release);
+					}
 				}
 			}
 		}
 
-		delete metadata;
 		if (mbc->count() == 0) {
 			throw NotFound();
 		}
@@ -44,5 +50,7 @@ void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abo
 		PostMessage(window, WM_CLOSE, 0, 0);
 		popup_message::g_show(e.what(), COMPONENT_TITLE, popup_message::icon_error);
 	}
+
+	delete metadata;
 	delete query;
 }
