@@ -1,16 +1,15 @@
 #pragma once
 
-#include "Release.h"
+#include "foo_musicbrainz.h"
+#include "FileTagMap.h"
 
 namespace foo_musicbrainz {
 	class TagWriter : public file_info_filter {
 	public:
-		TagWriter(Release *release, pfc::list_t<metadb_handle_ptr> tracks);
+		TagWriter(FileTagMap files);
 		bool apply_filter(metadb_handle_ptr p_location, t_filestats p_stats, file_info & info);
-		~TagWriter();
 
 	private:
-		Release *release;
-		pfc::list_t<metadb_handle_ptr> tracklist;
+		FileTagMap files;
 	};
 }

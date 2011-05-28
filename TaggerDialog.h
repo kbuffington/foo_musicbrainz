@@ -1,5 +1,6 @@
 #pragma once
 
+#include "FileTagMap.h"
 #include "Query.h"
 #include "TrackListView.h"
 #include "TagWriter.h"
@@ -261,9 +262,9 @@ namespace foo_musicbrainz {
 		}
 
 		void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl) {
-			auto release = mbc->extract(current_release);
+			FileTagMap file_tag_map(*get_current_release(), tracks);
 			static_api_ptr_t<metadb_io_v2>()->update_info_async(tracks,
-				new service_impl_t<TagWriter>(release, tracks),
+				new service_impl_t<TagWriter>(file_tag_map),
 				core_api::get_main_window(), metadb_io_v2::op_flag_delay_ui, nullptr);
 			DestroyWindow();
 		}
