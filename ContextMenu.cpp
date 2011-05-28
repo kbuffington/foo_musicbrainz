@@ -94,9 +94,6 @@ namespace foo_musicbrainz {
 					break;
 				}
 				case 2: {
-					// Stop if MBIDs are disabled
-					if (!Preferences::write_ids.get_value()) return;
-
 					pfc::string8 album_id;
 					for (t_size i = 0; i < count; i++) {
 						auto item = p_data.get_item(i);
@@ -186,20 +183,11 @@ namespace foo_musicbrainz {
 			return true;
 		}
 
-		bool context_get_display_tags(unsigned p_idex) {
-			return Preferences::write_ids.get_value();
-		}
-
 		bool context_get_display(unsigned p_index, metadb_handle_list_cref p_data, pfc::string_base & p_out, unsigned & p_displayflags, const GUID & p_caller) {
 			PFC_ASSERT(p_index>=0 && p_index<get_num_items());
 			bool result = true;
 			switch (p_index) {
 			case 0:
-				result = context_get_display_toc(p_data);
-				break;
-			case 1:
-				result = context_get_display_tags(p_index);
-				break;
 			case 3:
 				result = context_get_display_toc(p_data);
 				break;
@@ -213,4 +201,3 @@ namespace foo_musicbrainz {
 
 	contextmenu_item_factory_t<ContextMenu> _;
 }
-
