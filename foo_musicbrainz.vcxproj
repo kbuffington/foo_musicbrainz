@@ -104,7 +104,6 @@
     <ClCompile Include="ReleaseGroup.cpp" />
     <ClCompile Include="Query.cpp" />
     <ClCompile Include="RequestThread.cpp" />
-    <ClCompile Include="RequestURL.cpp" />
     <ClCompile Include="sha1.cpp" />
     <ClCompile Include="TOC.cpp" />
   </ItemGroup>
@@ -133,7 +132,6 @@
     <ClInclude Include="ReleaseList.h" />
     <ClInclude Include="Query.h" />
     <ClInclude Include="RequestThread.h" />
-    <ClInclude Include="RequestURL.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="sha1.h" />
     <ClInclude Include="TOC.h" />

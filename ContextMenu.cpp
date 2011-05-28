@@ -1,6 +1,5 @@
 #include <regex>
 #include "foo_musicbrainz.h"
-#include "RequestURL.h"
 #include "TOC.h"
 #include "Track.h"
 #include "QueryByMBIDDialog.h"
@@ -40,10 +39,10 @@ namespace foo_musicbrainz {
 			switch (p_index) {
 				case 0: {
 					TOC toc(p_data);
-					RequestURL url;
-					url.AddParam("discid", toc.getDiscID());
-					url.AddParam("count", count);
-					url.AddParam("cdstubs", "no");
+					//RequestURL url;
+					//url.AddParam("discid", toc.getDiscID());
+					//url.AddParam("count", count);
+					//url.AddParam("cdstubs", "no");
 
 					pfc::list_t<metadb_handle_ptr> tracks;
 					tracks.add_items(p_data);

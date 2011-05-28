@@ -15,7 +15,17 @@ Query::Query(pfc::string8 id, pfc::string8 &includes) {
 
 #define TO_HEX(c) (c < 0xa ? '0' + c : 'a' - 0xa + c)
 
-pfc::string8 Query::url_encode(pfc::string8 &in) {
+void Query::add_param(const char *param, const char *value, bool encode) {
+	url << "&" << param << "=" << encode ? url_encode(value) : value;
+}
+
+void Query::add_param(const char *param, int value, bool encode) {
+	pfc::string8 str;
+	str << value;
+	add_param(param, str, false);
+}
+
+pfc::string8 Query::url_encode(const char *in) {
 	pfc::string8 out;
 	out.prealloc(strlen(in) * 3 + 1);
 
