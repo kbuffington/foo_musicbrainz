@@ -12,6 +12,7 @@ namespace foo_musicbrainz {
 		Metadata *perform();
 
 	private:
+		inline char to_hex(char);
 		pfc::string8 url_encode(const char *);
 		void get(pfc::string8 &buffer);
 		ticpp::Element *parse(pfc::string8 &buffer, ticpp::Document &xml);

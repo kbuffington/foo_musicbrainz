@@ -14,7 +14,9 @@ Query::Query(const char *entity, const char *id) {
 	url << "?";
 }
 
-#define TO_HEX(c) (c < 0xa ? '0' + c : 'a' - 0xa + c)
+char Query::to_hex(char c) {
+	return c < 0xa ? '0' + c : 'a' - 0xa + c;
+}
 
 void Query::add_param(const char *param, const char *value, bool encode) {
 	url << param << "=" << (encode ? url_encode(value) : value) << "&";
@@ -31,17 +33,17 @@ pfc::string8 Query::url_encode(const char *in) {
 	out.prealloc(strlen(in) * 3 + 1);
 
 	for (register const char *tmp = in; *tmp != '\0'; tmp++) {
-		if (isalnum(*tmp)) {
-			out.add_char(*tmp);
-		} else if (isspace(*tmp)) {
+		auto c = static_cast<unsigned char>(*tmp);
+		if (isalnum(c)) {
+			out.add_char(c);
+		} else if (isspace(c)) {
 			out.add_char('+');
 		} else {
 			out.add_char('%');
-			out.add_char(TO_HEX(((unsigned char)*tmp)>>4));
-			out.add_char(TO_HEX(((unsigned char)*tmp)%16));
+			out.add_char(to_hex(c >> 4));
+			out.add_char(to_hex(c % 16));
 		}
 	}
-	// out.add_char('\0'); really needed?
 	return out;
 }
 
