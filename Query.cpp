@@ -102,7 +102,8 @@ ticpp::Element *Query::parse(pfc::string8 &buffer, ticpp::Document &xml) {
 	} catch (ticpp::Exception) {
 		try {
 			auto text = xml.FirstChildElement("error")->FirstChildElement("text");
-			auto message = Parser::text(text);
+			pfc::string8 message = "Response from MusicBrainz: ";
+			message << Parser::text(text);
 			// FIXME: not only not found (404), but also 401 and 404
 			throw NotFound(message);
 		} catch (ticpp::Exception) {
