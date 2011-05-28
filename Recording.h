@@ -12,6 +12,7 @@ namespace foo_musicbrainz {
 	public:
 		Recording()
 			: CoreEntity(),
+			length(0),
 			artist_credit(nullptr) {}
 		~Recording() {
 			POINTER_MEMBER_DESTRUCTOR(artist_credit)

@@ -10,7 +10,8 @@ namespace foo_musicbrainz {
 		POINTER_MEMBER(TrackList, track_list)
 
 	public:
-		Medium() :
+		Medium()
+			: position(0),
 			track_list(nullptr) {};
 		~Medium() {
 			POINTER_MEMBER_DESTRUCTOR(track_list)

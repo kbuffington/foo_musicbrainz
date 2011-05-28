@@ -11,7 +11,8 @@ namespace foo_musicbrainz {
 
 	public:
 		Track()
-			: recording(nullptr) {};
+			: position(0),
+			recording(nullptr) {};
 		~Track() {
 			POINTER_MEMBER_DESTRUCTOR(recording)
 		}
