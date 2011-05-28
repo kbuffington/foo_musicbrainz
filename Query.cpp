@@ -6,20 +6,21 @@
 
 using namespace foo_musicbrainz;
 
-Query::Query(pfc::string8 id, pfc::string8 &includes) {
-	url << "/ws/2/release/" << id;
-	if (!includes.is_empty()) {
-		url << "?inc=" << includes;
+Query::Query(const char *entity, const char *id) {
+	url << "/ws/2/" << entity;
+	if (id != nullptr) {
+		url << "/" << id;
 	}
+	url << "?";
 }
 
 #define TO_HEX(c) (c < 0xa ? '0' + c : 'a' - 0xa + c)
 
 void Query::add_param(const char *param, const char *value, bool encode) {
-	url << "&" << param << "=" << encode ? url_encode(value) : value;
+	url << param << "=" << (encode ? url_encode(value) : value) << "&";
 }
 
-void Query::add_param(const char *param, int value, bool encode) {
+void Query::add_param(const char *param, int value) {
 	pfc::string8 str;
 	str << value;
 	add_param(param, str, false);

@@ -60,8 +60,8 @@ namespace foo_musicbrainz {
 
 		void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl) {
 			pfc::string8 id = string_utf8_from_window(m_hWnd, IDC_MBID);
-			pfc::string8 includes = "artists+labels+recordings+release-groups+artist-credits";
-			auto query = new foo_musicbrainz::Query(id, includes);
+			auto query = new Query("release", id);
+			query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits", false);
 			new TaggerDialog(query, tracks);
 			DestroyWindow();
 		}

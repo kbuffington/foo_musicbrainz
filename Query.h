@@ -6,9 +6,9 @@
 namespace foo_musicbrainz {
 	class Query {
 	public:
-		Query(pfc::string8 id, pfc::string8 &includes = pfc::string8());
-		void add_param(const char *param, const char *value, bool encode);
-		void add_param(const char *param, int value, bool encode = true);
+		Query(const char *entity, const char *id = "");
+		void add_param(const char *param, const char *value, bool encode = true);
+		void add_param(const char *param, int value);
 		Metadata *perform();
 
 	private:

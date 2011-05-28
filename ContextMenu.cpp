@@ -39,16 +39,14 @@ namespace foo_musicbrainz {
 			switch (p_index) {
 				case 0: {
 					TOC toc(p_data);
-					//RequestURL url;
-					//url.AddParam("discid", toc.getDiscID());
-					//url.AddParam("count", count);
-					//url.AddParam("cdstubs", "no");
+					auto query = new Query("discid", toc.getDiscID());
+					query->add_param("count", count);
+					query->add_param("cdstubs", "no");
 
 					pfc::list_t<metadb_handle_ptr> tracks;
 					tracks.add_items(p_data);
-					pfc::string8 discid(toc.getDiscID());
 
-					// new TaggerDialog(url.GetURL(), mbc);
+					new TaggerDialog(query, tracks);
 					break;
 				}
 				case 1: {

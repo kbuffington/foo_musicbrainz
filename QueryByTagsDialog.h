@@ -66,11 +66,11 @@ namespace foo_musicbrainz {
 			pfc::string8 artist = string_utf8_from_window(m_hWnd, IDC_ARTIST);
 			pfc::string8 album = string_utf8_from_window(m_hWnd, IDC_ALBUM);
 			if (!artist.is_empty() && !album.is_empty()) {
-				//RequestURL url;
-				//url.AddParam("artist", artist);
-				//url.AddParam("title", album);
-				//url.AddParam("count", tracks.get_count());
-				// new TaggerDialog(url.GetURL());
+				auto query = new Query("release");
+				query->add_param("artist", artist);
+				query->add_param("title", album);
+				query->add_param("count", tracks.get_count());
+				new TaggerDialog(query, tracks);
 				DestroyWindow();
 			}
 		}
