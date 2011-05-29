@@ -63,7 +63,7 @@ namespace foo_musicbrainz {
 			COMMAND_HANDLER_EX(IDC_ARTIST, EN_UPDATE, OnArtistUpdate)
 			COMMAND_HANDLER_EX(IDC_ALBUM, EN_UPDATE, OnAlbumUpdate)
 			COMMAND_HANDLER_EX(IDC_DATE, EN_UPDATE, OnDateUpdate)
-			COMMAND_HANDLER_EX(IDC_DATE, EN_UPDATE, on_barcode_update)
+			COMMAND_HANDLER_EX(IDC_BARCODE, EN_UPDATE, on_barcode_update)
 			//CHAIN_MSG_MAP(CDialogImpl<TaggerDialog>)
 		END_MSG_MAP()
 
@@ -301,7 +301,7 @@ namespace foo_musicbrainz {
 
 		void on_barcode_update(UINT, int, CWindow) {
 			pfc::string8 barcode_value;
-			uGetWindowText(date, barcode_value);
+			uGetWindowText(barcode, barcode_value);
 			get_current_release()->set_barcode(barcode_value);
 		}
 	};
