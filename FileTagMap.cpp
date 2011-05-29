@@ -53,7 +53,7 @@ Tag::Tag(Release &release, Medium &medium, Track &track) {
 		set("MUSICBRAINZ_ALBUMID", release.get_id());
 		set("MUSICBRAINZ_RELEASEGROUPID", release.get_release_group()->get_id());
 		set("MUSICBRAINZ_TRACKID", track.get_recording()->get_id());
-		set("MUSICBRAINZ_ARTISTID", track.get_recording()->get_artist_credit()->get_id());
+		base_class::set("MUSICBRAINZ_ARTISTID", track.get_recording()->get_artist_credit()->get_ids());
 		//set("MUSICBRAINZ_ALBUMARTISTID", va ? release.get_artist_credit()->get_id() : "");
 		// TODO: disc id
 		//if (strcmp(medium->get_di->getDiscId(), "") != 0) {

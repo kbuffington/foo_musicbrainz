@@ -1,6 +1,7 @@
 #include "foo_musicbrainz.h"
 #include "Parser.h"
 #include "Date.h"
+#include "Artist.h"
 #include "ArtistCredit.h"
 #include "DiscID.h"
 #include "Label.h"
@@ -8,6 +9,7 @@
 #include "LabelInfoList.h"
 #include "Medium.h"
 #include "MediumList.h"
+#include "NameCredit.h"
 #include "Release.h"
 #include "ReleaseGroup.h"
 #include "Recording.h"
@@ -35,24 +37,6 @@ Date Parser::date(const ticpp::Element *element) {
 int Parser::integer(const ticpp::Element *element, int default_value) {
 	auto text = Parser::text(element);
 	return text.is_empty() ? default_value : atoi(text);
-}
-
-ArtistCredit *Parser::artist_credit(const ticpp::Element *artist_credit_node) {
-	auto artist_node = artist_credit_node->FirstChildElement("name-credit")
-		->FirstChildElement("artist");
-
-	auto artist_credit = new ArtistCredit();
-	artist_credit->set_id(Parser::id(artist_node));
-
-	auto child = artist_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "name") {
-			artist_credit->set_name(Parser::text(child));
-		}
-	}
-		
-	return artist_credit;
 }
 
 // Defines new method for parsing an element node.
@@ -103,6 +87,7 @@ ArtistCredit *Parser::artist_credit(const ticpp::Element *artist_credit_node) {
 	entity->set_##entity_name(Parser::parser_method##_attr(node, #attr_name));
 
 // List of all node types. Relates node name to the parser method and method used for adding entity to the parent. 
+#define ARTIST PARSE_SINGLE_CHILD(artist, artist, artist)
 #define ARTIST_CREDIT PARSE_SINGLE_CHILD(artist-credit, artist_credit, artist_credit)
 #define ASIN PARSE_SINGLE_CHILD(asin, asin, text)
 #define BARCODE PARSE_SINGLE_CHILD(barcode, barcode, text)
@@ -111,6 +96,7 @@ ArtistCredit *Parser::artist_credit(const ticpp::Element *artist_credit_node) {
 #define DATE PARSE_SINGLE_CHILD(date, date, date)
 #define DISCID_SINGLE PARSE_SINGLE_CHILD(disc, discid, discid)
 #define ID PARSE_ATTRIBUTE(id, id, text)
+#define JOINPHRASE PARSE_ATTRIBUTE(joinphrase, joinphrase, text)
 #define NAME PARSE_SINGLE_CHILD(name, name, text)
 #define LABEL PARSE_SINGLE_CHILD(label, label, label)
 #define LABEL_CODE PARSE_SINGLE_CHILD(label-code, label_code, text)
@@ -119,6 +105,8 @@ ArtistCredit *Parser::artist_credit(const ticpp::Element *artist_credit_node) {
 #define LENGTH PARSE_SINGLE_CHILD(length, length, integer)
 #define MEDIUM PARSE_CHILDREN(medium, medium)
 #define MEDIUM_LIST PARSE_SINGLE_CHILD(medium-list, medium_list, medium_list)
+#define NAME PARSE_SINGLE_CHILD(name, name, text)
+#define NAME_CREDIT PARSE_CHILDREN(name-credit, name_credit)
 #define POSITION PARSE_SINGLE_CHILD(position, position, integer)
 #define RECORDING PARSE_SINGLE_CHILD(recording, recording, recording)
 #define RELEASE PARSE_CHILDREN(release, release)
@@ -134,6 +122,13 @@ ArtistCredit *Parser::artist_credit(const ticpp::Element *artist_credit_node) {
 #define TRACK_LIST PARSE_SINGLE_CHILD(track-list, track_list, track_list)
 
 // List of all element node types. Relates node class to the list of child element types by generating a parser method.
+ELEMENT(Artist, artist,
+	NAME SORT_NAME,
+	ID
+)
+ELEMENT(ArtistCredit, artist_credit,
+	NAME_CREDIT
+)
 ELEMENT(DiscID, discid,
 	RELEASE_LIST SECTORS,
 	ID
@@ -156,6 +151,10 @@ ELEMENT(MediumList, medium_list,
 )
 ELEMENT(Metadata, metadata,
 	DISCID_SINGLE RELEASE_LIST RELEASE_SINGLE
+)
+ELEMENT(NameCredit, name_credit,
+	ARTIST NAME,
+	JOINPHRASE
 )
 ELEMENT(Release, release,
 	ARTIST_CREDIT ASIN BARCODE COUNTRY DATE LABEL_INFO_LIST MEDIUM_LIST RELEASE_GROUP STATUS TITLE,

@@ -167,6 +167,12 @@
     <ClInclude Include="FileTagMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Artist.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NameCredit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="foo_musicbrainz.rc">
