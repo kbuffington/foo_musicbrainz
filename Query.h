@@ -9,12 +9,11 @@ namespace foo_musicbrainz {
 		Query(const char *entity, const char *id = "");
 		void add_param(const char *param, const char *value, bool encode = true);
 		void add_param(const char *param, int value);
-		Metadata *perform();
+		Metadata *perform(abort_callback &callback = abort_callback_dummy());
 
 	private:
 		inline char to_hex(char);
 		pfc::string8 url_encode(const char *);
-		void get(pfc::string8 &buffer);
 		ticpp::Element *parse(pfc::string8 &buffer, ticpp::Document &xml);
 
 		pfc::string8 url;
