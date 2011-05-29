@@ -88,7 +88,7 @@ namespace foo_musicbrainz {
 			album = GetDlgItem(IDC_ALBUM);
 			date = GetDlgItem(IDC_DATE);
 			barcode = GetDlgItem(IDC_BARCODE);
-			track_list_view.Attach(track_list, mbc);
+			track_list_view.Attach(track_list);
 		
 			// List view styles
 			auto styles = LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP;
@@ -202,6 +202,7 @@ namespace foo_musicbrainz {
 
 		void update_tracks() {
 			auto tracks = get_current_medium()->get_track_list();
+			track_list_view.set_track_list(tracks);
 			track_list.Resize(tracks->count());
 			for (size_t item = 0; item < tracks->count(); item++) {
 				pfc::string8 position;

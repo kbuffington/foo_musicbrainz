@@ -1,15 +1,16 @@
 #pragma once
 
 #include "foo_musicbrainz.h"
-#include "ReleaseList.h"
+#include "TrackList.h"
 
 namespace foo_musicbrainz {
 	class TrackListView : public InPlaceEdit::CTableEditHelperV2_ListView {
 	public:
-		void Attach(HWND window, ReleaseList *mbc);
+		void Attach(HWND window);
 		void Start(t_size item, t_size subItem);
 		void Abort();
 		bool IsActive();
+		void set_track_list(TrackList *track_list);
 
 	protected:
 		HWND TableEdit_GetParentWnd() const;
@@ -17,7 +18,7 @@ namespace foo_musicbrainz {
 		void TableEdit_SetField(t_size item, t_size subItem, const char *value);
 
 	private:
-		ReleaseList *mbc;
+		TrackList *track_list;
 		HWND window;
 	};
 }
