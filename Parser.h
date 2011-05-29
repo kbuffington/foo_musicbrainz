@@ -2,6 +2,7 @@
 
 #include "foo_musicbrainz.h"
 #include "ArtistCredit.h"
+#include "Date.h"
 #include "DiscID.h"
 #include "Label.h"
 #include "LabelInfo.h"
@@ -37,6 +38,7 @@ namespace foo_musicbrainz {
 		static pfc::string8 text_attr(const ticpp::Element *, const char *);
 		static pfc::string8 id(const ticpp::Element *);
 		static pfc::string8 text(const ticpp::Element *);
+		static Date date(const ticpp::Element *);
 		static int integer(const ticpp::Element *, int default_value = 0);
 	};
 	

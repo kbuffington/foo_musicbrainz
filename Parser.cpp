@@ -16,6 +16,27 @@
 
 using namespace foo_musicbrainz;
 
+pfc::string8 Parser::text_attr(const ticpp::Element *element, const char *name) {
+	return element->GetAttribute(name).data();
+}
+
+pfc::string8 Parser::id(const ticpp::Element *element) {
+	return Parser::text_attr(element, "id");
+}
+
+pfc::string8 Parser::text(const ticpp::Element *element) {
+	return element->GetText(false).data();
+}
+
+Date Parser::date(const ticpp::Element *element) {
+	return Date(Parser::text(element));
+}
+
+int Parser::integer(const ticpp::Element *element, int default_value) {
+	auto text = Parser::text(element);
+	return text.is_empty() ? default_value : atoi(text);
+}
+
 ArtistCredit *Parser::artist_credit(const ticpp::Element *artist_credit_node) {
 	auto artist_node = artist_credit_node->FirstChildElement("name-credit")
 		->FirstChildElement("artist");
@@ -34,267 +55,126 @@ ArtistCredit *Parser::artist_credit(const ticpp::Element *artist_credit_node) {
 	return artist_credit;
 }
 
-DiscID *Parser::discid(const ticpp::Element *discid_node) {
-	auto discid = new DiscID();
-
-	discid->set_id(Parser::id(discid_node));
-
-	auto child = discid_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "sectors") {
-			discid->set_sectors(Parser::integer(child));
-		} else if (name == "release-list") {
-			auto release_list = Parser::release_list(child);
-			discid->set_release_list(release_list);
-		}
+// Defines new method for parsing an element node.
+// @param class_name Class which should be used to construct entity.
+// @param method_name This name will be given to the generated method. 
+// @param children Place where to put children and attribute parsing.
+#define ELEMENT(class_name, method_name, children, attributes) \
+	class_name *Parser::method_name(const ticpp::Element *node) { \
+		auto entity = new class_name(); \
+		auto child = node->FirstChildElement(false); \
+		for (; child; child = child->NextSiblingElement(false)) { \
+			auto name = child->Value(); \
+			if (false) {} \
+			children \
+		} \
+		attributes \
+		return entity; \
 	}
 
-	return discid;
-}
-
-Label *Parser::label(const ticpp::Element *label_node) {
-	auto label = new Label();
-
-	label->set_id(Parser::id(label_node));
-
-	auto child = label_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "name") {
-			label->set_name(Parser::text(child));
-		} else if (name == "sort-name") {
-			label->set_sort_name(Parser::text(child));
-		} else if (name == "label-code") {
-			label->set_label_code(Parser::text(child));
-		} 
+// Parses a child element.
+// @param tag_name Tag name used to identity a child of this kind. Usually dasherized.
+// @param add_method How to add to the parent. Usually underscored.
+// @param parser_method How to parse. For text nodes this is usually text or integer methods,
+// for element nodes it matches underscored name of en entity.
+#define PARSE_CHILD(tag_name, add_method, parser_method) \
+	else if (name == #tag_name) { \
+		entity->add_method(Parser::parser_method(child)); \
 	}
 
-	return label;
-}
+// Parses a child which can be the only one of its kind for his parent.
+// @param tag_name Same as above.
+// @param entity_name Underscored name of the resulting entity.
+// @param parser_method Same as above.
+#define PARSE_SINGLE_CHILD(tag_name, entity_name, parser_method) \
+	PARSE_CHILD(tag_name, set_##entity_name, parser_method)
 
-LabelInfo *Parser::label_info(const ticpp::Element *label_info_node) {
-	auto label_info = new LabelInfo();
+// Parses a child as a part of homogenous collection of its parent.
+// @param tag_name Same as above.
+// @param parser_method Same as above.
+#define PARSE_CHILDREN(tag_name, parser_method) \
+	PARSE_CHILD(tag_name, add, parser_method)
 
-	auto child = label_info_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "catalog-number") {
-			label_info->set_catalog_number(Parser::text(child));
-		} else if (name == "label") {
-			auto label = Parser::label(child);
-			label_info->set_label(label);
-		}
-	}
+// Parses an attribute.
+// @param attr_name Attribute name.
+// @param entity_name Underscored name of the resulting entity.
+// @param parser_method Same as above.
+#define PARSE_ATTRIBUTE(attr_name, entity_name, parser_method) \
+	entity->set_##entity_name(Parser::parser_method##_attr(node, #attr_name));
 
-	return label_info;
-}
+// List of all node types. Relates node name to the parser method and method used for adding entity to the parent. 
+#define ARTIST_CREDIT PARSE_SINGLE_CHILD(artist-credit, artist_credit, artist_credit)
+#define ASIN PARSE_SINGLE_CHILD(asin, asin, text)
+#define BARCODE PARSE_SINGLE_CHILD(barcode, barcode, text)
+#define CATALOG_NUMBER PARSE_SINGLE_CHILD(catalog-number, catalog_number, text)
+#define COUNTRY PARSE_SINGLE_CHILD(country, country, text)
+#define DATE PARSE_SINGLE_CHILD(date, date, date)
+#define DISCID_SINGLE PARSE_SINGLE_CHILD(disc, discid, discid)
+#define ID PARSE_ATTRIBUTE(id, id, text)
+#define NAME PARSE_SINGLE_CHILD(name, name, text)
+#define LABEL PARSE_SINGLE_CHILD(label, label, label)
+#define LABEL_CODE PARSE_SINGLE_CHILD(label-code, label_code, text)
+#define LABEL_INFO PARSE_CHILDREN(label-info, label_info)
+#define LABEL_INFO_LIST PARSE_SINGLE_CHILD(label-info-list, label_info_list, label_info_list)
+#define LENGTH PARSE_SINGLE_CHILD(length, length, integer)
+#define MEDIUM PARSE_CHILDREN(medium, medium)
+#define MEDIUM_LIST PARSE_SINGLE_CHILD(medium-list, medium_list, medium_list)
+#define POSITION PARSE_SINGLE_CHILD(position, position, integer)
+#define RECORDING PARSE_SINGLE_CHILD(recording, recording, recording)
+#define RELEASE PARSE_CHILDREN(release, release)
+#define RELEASE_LIST PARSE_SINGLE_CHILD(release-list, release_list, release_list)
+#define RELEASE_GROUP PARSE_SINGLE_CHILD(release-group, release_group, release_group)
+#define RELEASE_SINGLE PARSE_SINGLE_CHILD(release, release, release)
+#define SORT_NAME PARSE_SINGLE_CHILD(sort-name, sort_name, text)
+#define SECTORS PARSE_SINGLE_CHILD(sectors, sectors, integer)
+#define STATUS PARSE_SINGLE_CHILD(status, status, text)
+#define TITLE PARSE_SINGLE_CHILD(title, title, text)
+#define TRACK PARSE_CHILDREN(track, track)
+#define TYPE PARSE_ATTRIBUTE(type, type, text)
+#define TRACK_LIST PARSE_SINGLE_CHILD(track-list, track_list, track_list)
 
-LabelInfoList *Parser::label_info_list(const ticpp::Element *label_info_list_node) {
-	auto label_info_list = new LabelInfoList();
-
-	auto child = label_info_list_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "label-info") {
-			auto label_info = Parser::label_info(child);
-			label_info_list->add(label_info);
-		}
-	}
-
-	return label_info_list;
-}
-
-Medium *Parser::medium(const ticpp::Element * medium_node) {
-	auto medium = new Medium();
-
-	auto child = medium_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "position") {
-			medium->set_position(Parser::integer(child));
-		} else if (name == "title") {
-			medium->set_title(Parser::text(child));
-		} else if (name == "track-list") {
-			auto track_list = Parser::track_list(child);
-			medium->set_track_list(track_list);
-		}
-	}
-
-	return medium;
-}
-
-MediumList *Parser::medium_list(const ticpp::Element *medium_list_node) {
-	auto medium_list = new MediumList();
-
-	auto child = medium_list_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "medium") {
-			auto medium = Parser::medium(child);
-			medium_list->add(medium);
-		}
-	}
-
-	return medium_list;
-}
-
-Metadata *Parser::metadata(const ticpp::Element *metadata_node) {
-	auto metadata = new Metadata();
-
-	auto child = metadata_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "disc") {
-			auto discid = Parser::discid(child);
-			metadata->set_discid(discid);
-		} else if (name == "release") {
-			auto release = Parser::release(child);
-			metadata->set_release(release);
-		} else if (name == "release-list") {
-			auto release_list = Parser::release_list(child);
-			metadata->set_release_list(release_list);
-		}
-	}
-
-	return metadata;
-}
-
-foo_musicbrainz::Release *Parser::release(const ticpp::Element *release_node) {
-	auto release = new Release();
-	release->set_id(Parser::id(release_node));
-
-	auto child = release_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "title") {
-			release->set_title(Parser::text(child));
-		} else if (name == "title") {
-			release->set_title(Parser::text(child));
-		} else if (name == "status") {
-			release->set_status(Parser::text(child));
-		} else if (name == "date") {
-			release->set_date(Date(Parser::text(child)));
-		} else if (name == "country") {
-			release->set_country(Parser::text(child));
-		} else if (name == "barcode") {
-			release->set_barcode(Parser::text(child));
-		} else if (name == "asin") {
-			release->set_asin(Parser::text(child));
-		} else if (name == "artist-credit") {
-			auto artist_credit = Parser::artist_credit(child);
-			release->set_artist_credit(artist_credit);
-		} else if (name == "release-group") {
-			auto release_group = Parser::release_group(child);
-			release->set_release_group(release_group);
-		} else if (name == "label-info-list") {
-			auto label_info_list = Parser::label_info_list(child);
-			release->set_label_info_list(label_info_list);
-		} else if (name == "medium-list") {
-			auto medium_list = Parser::medium_list(child);
-			release->set_medium_list(medium_list);
-		}
-	}
-
-	return release;
-}
-
-ReleaseGroup *Parser::release_group(const ticpp::Element *release_group_node) {
-	auto release_group = new ReleaseGroup();
-	release_group->set_id(Parser::id(release_group_node));
-	release_group->set_type(Parser::text_attr(release_group_node, "type"));
-
-	auto child = release_group_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "title") {
-			release_group->set_title(Parser::text(child));
-		}
-	}
-
-	return release_group;
-}
-
-ReleaseList *Parser::release_list(const ticpp::Element *release_list_node) {
-	auto release_list = new ReleaseList();
-
-	auto child = release_list_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "release") {
-			auto release = Parser::release(child);
-			release_list->add(release);
-		}
-	}
-
-	return release_list;
-}
-
-Recording *Parser::recording(const ticpp::Element *recording_node) {
-	auto recording = new Recording();
-	recording->set_id(Parser::id(recording_node));
-
-	auto child = recording_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "length") {
-			recording->set_length(Parser::integer(child));
-		} else if (name == "title") {
-			recording->set_title(Parser::text(child));
-		} else if (name == "artist-credit") {
-			auto artist_credit = Parser::artist_credit(child);
-			recording->set_artist_credit(artist_credit);
-		}
-	}
-
-	return recording;
-}
-
-Track *Parser::track(const ticpp::Element *track_node) {
-	auto track = new Track();
-
-	auto child = track_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "position") {
-			track->set_position(Parser::integer(child));
-		} else if (name == "recording") {
-			auto recording = Parser::recording(child);
-			track->set_recording(recording);
-		}
-	}
-
-	return track;
-}
-
-TrackList *Parser::track_list(const ticpp::Element *track_list_node) {
-	auto track_list = new TrackList();
-
-	auto child = track_list_node->FirstChildElement(false);
-	for (; child; child = child->NextSiblingElement(false)) {
-		auto name = child->Value();
-		if (name == "track") {
-			auto track = Parser::track(child);
-			track_list->add(track);
-		}
-	}
-
-	return track_list;
-}
-
-pfc::string8 Parser::text_attr(const ticpp::Element *element, const char *name) {
-	return element->GetAttribute(name).data();
-}
-
-pfc::string8 Parser::id(const ticpp::Element *element) {
-	return Parser::text_attr(element, "id");
-}
-
-pfc::string8 Parser::text(const ticpp::Element *element) {
-	return element->GetText(false).data();
-}
-
-int Parser::integer(const ticpp::Element *element, int default_value) {
-	auto text = Parser::text(element);
-	return text.is_empty() ? default_value : atoi(text);
-}
+// List of all element node types. Relates node class to the list of child element types by generating a parser method.
+ELEMENT(DiscID, discid,
+	RELEASE_LIST SECTORS,
+	ID
+)
+ELEMENT(Label, label,
+	NAME LABEL_CODE SORT_NAME,
+	ID
+)
+ELEMENT(LabelInfo, label_info,
+	CATALOG_NUMBER LABEL
+)
+ELEMENT(LabelInfoList, label_info_list,
+	LABEL_INFO
+)
+ELEMENT(Medium, medium,
+	POSITION TITLE TRACK_LIST
+)
+ELEMENT(MediumList, medium_list,
+	MEDIUM
+)
+ELEMENT(Metadata, metadata,
+	DISCID_SINGLE RELEASE_LIST RELEASE_SINGLE
+)
+ELEMENT(Release, release,
+	ARTIST_CREDIT ASIN BARCODE COUNTRY DATE LABEL_INFO_LIST MEDIUM_LIST RELEASE_GROUP STATUS TITLE,
+	ID
+)
+ELEMENT(ReleaseGroup, release_group,
+	TITLE,
+	ID TYPE
+)
+ELEMENT(ReleaseList, release_list,
+	RELEASE
+)
+ELEMENT(Recording, recording,
+	ARTIST_CREDIT LENGTH TITLE,
+	ID
+)
+ELEMENT(Track, track,
+	POSITION RECORDING
+)
+ELEMENT(TrackList, track_list,
+	TRACK
+)
