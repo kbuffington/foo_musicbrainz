@@ -46,6 +46,7 @@ void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abo
 		if (mbc->count() == 0) {
 			throw NotFound();
 		}
+		mbc->sort();
 		ShowWindow(window, SW_SHOW);
 	} catch (GenericException e) {
 		PostMessage(window, WM_CLOSE, 0, 0);
