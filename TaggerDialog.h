@@ -296,7 +296,8 @@ namespace foo_musicbrainz {
 			pfc::string8 str;
 			uGetWindowText(date, str);
 			get_current_release()->set_date(Date(str));
-			listview_helper::set_item_text(release_list, current_release, 2, str);
+			listview_helper::set_item_text(release_list, current_release, 2,
+				static_cast<pfc::string8>(get_current_release()->get_date()));
 		}
 
 		void on_barcode_update(UINT, int, CWindow) {
