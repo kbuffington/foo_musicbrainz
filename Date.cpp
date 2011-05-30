@@ -46,29 +46,29 @@ int Date::compare(const Date &left, const Date &right) {
 	COMPARE_DATE_PARTS(day)
 	return 0;
 }
-		
-inline bool operator>(const Date &left, const Date &right) {
-	return Date::compare(left, right) == 1;
+
+bool Date::operator>(const Date &other) const {
+	return compare(*this, other) == 1;
 }
 
-inline bool operator<(const Date &left, const Date &right) {
-	return Date::compare(left, right) == -1;
+bool Date::operator<(const Date &other) const {
+	return compare(*this, other) == -1;
 }
 
-inline bool operator>=(const Date &left, const Date &right) {
-	return Date::compare(left, right) != -1;
+bool Date::operator>=(const Date &other) const {
+	return compare(*this, other) != -1;
 }
 
-inline bool operator<=(const Date &left, const Date &right) {
-	return Date::compare(left, right) != 1;
+bool Date::operator<=(const Date &other) const {
+	return compare(*this, other) != 1;
 }
 
-inline bool operator==(const Date &left, const Date &right) {
-	return Date::compare(left, right) == 0;
+bool Date::operator==(const Date &other) const {
+	return compare(*this, other) == 0;
 }
 
-inline bool operator!=(const Date &left, const Date &right) {
-	return Date::compare(left, right) != 0;
+bool Date::operator!=(const Date &other) const {
+	return compare(*this, other) != 0;
 }
 
 Date::operator pfc::string8() const {

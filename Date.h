@@ -7,14 +7,14 @@ namespace foo_musicbrainz {
 	public:
 		Date();
 		Date(pfc::string8);
-
-		static int compare(const Date &left, const Date&right);
-		inline friend bool operator>(const Date &left, const Date &right);
-		inline friend bool operator<(const Date &left, const Date &right);
-		inline friend bool operator>=(const Date &left, const Date &right);
-		inline friend bool operator<=(const Date &left, const Date &right);
-		inline friend bool operator==(const Date &left, const Date &right);
-		inline friend bool operator!=(const Date &left, const Date &right);
+		
+		static inline int compare(const Date &left, const Date &right);
+		bool inline operator>(const Date &) const;
+		bool inline operator<(const Date &) const;
+		bool inline operator>=(const Date &) const;
+		bool inline operator<=(const Date &) const;
+		bool inline operator==(const Date &) const;
+		bool inline operator!=(const Date &) const;
 
 		operator pfc::string8() const;
 
