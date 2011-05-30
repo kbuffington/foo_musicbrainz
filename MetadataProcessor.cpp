@@ -13,6 +13,7 @@ namespace foo_musicbrainz {
 		service_enum_t<MetadataProcessor> processors;
 		service_ptr_t<MetadataProcessor> processor;
 		while (processors.next(processor)) {
+			if (!processor->is_enabled()) continue;
 			apply_one(processor, release_list);
 		}
 	}
