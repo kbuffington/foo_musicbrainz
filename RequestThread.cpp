@@ -1,5 +1,6 @@
 #include "foo_musicbrainz.h"
 #include "Metadata.h"
+#include "MetadataProcessor.h"
 #include "Release.h"
 #include "RequestThread.h"
 
@@ -29,10 +30,18 @@ void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abo
 			if (release_list != nullptr) {
 				auto count = release_list->count();
 				for (auto i = 0; i < count; i++) {
-					// Progress
-					p_status.set_progress(p_status.progress_max * (i + 1) / (count + 1));
-
 					release = release_list->get(i);
+
+					// Progress and title
+					p_status.set_progress(i + 1, count + 1);
+					pfc::string8 title = "Fetching: ";
+					title << release->get_artist_credit()->get_name() << " - " << release->get_title();
+					auto date = release->get_date();
+					if (date.get_year() != 0) {
+						title << " (" << static_cast<pfc::string8>(date) << ")";
+					}
+					p_status.set_title(title);
+
 					Query query("release", release->get_id());
 					query.add_param("inc", "artists+labels+recordings+release-groups+artist-credits", false);
 					auto release = query.perform(p_abort)->extract_release();
