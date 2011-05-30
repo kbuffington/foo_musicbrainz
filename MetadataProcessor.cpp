@@ -60,4 +60,22 @@ namespace foo_musicbrainz {
 			}
 		}
 	}
+
+	class RemoveFeatProcessor : public MetadataProcessor {
+	public:
+		Entities get_entities() { return track_entity; }
+		bool is_enabled() { return Preferences::no_feat; }
+
+		void process(Track &track) {
+			auto recording = track.get_recording();
+			auto title = recording->get_title();
+			static regex rx("^(.+?)(\\s+\\(feat\\.\\s+.+\\))?$");
+			cmatch matches;
+			if (regex_search(title.get_ptr(), matches, rx)) {
+				recording->set_title(matches[1].str().data());
+			}
+		}
+	};
+
+	service_factory_single_t<RemoveFeatProcessor> remove_feat_processor;
 }
