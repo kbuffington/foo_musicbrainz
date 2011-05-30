@@ -22,28 +22,28 @@
 namespace foo_musicbrainz {
 	class Parser {
 	public:
-		static Artist *artist(const ticpp::Element *);
-		static ArtistCredit *artist_credit(const ticpp::Element *);
-		static DiscID *discid(const ticpp::Element *);
-		static Label *label(const ticpp::Element *);
-		static LabelInfo *label_info(const ticpp::Element *);
-		static LabelInfoList *label_info_list(const ticpp::Element *);
-		static Medium *medium(const ticpp::Element *);
-		static MediumList *medium_list(const ticpp::Element *);
-		static NameCredit *name_credit(const ticpp::Element *);
-		static Metadata *metadata(const ticpp::Element *);
-		static Release *release(const ticpp::Element *);
-		static ReleaseGroup *release_group(const ticpp::Element *);
-		static ReleaseList *release_list(const ticpp::Element *);
-		static Recording *recording(const ticpp::Element *);
-		static Track *track(const ticpp::Element *);
-		static TrackList *track_list(const ticpp::Element *);
+		static Artist *artist(const TiXmlElement *);
+		static ArtistCredit *artist_credit(const TiXmlElement *);
+		static DiscID *discid(const TiXmlElement *);
+		static Label *label(const TiXmlElement *);
+		static LabelInfo *label_info(const TiXmlElement *);
+		static LabelInfoList *label_info_list(const TiXmlElement *);
+		static Medium *medium(const TiXmlElement *);
+		static MediumList *medium_list(const TiXmlElement *);
+		static NameCredit *name_credit(const TiXmlElement *);
+		static Metadata *metadata(const TiXmlElement *);
+		static Release *release(const TiXmlElement *);
+		static ReleaseGroup *release_group(const TiXmlElement *);
+		static ReleaseList *release_list(const TiXmlElement *);
+		static Recording *recording(const TiXmlElement *);
+		static Track *track(const TiXmlElement *);
+		static TrackList *track_list(const TiXmlElement *);
 
-		static pfc::string8 text_attr(const ticpp::Element *, const char *);
-		static pfc::string8 id(const ticpp::Element *);
-		static pfc::string8 text(const ticpp::Element *);
-		static Date date(const ticpp::Element *);
-		static int integer(const ticpp::Element *, int default_value = 0);
+		static pfc::string8 text_attr(const TiXmlElement *, const char *);
+		static pfc::string8 id(const TiXmlElement *);
+		static pfc::string8 text(const TiXmlElement *);
+		static Date date(const TiXmlElement *);
+		static int integer(const TiXmlElement *, int default_value = 0);
 	};
 	
 }

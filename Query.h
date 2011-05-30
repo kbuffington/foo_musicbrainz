@@ -14,7 +14,7 @@ namespace foo_musicbrainz {
 	private:
 		inline char to_hex(char);
 		pfc::string8 url_encode(const char *);
-		ticpp::Element *parse(pfc::string8 &buffer, ticpp::Document &xml);
+		TiXmlElement *parse(pfc::string8 &buffer, TiXmlDocument &xml);
 
 		pfc::string8 url;
 	};

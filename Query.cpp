@@ -46,11 +46,10 @@ pfc::string8 Query::url_encode(const char *in) {
 	return out;
 }
 
-ticpp::Element *Query::parse(pfc::string8 &buffer, ticpp::Document &xml) {
+TiXmlElement *Query::parse(pfc::string8 &buffer, TiXmlDocument &xml) {
 	// Parsing XML
-	try {
-		xml.Parse(buffer.get_ptr(), true, TIXML_ENCODING_UTF8);
-	} catch (ticpp::Exception) {
+	xml.Parse(buffer, 0, TIXML_ENCODING_UTF8);
+	if (xml.Error()) {
 #ifdef DEBUG
 		pfc::string8 error = "Error parsing XML, response from musicbrainz.org:\n\n";
 		error << buffer;
@@ -60,20 +59,19 @@ ticpp::Element *Query::parse(pfc::string8 &buffer, ticpp::Document &xml) {
 #endif
 	}
 
-	// Accessing metadata element
-	try {
-		return xml.FirstChildElement("metadata");
-	} catch (ticpp::Exception) {
-		try {
-			auto text = xml.FirstChildElement("error")->FirstChildElement("text");
-			pfc::string8 message = "Response from MusicBrainz: ";
-			message << Parser::text(text);
-			// FIXME: not only not found (404), but also 401 and 404
-			throw NotFound(message);
-		} catch (ticpp::Exception) {
-			throw XmlParseError();
-		}
-	}
+	// Accessing <metadata> element
+	auto metadata = xml.FirstChildElement("metadata");
+	if (metadata != nullptr) return metadata;
+
+	// No metadata, look for <error> element
+	auto error = xml.FirstChildElement("error");
+	if (error == nullptr) throw XmlParseError();
+	auto text = error->FirstChildElement("text");
+	if (text == nullptr) throw XmlParseError();
+	pfc::string8 message = "Response from MusicBrainz: ";
+	message << Parser::text(text);
+	// FIXME: not only not found (404), but also 401 and 404
+	throw NotFound(message);
 }
 
 Metadata *Query::perform(abort_callback &callback) {
@@ -91,8 +89,8 @@ Metadata *Query::perform(abort_callback &callback) {
 	// Get string
 	pfc::string8 buffer;
 	response->read_string_raw(buffer, callback);
-
+	
 	// Parse
-	ticpp::Document xml;
+	TiXmlDocument xml;
 	return Parser::metadata(parse(buffer, xml));
 }

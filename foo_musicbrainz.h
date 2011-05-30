@@ -1,6 +1,5 @@
 #pragma once
 
-#define TIXML_USE_TICPP
 #define _WIN32_WINNT 0x0501
 
 #define COMPONENT_TITLE "MusicBrainz Tagger"
@@ -10,7 +9,7 @@
 #include "resource.h"
 #include "../foobar2000/SDK/foobar2000.h"
 #include "../foobar2000/ATLHelpers/ATLHelpers.h"
-#include "../ticpp/ticpp.h"
+#include "../tinyxml/tinyxml.h"
 #include "meta.h"
 #include "Preferences.h"
 #include "exceptions.h"

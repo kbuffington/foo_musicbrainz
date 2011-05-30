@@ -11,9 +11,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "foobar2000_sdk_helpers", ".
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pfc", "..\pfc\pfc.vcxproj", "{EBFFFB4E-261D-44D3-B89C-957B31A0BF9C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TiCPP", "..\ticpp\TiCPP.vcxproj", "{0D3A902A-D225-474F-BBEE-B0102EEEE11E}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "foo_musicbrainz", "foo_musicbrainz.vcxproj", "{AFB5049B-6CAB-477A-A659-936BDFC977DF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml", "..\tinyxml\tinyxml_lib.vcxproj", "{C406DAEC-0886-4771-8DEA-9D7329B46CC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,18 +63,18 @@ Global
 		{EBFFFB4E-261D-44D3-B89C-957B31A0BF9C}.Release|Win32.Build.0 = Release|Win32
 		{EBFFFB4E-261D-44D3-B89C-957B31A0BF9C}.Release|x64.ActiveCfg = Release|x64
 		{EBFFFB4E-261D-44D3-B89C-957B31A0BF9C}.Release|x64.Build.0 = Release|x64
-		{0D3A902A-D225-474F-BBEE-B0102EEEE11E}.Debug|Win32.ActiveCfg = Debug|Win32
-		{0D3A902A-D225-474F-BBEE-B0102EEEE11E}.Debug|Win32.Build.0 = Debug|Win32
-		{0D3A902A-D225-474F-BBEE-B0102EEEE11E}.Debug|x64.ActiveCfg = Debug|Win32
-		{0D3A902A-D225-474F-BBEE-B0102EEEE11E}.Release|Win32.ActiveCfg = Release|Win32
-		{0D3A902A-D225-474F-BBEE-B0102EEEE11E}.Release|Win32.Build.0 = Release|Win32
-		{0D3A902A-D225-474F-BBEE-B0102EEEE11E}.Release|x64.ActiveCfg = Release|Win32
 		{AFB5049B-6CAB-477A-A659-936BDFC977DF}.Debug|Win32.ActiveCfg = Debug|Win32
 		{AFB5049B-6CAB-477A-A659-936BDFC977DF}.Debug|Win32.Build.0 = Debug|Win32
 		{AFB5049B-6CAB-477A-A659-936BDFC977DF}.Debug|x64.ActiveCfg = Debug|Win32
 		{AFB5049B-6CAB-477A-A659-936BDFC977DF}.Release|Win32.ActiveCfg = Release|Win32
 		{AFB5049B-6CAB-477A-A659-936BDFC977DF}.Release|Win32.Build.0 = Release|Win32
 		{AFB5049B-6CAB-477A-A659-936BDFC977DF}.Release|x64.ActiveCfg = Release|Win32
+		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Debug|Win32.Build.0 = Debug|Win32
+		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Debug|x64.ActiveCfg = Debug|Win32
+		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Release|Win32.ActiveCfg = Release|Win32
+		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Release|Win32.Build.0 = Release|Win32
+		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

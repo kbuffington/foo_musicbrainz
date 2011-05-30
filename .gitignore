@@ -1,5 +1,7 @@
 /Debug/
+/Debugtinyxml/
 /Release/
+/Releasetinyxml/
 /ipch/
 /*.vcxproj.user
 /*.aps

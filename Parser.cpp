@@ -18,25 +18,27 @@
 
 using namespace foo_musicbrainz;
 
-pfc::string8 Parser::text_attr(const ticpp::Element *element, const char *name) {
-	return element->GetAttribute(name).data();
+pfc::string8 Parser::text_attr(const TiXmlElement *element, const char *name) {
+	auto value =  element->Attribute(name);
+	return value == nullptr ? "" : value;
 }
 
-pfc::string8 Parser::id(const ticpp::Element *element) {
+pfc::string8 Parser::id(const TiXmlElement *element) {
 	return Parser::text_attr(element, "id");
 }
 
-pfc::string8 Parser::text(const ticpp::Element *element) {
-	return element->GetText(false).data();
+pfc::string8 Parser::text(const TiXmlElement *element) {
+	auto value =  element->GetText();
+	return value == nullptr ? "" : value;
 }
 
-Date Parser::date(const ticpp::Element *element) {
+Date Parser::date(const TiXmlElement *element) {
 	return Date(Parser::text(element));
 }
 
-int Parser::integer(const ticpp::Element *element, int default_value) {
-	auto text = Parser::text(element);
-	return text.is_empty() ? default_value : atoi(text);
+int Parser::integer(const TiXmlElement *element, int default_value) {
+	auto value =  element->GetText();
+	return value == nullptr ? default_value : atoi(value);
 }
 
 // Defines new method for parsing an element node.
@@ -44,10 +46,10 @@ int Parser::integer(const ticpp::Element *element, int default_value) {
 // @param method_name This name will be given to the generated method. 
 // @param children Place where to put children and attribute parsing.
 #define ELEMENT(class_name, method_name, children, attributes) \
-	class_name *Parser::method_name(const ticpp::Element *node) { \
+	class_name *Parser::method_name(const TiXmlElement *node) { \
 		auto entity = new class_name(); \
-		auto child = node->FirstChildElement(false); \
-		for (; child; child = child->NextSiblingElement(false)) { \
+		auto child = node->FirstChildElement(); \
+		for (; child; child = child->NextSiblingElement()) { \
 			auto name = child->Value(); \
 			if (false) {} \
 			children \
@@ -62,7 +64,7 @@ int Parser::integer(const ticpp::Element *element, int default_value) {
 // @param parser_method How to parse. For text nodes this is usually text or integer methods,
 // for element nodes it matches underscored name of en entity.
 #define PARSE_CHILD(tag_name, add_method, parser_method) \
-	else if (name == #tag_name) { \
+	else if (strcmp(name, #tag_name) == 0) { \
 		entity->add_method(Parser::parser_method(child)); \
 	}
 
