@@ -8,7 +8,7 @@ namespace foo_musicbrainz {
 		Date();
 		Date(pfc::string8);
 		
-		static inline int compare(const Date &left, const Date &right);
+		static int compare(const Date &left, const Date &right);
 		bool inline operator>(const Date &) const;
 		bool inline operator<(const Date &) const;
 		bool inline operator>=(const Date &) const;
