@@ -17,6 +17,16 @@ Date::Date() {
 	year = month = day = 0;
 }
 
+Date::Date(short year, short month, short day) {
+	this->year = this->month = this->day = 0;
+	if (year == 0) return;
+	this->year = year;
+	if (month == 0) return;
+	this->month = month;
+	if (day == 0) return;
+	this->day = day;
+}
+
 Date::Date(string8 str) {
 	static regex rx("^\\s*(?:([12][0-9]{3})(?:-(?:([01]?[0-9])(?:-([012]?[0-9])?)?)?)?)?\\s*$");
 	cmatch matches;
