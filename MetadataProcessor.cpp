@@ -79,4 +79,18 @@ namespace foo_musicbrainz {
 	};
 
 	service_factory_single_t<RemoveFeatProcessor> remove_feat_processor;
+
+	class ShortDate : public MetadataProcessor {
+		Entities get_entities() { return release_entity; }
+		bool is_enabled() { return Preferences::short_date; }
+
+		void process(Release &release) {
+			auto date = release.get_date();
+			if (date.get_month() > 0) {
+				release.set_date(Date(date.get_year()));
+			}
+		}
+	};
+
+	service_factory_single_t<ShortDate> short_date;
 }
