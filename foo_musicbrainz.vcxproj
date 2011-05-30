@@ -93,6 +93,7 @@
   <ItemGroup>
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="FileTagMap.cpp" />
+    <ClCompile Include="MetadataProcessor.cpp" />
     <ClCompile Include="TagWriter.cpp" />
     <ClCompile Include="foo_musicbrainz.cpp" />
     <ClCompile Include="TrackListView.cpp" />
@@ -115,6 +116,7 @@
     <ClInclude Include="EntityList.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="FileTagMap.h" />
+    <ClInclude Include="MetadataProcessor.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="LabelInfo.h" />
     <ClInclude Include="LabelInfoList.h" />

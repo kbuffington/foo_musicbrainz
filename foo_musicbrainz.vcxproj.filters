@@ -57,6 +57,9 @@
     <ClCompile Include="FileTagMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MetadataProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="foo_musicbrainz.h">
@@ -165,6 +168,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NameCredit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MetadataProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
