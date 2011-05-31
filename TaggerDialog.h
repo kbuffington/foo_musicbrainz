@@ -209,8 +209,8 @@ namespace foo_musicbrainz {
 				position << tracks->get(item)->get_position();
 				listview_helper::set_item_text(track_list, item, 0, position);
 				auto track = tracks->get(item);
-				listview_helper::set_item_text(track_list, item, 1, track->get_recording()->get_title());
-				listview_helper::set_item_text(track_list, item, 2, track->get_recording()->get_artist_credit()->get_name());
+				listview_helper::set_item_text(track_list, item, 1, track->get_title());
+				listview_helper::set_item_text(track_list, item, 2, track->get_artist_credit()->get_name());
 			}
 		}
 

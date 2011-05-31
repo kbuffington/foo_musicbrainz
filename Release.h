@@ -14,6 +14,8 @@ namespace foo_musicbrainz {
 		STRING_MEMBER(barcode)
 		STRING_MEMBER(country)
 		STRING_MEMBER(asin)
+		STRING_MEMBER(language)
+		STRING_MEMBER(script)
 		MEMBER_BY_REFERENCE(Date, date)
 		POINTER_MEMBER(ArtistCredit, artist_credit)
 		POINTER_MEMBER(LabelInfoList, label_info_list)

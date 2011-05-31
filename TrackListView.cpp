@@ -35,10 +35,10 @@ bool TrackListView::TableEdit_IsColumnEditable(t_size subItem) const {
 void TrackListView::TableEdit_SetField(t_size item, t_size subItem, const char *value) {
 	switch (subItem) {
 	case 1:
-		track_list->get(item)->get_recording()->set_title(value);
+		track_list->get(item)->set_title(value);
 		break;
 	case 2:
-		track_list->get(item)->get_recording()->get_artist_credit()->set_name(value);
+		track_list->get(item)->get_artist_credit()->set_name(value);
 		break;
 	}
 	CTableEditHelperV2_ListView::TableEdit_SetField(item, subItem, value);

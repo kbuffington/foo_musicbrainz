@@ -13,7 +13,7 @@ Tag::Tag(Release &release, Medium &medium, Track &track) {
 		set("DATE", date);
 	}
 
-	set("TITLE", track.get_recording()->get_title());
+	set("TITLE", track.get_title());
 	set("TRACKNUMBER", track.get_position());
 	set("TOTALTRACKS", medium.get_track_list()->count());
 
@@ -45,15 +45,15 @@ Tag::Tag(Release &release, Medium &medium, Track &track) {
 
 	// Artist
 	bool va = release.is_various();
-	set("ARTIST", track.get_recording()->get_artist_credit()->get_name());
+	set("ARTIST", track.get_artist_credit()->get_name());
 	set("ALBUM ARTIST", va ? release.get_artist_credit()->get_name() : "");
 
 	// MusicBrainz IDs
 	if (Preferences::write_ids) {
 		set("MUSICBRAINZ_ALBUMID", release.get_id());
 		set("MUSICBRAINZ_RELEASEGROUPID", release.get_release_group()->get_id());
-		set("MUSICBRAINZ_TRACKID", track.get_recording()->get_id());
-		base_class::set("MUSICBRAINZ_ARTISTID", track.get_recording()->get_artist_credit()->get_ids());
+		set("MUSICBRAINZ_TRACKID", track.get_id());
+		base_class::set("MUSICBRAINZ_ARTISTID", track.get_artist_credit()->get_ids());
 		if (va) {
 			base_class::set("MUSICBRAINZ_ALBUMARTISTID", release.get_artist_credit()->get_ids());
 		} else {

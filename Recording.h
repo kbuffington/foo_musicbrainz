@@ -1,6 +1,7 @@
 #pragma once
 
 #include "foo_musicbrainz.h"
+#include "ArtistCredit.h"
 #include "CoreEntity.h"
 
 namespace foo_musicbrainz {

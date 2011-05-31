@@ -12,14 +12,13 @@
 #include "NameCredit.h"
 #include "Release.h"
 #include "ReleaseGroup.h"
-#include "Recording.h"
 #include "Track.h"
 #include "TrackList.h"
 
 using namespace foo_musicbrainz;
 
 pfc::string8 Parser::text_attr(const TiXmlElement *element, const char *name) {
-	auto value =  element->Attribute(name);
+	auto value = element->Attribute(name);
 	return value == nullptr ? "" : value;
 }
 
@@ -28,7 +27,7 @@ pfc::string8 Parser::id(const TiXmlElement *element) {
 }
 
 pfc::string8 Parser::text(const TiXmlElement *element) {
-	auto value =  element->GetText();
+	auto value = element->GetText();
 	return value == nullptr ? "" : value;
 }
 
@@ -37,17 +36,15 @@ Date Parser::date(const TiXmlElement *element) {
 }
 
 int Parser::integer(const TiXmlElement *element, int default_value) {
-	auto value =  element->GetText();
+	auto value = element->GetText();
 	return value == nullptr ? default_value : atoi(value);
 }
 
-// Defines new method for parsing an element node.
-// @param class_name Class which should be used to construct entity.
+// Loop for parsing children and attributes.
 // @param method_name This name will be given to the generated method. 
 // @param children Place where to put children and attribute parsing.
-#define ELEMENT(class_name, method_name, children, attributes) \
-	class_name *Parser::method_name(const TiXmlElement *node) { \
-		auto entity = new class_name(); \
+#define CHILDER(children, attributes) \
+	{ \
 		auto child = node->FirstChildElement(); \
 		for (; child; child = child->NextSiblingElement()) { \
 			auto name = child->Value(); \
@@ -55,6 +52,16 @@ int Parser::integer(const TiXmlElement *element, int default_value) {
 			children \
 		} \
 		attributes \
+	}
+
+// Defines new method for parsing an element node.
+// @param class_name Class which should be used to construct entity.
+// @param children Same as above.
+// @param attributes Same as above.
+#define ELEMENT(class_name, method_name, children, attributes) \
+	class_name *Parser::method_name(const TiXmlElement *node) { \
+		auto entity = new class_name(); \
+		CHILDER(children, attributes) \
 		return entity; \
 	}
 
@@ -88,6 +95,17 @@ int Parser::integer(const TiXmlElement *element, int default_value) {
 #define PARSE_ATTRIBUTE(attr_name, entity_name, parser_method) \
 	entity->set_##entity_name(Parser::parser_method##_attr(node, #attr_name));
 
+// Works like ELEMENT, but instead of defining a new method, should be placed
+// inside a child loop, thus allowing parent to contain its grandchildren.
+// @param tag_name Same as above.
+// @param children Same as above.
+// @param attributes Same as above.
+#define INLINE(tag_name, children, attributes) \
+	else if (strcmp(name, #tag_name) == 0) { \
+		auto node = child; \
+		CHILDER(children, attributes) \
+	}
+
 // List of all node types. Relates node name to the parser method and method used for adding entity to the parent. 
 #define ARTIST PARSE_SINGLE_CHILD(artist, artist, artist)
 #define ARTIST_CREDIT PARSE_SINGLE_CHILD(artist-credit, artist_credit, artist_credit)
@@ -104,20 +122,23 @@ int Parser::integer(const TiXmlElement *element, int default_value) {
 #define LABEL_CODE PARSE_SINGLE_CHILD(label-code, label_code, text)
 #define LABEL_INFO PARSE_CHILDREN(label-info, label_info)
 #define LABEL_INFO_LIST PARSE_SINGLE_CHILD(label-info-list, label_info_list, label_info_list)
+#define LANGUAGE PARSE_SINGLE_CHILD(language, language, text)
 #define LENGTH PARSE_SINGLE_CHILD(length, length, integer)
 #define MEDIUM PARSE_CHILDREN(medium, medium)
 #define MEDIUM_LIST PARSE_SINGLE_CHILD(medium-list, medium_list, medium_list)
 #define NAME PARSE_SINGLE_CHILD(name, name, text)
 #define NAME_CREDIT PARSE_CHILDREN(name-credit, name_credit)
 #define POSITION PARSE_SINGLE_CHILD(position, position, integer)
-#define RECORDING PARSE_SINGLE_CHILD(recording, recording, recording)
+#define RECORDING(children, attributes) INLINE(recording, children, attributes)
 #define RELEASE PARSE_CHILDREN(release, release)
 #define RELEASE_LIST PARSE_SINGLE_CHILD(release-list, release_list, release_list)
 #define RELEASE_GROUP PARSE_SINGLE_CHILD(release-group, release_group, release_group)
 #define RELEASE_SINGLE PARSE_SINGLE_CHILD(release, release, release)
-#define SORT_NAME PARSE_SINGLE_CHILD(sort-name, sort_name, text)
+#define SCRIPT PARSE_SINGLE_CHILD(script, script, text)
 #define SECTORS PARSE_SINGLE_CHILD(sectors, sectors, integer)
+#define SORT_NAME PARSE_SINGLE_CHILD(sort-name, sort_name, text)
 #define STATUS PARSE_SINGLE_CHILD(status, status, text)
+#define TEXT_REPRESENTATION(children, attributes) INLINE(text-representation, children, attributes)
 #define TITLE PARSE_SINGLE_CHILD(title, title, text)
 #define TRACK PARSE_CHILDREN(track, track)
 #define TYPE PARSE_ATTRIBUTE(type, type, text)
@@ -159,7 +180,10 @@ ELEMENT(NameCredit, name_credit,
 	JOINPHRASE
 )
 ELEMENT(Release, release,
-	ARTIST_CREDIT ASIN BARCODE COUNTRY DATE LABEL_INFO_LIST MEDIUM_LIST RELEASE_GROUP STATUS TITLE,
+	ARTIST_CREDIT ASIN BARCODE COUNTRY DATE LABEL_INFO_LIST MEDIUM_LIST RELEASE_GROUP STATUS TITLE
+	TEXT_REPRESENTATION(
+		LANGUAGE SCRIPT
+	),
 	ID
 )
 ELEMENT(ReleaseGroup, release_group,
@@ -169,12 +193,11 @@ ELEMENT(ReleaseGroup, release_group,
 ELEMENT(ReleaseList, release_list,
 	RELEASE
 )
-ELEMENT(Recording, recording,
-	ARTIST_CREDIT LENGTH TITLE,
-	ID
-)
 ELEMENT(Track, track,
-	POSITION RECORDING
+	POSITION RECORDING(
+		ARTIST_CREDIT LENGTH TITLE,
+		ID
+	)
 )
 ELEMENT(TrackList, track_list,
 	TRACK

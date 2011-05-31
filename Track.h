@@ -1,20 +1,16 @@
 #pragma once
 
 #include "foo_musicbrainz.h"
-#include "ArtistCredit.h"
 #include "Recording.h"
 
 namespace foo_musicbrainz {
-	class Track {
+	class Track : public Recording {
 		MEMBER(int, position)
-		POINTER_MEMBER(Recording, recording)
 
 	public:
 		Track()
-			: position(0),
-			recording(nullptr) {};
-		~Track() {
-			POINTER_MEMBER_DESTRUCTOR(recording)
-		}
+			: Recording(),
+			position(0) {}
+		~Track() {}
 	};
 }

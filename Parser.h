@@ -15,7 +15,6 @@
 #include "Release.h"
 #include "ReleaseGroup.h"
 #include "ReleaseList.h"
-#include "Recording.h"
 #include "Track.h"
 #include "TrackList.h"
 
@@ -35,7 +34,6 @@ namespace foo_musicbrainz {
 		static Release *release(const TiXmlElement *);
 		static ReleaseGroup *release_group(const TiXmlElement *);
 		static ReleaseList *release_list(const TiXmlElement *);
-		static Recording *recording(const TiXmlElement *);
 		static Track *track(const TiXmlElement *);
 		static TrackList *track_list(const TiXmlElement *);
 

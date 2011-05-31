@@ -68,12 +68,11 @@ namespace foo_musicbrainz {
 		bool is_enabled() { return Preferences::no_feat; }
 
 		void process(Track &track) {
-			auto recording = track.get_recording();
-			auto title = recording->get_title();
+			auto title = track.get_title();
 			static regex rx("^(.+?)(\\s+\\(feat\\.\\s+.+\\))?$");
 			cmatch matches;
 			if (regex_search(title.get_ptr(), matches, rx)) {
-				recording->set_title(matches[1].str().data());
+				track.set_title(matches[1].str().data());
 			}
 		}
 	};
