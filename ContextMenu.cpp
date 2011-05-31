@@ -42,6 +42,7 @@ namespace foo_musicbrainz {
 					auto query = new Query("discid", toc.getDiscID());
 					query->add_param("count", count);
 					query->add_param("cdstubs", "no");
+					query->add_param("inc", "artists");
 
 					pfc::list_t<metadb_handle_ptr> tracks;
 					tracks.add_items(p_data);
