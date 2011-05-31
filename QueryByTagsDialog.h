@@ -71,7 +71,6 @@ namespace foo_musicbrainz {
 				search << "artist:\"" << artist << "\"";
 				search << " AND release:\"" << album << "\"";
 				query->add_param("query", search);
-				query->add_param("count", tracks.get_count());
 				new TaggerDialog(query, tracks);
 				DestroyWindow();
 			}

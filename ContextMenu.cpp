@@ -40,7 +40,6 @@ namespace foo_musicbrainz {
 				case 0: {
 					TOC toc(p_data);
 					auto query = new Query("discid", toc.getDiscID());
-					query->add_param("count", count);
 					query->add_param("cdstubs", "no");
 					query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits");
 
