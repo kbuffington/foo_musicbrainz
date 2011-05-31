@@ -43,17 +43,15 @@ namespace foo_musicbrainz {
 			}
 
 			if (!after_release) continue;
-			auto medium_list = release->get_medium_list();
-			for (size_t j = 0; j < medium_list->count(); j++) {
-				auto medium = medium_list->get(j);
+			for (size_t j = 0; j < release->medium_count(); j++) {
+				auto medium = release->get_medium(j);
 				if (process_medium) {
 					processor->process(*release);
 				}
 
 				if (!after_medium) continue;
-				auto track_list = medium->get_track_list();
-				for (size_t k = 0; k < track_list->count(); k++) {
-					auto track = track_list->get(k);
+				for (size_t k = 0; k < medium->track_count(); k++) {
+					auto track = medium->get_track(k);
 					if (process_track) {
 						processor->process(*track);
 					}

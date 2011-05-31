@@ -72,7 +72,7 @@ namespace foo_musicbrainz {
 		}
 
 		Medium *get_current_medium() {
-			return get_current_release()->get_medium_list()->get(current_medium);
+			return get_current_release()->get_medium(current_medium);
 		}
 
 		bool OnInitDialog(CWindow wndFocus, LPARAM lInitParam) {
@@ -169,23 +169,21 @@ namespace foo_musicbrainz {
 			}
 
 			// Media
-			auto media = get_current_release()->get_medium_list();
-			medium_list.Resize(media->count());
-			for (size_t item = 0; item < media->count(); item++) {
+			medium_list.Resize(release->medium_count());
+			for (size_t item = 0; item < release->medium_count(); item++) {
 				pfc::string8 position;
-				position << media->get(item)->get_position();
+				position << release->get_medium(item)->get_position();
 				listview_helper::set_item_text(medium_list, item, 0, position);
-				listview_helper::set_item_text(medium_list, item, 1, media->get(item)->get_title());
+				listview_helper::set_item_text(medium_list, item, 1, release->get_medium(item)->get_title());
 			}
-			if (current_medium >= media->count()) {
+			if (current_medium >= release->medium_count()) {
 				current_medium = 0;
 			}
 
 			// Labels
-			auto label_info_list = get_current_release()->get_label_info_list();
-			label_info_listview.Resize(label_info_list->count());
-			for (size_t i = 0; i < label_info_list->count(); i++) {
-				auto label_item = label_info_list->get(i);
+			label_info_listview.Resize(release->label_info_count());
+			for (size_t i = 0; i < release->label_info_count(); i++) {
+				auto label_item = release->get_label_info(i);
 				listview_helper::set_item_text(label_info_listview, i, 0, label_item->get_label()->get_name());
 				listview_helper::set_item_text(label_info_listview, i, 1, label_item->get_catalog_number());
 			}
@@ -201,14 +199,14 @@ namespace foo_musicbrainz {
 		}
 
 		void update_tracks() {
-			auto tracks = get_current_medium()->get_track_list();
-			track_list_view.set_track_list(tracks);
-			track_list.Resize(tracks->count());
-			for (size_t item = 0; item < tracks->count(); item++) {
+			auto medium = get_current_medium();
+			track_list_view.set_medium(medium);
+			track_list.Resize(medium->track_count());
+			for (size_t item = 0; item < medium->track_count(); item++) {
 				pfc::string8 position;
-				position << tracks->get(item)->get_position();
+				position << medium->get_track(item)->get_position();
 				listview_helper::set_item_text(track_list, item, 0, position);
-				auto track = tracks->get(item);
+				auto track = medium->get_track(item);
 				listview_helper::set_item_text(track_list, item, 1, track->get_title());
 				listview_helper::set_item_text(track_list, item, 2, track->get_artist_credit()->get_name());
 			}

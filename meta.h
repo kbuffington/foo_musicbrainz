@@ -101,3 +101,30 @@
 		static const char *name_plural[]; \
 	private: \
 		size_t name;
+
+#define COLLECTION(T, name) \
+	public: \
+		void add_##name(T *item) { \
+			name##_items.add_item(item); \
+		}; \
+		size_t name##_count() const{ \
+			return name##_items.get_count(); \
+		} \
+		T *get_##name(t_size index) const { \
+			if (index >= name##_items.get_count()) { \
+				throw pfc::exception_overflow(); \
+			} \
+			return name##_items[index]; \
+		} \
+		T *extract_##name(t_size index) { \
+			T *item = get_##name(index); \
+			name##_items.remove_by_idx(index); \
+			return item; \
+		} \
+	protected: \
+		pfc::list_t<T *> name##_items;
+
+#define COLLECTION_DESTRUCTOR(name) \
+	for (size_t i = 0; i <  name##_items.get_count(); i++) { \
+		delete name##_items[i]; \
+	}

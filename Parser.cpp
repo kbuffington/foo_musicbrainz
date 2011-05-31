@@ -6,14 +6,11 @@
 #include "DiscID.h"
 #include "Label.h"
 #include "LabelInfo.h"
-#include "LabelInfoList.h"
 #include "Medium.h"
-#include "MediumList.h"
 #include "NameCredit.h"
 #include "Release.h"
 #include "ReleaseGroup.h"
 #include "Track.h"
-#include "TrackList.h"
 
 using namespace foo_musicbrainz;
 
@@ -88,6 +85,15 @@ int Parser::integer(const TiXmlElement *element, int default_value) {
 #define PARSE_CHILDREN(tag_name, parser_method) \
 	PARSE_CHILD(tag_name, add, parser_method)
 
+// Parses a child as a part of heterogeneous collection of its parent
+// (or, to be more correct, several homogenous collections).
+// @param tag_name Same as above.
+// @param entity_name Underscored name of the resulting entity, used to
+// specify the collection child will be added to.
+// @param parser_method Same as above.
+#define PARSE_CHILDREN_MIXED(tag_name, entity_name, parser_method) \
+	PARSE_CHILD(tag_name, add_##entity_name, parser_method)
+
 // Parses an attribute.
 // @param attr_name Attribute name.
 // @param entity_name Underscored name of the resulting entity.
@@ -120,12 +126,12 @@ int Parser::integer(const TiXmlElement *element, int default_value) {
 #define NAME PARSE_SINGLE_CHILD(name, name, text)
 #define LABEL PARSE_SINGLE_CHILD(label, label, label)
 #define LABEL_CODE PARSE_SINGLE_CHILD(label-code, label_code, text)
-#define LABEL_INFO PARSE_CHILDREN(label-info, label_info)
-#define LABEL_INFO_LIST PARSE_SINGLE_CHILD(label-info-list, label_info_list, label_info_list)
+#define LABEL_INFO PARSE_CHILDREN_MIXED(label-info, label_info, label_info)
+#define LABEL_INFO_LIST(children, attributes) INLINE(label-info-list, children, attributes)
 #define LANGUAGE PARSE_SINGLE_CHILD(language, language, text)
 #define LENGTH PARSE_SINGLE_CHILD(length, length, integer)
-#define MEDIUM PARSE_CHILDREN(medium, medium)
-#define MEDIUM_LIST PARSE_SINGLE_CHILD(medium-list, medium_list, medium_list)
+#define MEDIUM PARSE_CHILDREN_MIXED(medium, medium, medium)
+#define MEDIUM_LIST(children, attributes) INLINE(medium-list, children, attributes)
 #define NAME PARSE_SINGLE_CHILD(name, name, text)
 #define NAME_CREDIT PARSE_CHILDREN(name-credit, name_credit)
 #define POSITION PARSE_SINGLE_CHILD(position, position, integer)
@@ -140,9 +146,9 @@ int Parser::integer(const TiXmlElement *element, int default_value) {
 #define STATUS PARSE_SINGLE_CHILD(status, status, text)
 #define TEXT_REPRESENTATION(children, attributes) INLINE(text-representation, children, attributes)
 #define TITLE PARSE_SINGLE_CHILD(title, title, text)
-#define TRACK PARSE_CHILDREN(track, track)
+#define TRACK PARSE_CHILDREN_MIXED(track, track, track)
 #define TYPE PARSE_ATTRIBUTE(type, type, text)
-#define TRACK_LIST PARSE_SINGLE_CHILD(track-list, track_list, track_list)
+#define TRACK_LIST(children, attributes) INLINE(track-list, children, attributes)
 
 // List of all element node types. Relates node class to the list of child element types by generating a parser method.
 ELEMENT(Artist, artist,
@@ -163,14 +169,10 @@ ELEMENT(Label, label,
 ELEMENT(LabelInfo, label_info,
 	CATALOG_NUMBER LABEL
 )
-ELEMENT(LabelInfoList, label_info_list,
-	LABEL_INFO
-)
 ELEMENT(Medium, medium,
-	POSITION TITLE TRACK_LIST
-)
-ELEMENT(MediumList, medium_list,
-	MEDIUM
+	POSITION TITLE TRACK_LIST(
+		TRACK
+	)
 )
 ELEMENT(Metadata, metadata,
 	DISCID_SINGLE RELEASE_LIST RELEASE_SINGLE
@@ -180,7 +182,13 @@ ELEMENT(NameCredit, name_credit,
 	JOINPHRASE
 )
 ELEMENT(Release, release,
-	ARTIST_CREDIT ASIN BARCODE COUNTRY DATE LABEL_INFO_LIST MEDIUM_LIST RELEASE_GROUP STATUS TITLE
+	ARTIST_CREDIT ASIN BARCODE COUNTRY DATE RELEASE_GROUP STATUS TITLE
+	LABEL_INFO_LIST(
+		LABEL_INFO
+	)
+	MEDIUM_LIST(
+		MEDIUM
+	)
 	TEXT_REPRESENTATION(
 		LANGUAGE SCRIPT
 	),
@@ -198,7 +206,4 @@ ELEMENT(Track, track,
 		ARTIST_CREDIT LENGTH TITLE,
 		ID
 	)
-)
-ELEMENT(TrackList, track_list,
-	TRACK
 )

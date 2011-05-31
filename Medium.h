@@ -1,20 +1,19 @@
 #pragma once
 
 #include "foo_musicbrainz.h"
-#include "TrackList.h"
+#include "Track.h"
 
 namespace foo_musicbrainz {
 	class Medium {
 		MEMBER(int, position)
 		STRING_MEMBER(title)
-		POINTER_MEMBER(TrackList, track_list)
+		COLLECTION(Track, track)
 
 	public:
 		Medium()
-			: position(0),
-			track_list(nullptr) {};
+			: position(0) {};
 		~Medium() {
-			POINTER_MEMBER_DESTRUCTOR(track_list)
+			COLLECTION_DESTRUCTOR(track)
 		}
 	};
 }

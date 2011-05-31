@@ -104,16 +104,10 @@
     <ClInclude Include="ArtistCredit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MediumList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Medium.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EntityList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TrackList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Recording.h">
@@ -141,9 +135,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ListView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LabelInfoList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LabelInfo.h">

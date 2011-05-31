@@ -119,7 +119,6 @@
     <ClInclude Include="MetadataProcessor.h" />
     <ClInclude Include="Label.h" />
     <ClInclude Include="LabelInfo.h" />
-    <ClInclude Include="LabelInfoList.h" />
     <ClInclude Include="ListView.h" />
     <ClInclude Include="Metadata.h" />
     <ClInclude Include="NameCredit.h" />
@@ -127,7 +126,6 @@
     <ClInclude Include="foo_musicbrainz.h" />
     <ClInclude Include="TrackListView.h" />
     <ClInclude Include="Medium.h" />
-    <ClInclude Include="MediumList.h" />
     <ClInclude Include="meta.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Preferences.h" />
@@ -144,7 +142,6 @@
     <ClInclude Include="QueryByMBIDDialog.h" />
     <ClInclude Include="QueryByTagsDialog.h" />
     <ClInclude Include="TaggerDialog.h" />
-    <ClInclude Include="TrackList.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="foo_musicbrainz.rc" />

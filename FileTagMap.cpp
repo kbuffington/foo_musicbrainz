@@ -15,9 +15,9 @@ Tag::Tag(Release &release, Medium &medium, Track &track) {
 
 	set("TITLE", track.get_title());
 	set("TRACKNUMBER", track.get_position());
-	set("TOTALTRACKS", medium.get_track_list()->count());
+	set("TOTALTRACKS", medium.track_count());
 
-	if (auto medium_count = release.get_medium_list()->count() > 1) {
+	if (auto medium_count = release.medium_count() > 1) {
 		set("DISCNUMBER", medium.get_position());
 		set("TOTALDISCS", medium_count);
 		set("DISCSUBTITLE", medium.get_title());
@@ -69,14 +69,13 @@ Tag::Tag(Release &release, Medium &medium, Track &track) {
 	set("BARCODE", release.get_barcode());
 
 	// Label info
-	auto label_info = release.get_label_info_list();
 	TagValues labels, catalog_numbers;
-	for (auto i = 0; i < label_info->count(); i++) {
+	for (auto i = 0; i < release.label_info_count(); i++) {
 		// TODO: possibly remove duplicates?
-		if (auto label = label_info->get(i)->get_label()->get_name()) {
+		if (auto label = release.get_label_info(i)->get_label()->get_name()) {
 			labels.add_item(label);
 		}
-		if (auto catalog_number = label_info->get(i)->get_catalog_number()) {
+		if (auto catalog_number = release.get_label_info(i)->get_catalog_number()) {
 			catalog_numbers.add_item(catalog_number);
 		}
 	}
@@ -104,13 +103,13 @@ FileTagMap::FileTagMap(Release &release, pfc::list_t<metadb_handle_ptr> tracks) 
 	auto current_medium = 0;
 	auto current_track = 0;
 	for (unsigned int i = 0; i < tracks.get_count(); i++) {
-		auto &medium = *release.get_medium_list()->get(current_medium);
-		auto &track = *medium.get_track_list()->get(current_track);
+		auto &medium = *release.get_medium(current_medium);
+		auto &track = *medium.get_track(current_track);
 
 		set(tracks[i], Tag(release, medium, track));
 
-		if (++current_track < medium.get_track_list()->count()) continue;
-		if (++current_medium < release.get_medium_list()->count()) {
+		if (++current_track < medium.track_count()) continue;
+		if (++current_medium < release.medium_count()) {
 			current_track = 0;
 			continue;
 		}

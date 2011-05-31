@@ -7,16 +7,13 @@
 #include "DiscID.h"
 #include "Label.h"
 #include "LabelInfo.h"
-#include "LabelInfoList.h"
 #include "Medium.h"
-#include "MediumList.h"
 #include "Metadata.h"
 #include "NameCredit.h"
 #include "Release.h"
 #include "ReleaseGroup.h"
 #include "ReleaseList.h"
 #include "Track.h"
-#include "TrackList.h"
 
 namespace foo_musicbrainz {
 	class Parser {
@@ -26,16 +23,13 @@ namespace foo_musicbrainz {
 		static DiscID *discid(const TiXmlElement *);
 		static Label *label(const TiXmlElement *);
 		static LabelInfo *label_info(const TiXmlElement *);
-		static LabelInfoList *label_info_list(const TiXmlElement *);
 		static Medium *medium(const TiXmlElement *);
-		static MediumList *medium_list(const TiXmlElement *);
 		static NameCredit *name_credit(const TiXmlElement *);
 		static Metadata *metadata(const TiXmlElement *);
 		static Release *release(const TiXmlElement *);
 		static ReleaseGroup *release_group(const TiXmlElement *);
 		static ReleaseList *release_list(const TiXmlElement *);
 		static Track *track(const TiXmlElement *);
-		static TrackList *track_list(const TiXmlElement *);
 
 		static pfc::string8 text_attr(const TiXmlElement *, const char *);
 		static pfc::string8 id(const TiXmlElement *);
