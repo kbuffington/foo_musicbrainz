@@ -121,6 +121,9 @@
 			name##_items.remove_by_idx(index); \
 			return item; \
 		} \
+		void remove_##name(t_size index) { \
+			delete extract_##name(index); \
+		} \
 	protected: \
 		pfc::list_t<T *> name##_items;
 
