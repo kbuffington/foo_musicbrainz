@@ -70,6 +70,8 @@ namespace foo_musicbrainz {
 				pfc::string8 search;
 				search << "artist:\"" << artist << "\"";
 				search << " AND release:\"" << album << "\"";
+				search << " AND (tracks:" << tracks.get_count();
+				search << " OR tracksmedium:" << tracks.get_count() << ")";
 				query->add_param("query", search);
 				new TaggerDialog(query, tracks);
 				DestroyWindow();
