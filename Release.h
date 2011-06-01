@@ -25,7 +25,18 @@ namespace foo_musicbrainz {
 
 	public:
 		bool is_various() {
-			return false;
+			if (va != -1) return va;
+			auto name = get_artist_credit()->get_name();
+			for (size_t i = 0; i < medium_count(); i++) {
+				auto medium = get_medium(i);
+				for (size_t j = 0; j < medium->track_count(); j++) {
+					auto track = medium->get_track(j);
+					if (track->get_artist_credit()->get_name() != name) {
+						return va = 1;
+					}
+				}
+			}
+			return va = 0;
 		}
 
 		size_t track_count() {
@@ -39,6 +50,7 @@ namespace foo_musicbrainz {
 		Release() :
 			CoreEntity(),
 			status(0),
+			va(-1),
 			artist_credit(nullptr),
 			release_group(nullptr) {};
 		~Release() {
@@ -47,5 +59,8 @@ namespace foo_musicbrainz {
 			COLLECTION_DESTRUCTOR(medium)
 			COLLECTION_DESTRUCTOR(label_info)
 		}
+
+	private:
+		char va;
 	};
 }
