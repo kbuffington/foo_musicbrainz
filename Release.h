@@ -28,6 +28,14 @@ namespace foo_musicbrainz {
 			return false;
 		}
 
+		size_t track_count() {
+			size_t tmp = 0;
+			for (size_t i = 0; i < medium_count(); i++) {
+				tmp+= get_medium(i)->track_count();
+			}
+			return tmp;
+		}
+
 		Release() :
 			CoreEntity(),
 			status(0),
