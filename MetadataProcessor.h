@@ -17,7 +17,7 @@ namespace foo_musicbrainz {
 			track_entity        = 1 << 3
 		};
 		
-		virtual Entities get_entities() = 0;
+		virtual unsigned int get_entities() = 0;
 		virtual bool is_enabled() { return true; }
 		virtual void process(ReleaseList &) {};
 		virtual void process(Release &) {};

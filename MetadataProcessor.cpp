@@ -62,7 +62,7 @@ namespace foo_musicbrainz {
 
 	class RemoveFeatProcessor : public MetadataProcessor {
 	public:
-		Entities get_entities() { return track_entity; }
+		unsigned int get_entities() { return track_entity; }
 		bool is_enabled() { return Preferences::no_feat; }
 
 		void process(Track &track) {
@@ -78,7 +78,7 @@ namespace foo_musicbrainz {
 	service_factory_single_t<RemoveFeatProcessor> remove_feat_processor;
 
 	class ShortDate : public MetadataProcessor {
-		Entities get_entities() { return release_entity; }
+		unsigned int get_entities() { return release_entity; }
 		bool is_enabled() { return Preferences::short_date; }
 
 		void process(Release &release) {
