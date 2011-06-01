@@ -6,7 +6,11 @@
 
 using namespace foo_musicbrainz;
 
-RequestThread::RequestThread(Query *query, HWND window, ReleaseList *mbc) : query(query), window(window), mbc(mbc) {}
+RequestThread::RequestThread(Query *query, HWND window, ReleaseList *mbc, pfc::list_t<metadb_handle_ptr> *tracks)
+	: query(query),
+	window(window),
+	mbc(mbc),
+	tracks(tracks) {}
 
 void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abort) {
 	Metadata *metadata = nullptr;
@@ -54,6 +58,19 @@ void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abo
 
 		if (mbc->count() == 0) {
 			throw NotFound();
+		}
+
+		// Removing discs from multidisc releases with different track count
+		auto track_count = tracks->get_count();
+		for (size_t i = 0; i < mbc->count(); i++) {
+			auto release = mbc->get(i);
+			if (release->track_count() == track_count) continue;
+			for (size_t j = 0; j < release->medium_count(); j++) {
+				if (release->get_medium(j)->track_count() != track_count) {
+					release->remove_medium(j);
+					j--;
+				}
+			}
 		}
 		MetadataProcessor::apply_all(*mbc);
 		mbc->sort();
