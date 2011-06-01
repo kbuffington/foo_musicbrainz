@@ -17,9 +17,9 @@ Tag::Tag(Release &release, Medium &medium, Track &track) {
 	set("TRACKNUMBER", track.get_position());
 	set("TOTALTRACKS", medium.track_count());
 
-	if (auto medium_count = release.medium_count() > 1) {
+	if (release.medium_count() > 1) {
 		set("DISCNUMBER", medium.get_position());
-		set("TOTALDISCS", medium_count);
+		set("TOTALDISCS", release.medium_count());
 		set("DISCSUBTITLE", medium.get_title());
 	}
 
