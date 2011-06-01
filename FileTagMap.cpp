@@ -63,10 +63,10 @@ Tag::Tag(Release &release, Medium &medium, Track &track) {
 		} else {
 			set("MUSICBRAINZ_ALBUMARTISTID", "");
 		}
-		// TODO: disc id
-		//if (strcmp(medium->get_di->getDiscId(), "") != 0) {
-		//	set("MUSICBRAINZ_DISCID", mbc->getDiscId());
-		//}
+		auto discid = medium.get_discid();
+		if (!discid.is_empty()) {
+			set("MUSICBRAINZ_DISCID", discid);
+		}
 	}
 
 	// Barcode

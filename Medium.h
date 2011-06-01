@@ -7,6 +7,7 @@ namespace foo_musicbrainz {
 	class Medium {
 		MEMBER(int, position)
 		STRING_MEMBER(title)
+		STRING_MEMBER(discid)
 		COLLECTION(Track, track)
 
 	public:

@@ -25,9 +25,19 @@ void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abo
 		// /metadata/discid/release-list/release
 		} else if (auto discid = metadata->get_discid()) {
 			if (auto release_list = discid->get_release_list()) {
+				auto id = discid->get_id();
 				auto count = release_list->count();
 				for (size_t i = 0; i < count; i++) {
-					mbc->add(release_list->extract(0));
+					auto release = release_list->extract(0);
+					// FIXME: this is incorrect, as only one of the discs has
+					// this discid, but it won't affect anyone (release must
+					// have two or more discs with the same amount of tracks,
+					// and user must choose the wrong one). Will be fixed when
+					// web service adds support for inc=discids param.
+					for (size_t i = 0; i < release->medium_count(); i++) {
+						release->get_medium(i)->set_discid(id);
+					}
+					mbc->add(release);
 				}
 			}
 
