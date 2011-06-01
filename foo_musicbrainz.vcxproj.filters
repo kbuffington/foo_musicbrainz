@@ -60,6 +60,9 @@
     <ClCompile Include="MetadataProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AsciiPunctuation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="foo_musicbrainz.h">

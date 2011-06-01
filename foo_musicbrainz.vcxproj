@@ -91,6 +91,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AsciiPunctuation.cpp" />
     <ClCompile Include="Date.cpp" />
     <ClCompile Include="FileTagMap.cpp" />
     <ClCompile Include="MetadataProcessor.cpp" />

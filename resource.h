@@ -22,6 +22,7 @@
 #define IDC_ALBUMTYPE_DATA              1032
 #define IDC_ALBUMSTATUS                 1033
 #define IDC_ALBUMSTATUS_DATA            1034
+#define IDC_ASCII_PUNCTUATION           1035
 #define IDC_MEDIUM_LIST                 1039
 #define IDC_LABEL_INFO_LIST             1041
 #define IDC_BARCODE                     1042

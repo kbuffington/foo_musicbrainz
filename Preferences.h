@@ -24,5 +24,9 @@ namespace foo_musicbrainz {
 
 		extern const GUID guid_albumstatus_data;
 		extern cfg_string albumstatus_data;
+
+		extern const GUID guid_ascii_punctuation;
+		extern const bool default_ascii_punctuation;
+		extern cfg_bool ascii_punctuation;
 	}
 }
