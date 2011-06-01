@@ -98,9 +98,10 @@ namespace foo_musicbrainz {
 			track_list.SetExtendedListViewStyle(styles, styles);
 
 			// Adding release list columns
-			listview_helper::insert_column(release_list, 0, "Artist", 115);
-			listview_helper::insert_column(release_list, 1, "Release", 115);
-			listview_helper::insert_column(release_list, 2, "Date", 49);
+			listview_helper::insert_column(release_list, 0, "Artist", 104);
+			listview_helper::insert_column(release_list, 1, "Release", 110);
+			listview_helper::insert_column(release_list, 2, "Date", 45);
+			listview_helper::insert_column(release_list, 3, "Label/Cat#", 80);
 
 			// Medium list columns
 			listview_helper::insert_column(medium_list, 0, "", 0); // Fake column
@@ -135,9 +136,25 @@ namespace foo_musicbrainz {
 			loaded = true;
 			
 			for (unsigned int i = 0; i < mbc->count(); i++) {
-				listview_helper::insert_item(release_list, i, mbc->get(i)->get_artist_credit()->get_name(), NULL);
-				listview_helper::set_item_text(release_list, i, 1, (*mbc)[i]->get_title());
-				listview_helper::set_item_text(release_list, i, 2, static_cast<pfc::string8>((*mbc)[i]->get_date()));
+				auto release = mbc->get(i);
+				// Artist
+				listview_helper::insert_item(release_list, i, release->get_artist_credit()->get_name(), NULL);
+				// Title
+				listview_helper::set_item_text(release_list, i, 1, release->get_title());
+				// Date
+				listview_helper::set_item_text(release_list, i, 2, static_cast<pfc::string8>(release->get_date()));
+				// Label
+				if (release->label_info_count() > 0) {
+					auto label_info = release->get_label_info(0);
+					auto label = label_info->get_label()->get_name();
+					auto cat = label_info->get_catalog_number();
+					pfc::string8 labelcat;
+					labelcat << label;
+					if (!cat.is_empty()) labelcat << " / " << cat;
+					listview_helper::set_item_text(release_list, i, 3, labelcat);
+				} else {
+					listview_helper::set_item_text(release_list, i, 3, "-");
+				}
 			}
 
 			UpdateRelease();
