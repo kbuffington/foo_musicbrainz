@@ -103,9 +103,12 @@ void Tag::set(pfc::string8 key, int value) {
 	set(key, tmp);
 }
 
-FileTagMap::FileTagMap(Release &release, pfc::list_t<metadb_handle_ptr> tracks) {
+FileTagMap::FileTagMap(Release &release, pfc::list_t<metadb_handle_ptr> tracks, size_t selected_medium) {
 	auto current_medium = 0;
 	auto current_track = 0;
+	if (tracks.get_count() < release.track_count()) {
+		current_medium = selected_medium;
+	}
 	for (unsigned int i = 0; i < tracks.get_count(); i++) {
 		auto &medium = *release.get_medium(current_medium);
 		auto &track = *medium.get_track(current_track);

@@ -261,7 +261,7 @@ namespace foo_musicbrainz {
 		}
 
 		void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl) {
-			FileTagMap file_tag_map(*get_current_release(), tracks);
+			FileTagMap file_tag_map(*get_current_release(), tracks, current_medium);
 			static_api_ptr_t<metadb_io_v2>()->update_info_async(tracks,
 				new service_impl_t<TagWriter>(file_tag_map),
 				core_api::get_main_window(), metadb_io_v2::op_flag_delay_ui, nullptr);

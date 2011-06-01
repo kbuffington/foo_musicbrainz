@@ -25,6 +25,6 @@ namespace foo_musicbrainz {
 		typedef pfc::map_t<metadb_handle_ptr, Tag> base_class;
 
 	public:
-		FileTagMap(Release &, pfc::list_t<metadb_handle_ptr>);
+		FileTagMap(Release &, pfc::list_t<metadb_handle_ptr>, size_t selected_medium);
 	};
 }
