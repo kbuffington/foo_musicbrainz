@@ -21,6 +21,10 @@ Tag::Tag(Release &release, Medium &medium, Track &track) {
 		set("DISCNUMBER", medium.get_position());
 		set("TOTALDISCS", release.medium_count());
 		set("DISCSUBTITLE", medium.get_title());
+	} else {
+		set("DISCNUMBER", "");
+		set("TOTALDISCS", "");
+		set("DISCSUBTITLE", "");
 	}
 
 	// Album type
