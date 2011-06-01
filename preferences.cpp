@@ -23,10 +23,15 @@ namespace foo_musicbrainz {
 		const GUID guid_albumstatus_data = { 0x77182aac, 0x1caa, 0x4793, { 0xb7, 0x15, 0xcc, 0xf8, 0x97, 0xba, 0x11, 0x1a } };
 		cfg_string albumstatus_data(guid_albumstatus_data, "MUSICBRAINZ_ALBUMSTATUS");
 
-		const GUID guid_ascii_punctuation = 
+		const GUID guid_ascii_punctuation =
 		{ 0xd08b1b7c, 0x38fd, 0x4689, { 0x9e, 0x91, 0x8c, 0xdc, 0xbe, 0xc4, 0x26, 0x98 } };
 		const bool default_ascii_punctuation = false;
 		cfg_bool ascii_punctuation(guid_ascii_punctuation, default_ascii_punctuation);
+
+		const GUID guid_write_label_info =
+		{ 0x9b3c94e3, 0x278, 0x4eb0, { 0xa2, 0xed, 0x5, 0xad, 0xf8, 0xce, 0xa3, 0x9d } };
+		const bool default_write_label_info = true;
+		cfg_bool write_label_info(guid_write_label_info, default_write_label_info);
 	}
 
 	class PreferencesPageInstance : public CDialogImpl<PreferencesPageInstance>, public preferences_page_instance {
@@ -37,6 +42,7 @@ namespace foo_musicbrainz {
 		CButton write_ids_checkbox;
 		CButton write_albumtype_checkbox;
 		CButton write_albumstatus_checkbox;
+		CButton write_label_info_checkbox;
 		CEdit albumtype;
 		CEdit albumstatus;
 		preferences_page_callback::ptr on_change_callback;
@@ -54,6 +60,7 @@ namespace foo_musicbrainz {
 			COMMAND_HANDLER_EX(IDC_WRITE_IDS, BN_CLICKED, OnChanged)
 			COMMAND_HANDLER_EX(IDC_ALBUMTYPE, BN_CLICKED, OnAlbumType)
 			COMMAND_HANDLER_EX(IDC_ALBUMSTATUS, BN_CLICKED, OnAlbumStatus)
+			COMMAND_HANDLER_EX(IDC_WRITE_LABEL_INFO, BN_CLICKED, OnChanged)
 			COMMAND_HANDLER_EX(IDC_ALBUMTYPE_DATA, EN_UPDATE, OnChanged)
 			COMMAND_HANDLER_EX(IDC_ALBUMSTATUS_DATA, EN_UPDATE, OnChanged)
 		END_MSG_MAP()
@@ -65,6 +72,7 @@ namespace foo_musicbrainz {
 			write_ids_checkbox = GetDlgItem(IDC_WRITE_IDS);
 			write_albumtype_checkbox = GetDlgItem(IDC_ALBUMTYPE);
 			write_albumstatus_checkbox = GetDlgItem(IDC_ALBUMSTATUS);
+			write_label_info_checkbox = GetDlgItem(IDC_WRITE_LABEL_INFO);
 			albumtype = GetDlgItem(IDC_ALBUMTYPE_DATA);
 			albumstatus = GetDlgItem(IDC_ALBUMSTATUS_DATA);
 
@@ -74,6 +82,7 @@ namespace foo_musicbrainz {
 			write_ids_checkbox.SetCheck(Preferences::write_ids.get_value());
 			write_albumtype_checkbox.SetCheck(Preferences::albumtype.get_value());
 			write_albumstatus_checkbox.SetCheck(Preferences::albumstatus.get_value());
+			write_label_info_checkbox.SetCheck(Preferences::write_label_info.get_value());
 			uSetWindowText(albumtype, Preferences::albumtype_data);
 			uSetWindowText(albumstatus, Preferences::albumstatus_data);
 			if (Preferences::albumtype.get_value()) albumtype.EnableWindow(true);
@@ -89,6 +98,7 @@ namespace foo_musicbrainz {
 			if ((bool)write_ids_checkbox.GetCheck() != Preferences::write_ids.get_value()) return true;
 			if ((bool)write_albumtype_checkbox.GetCheck() != Preferences::albumtype.get_value()) return true;
 			if ((bool)write_albumstatus_checkbox.GetCheck() != Preferences::albumstatus.get_value()) return true;
+			if ((bool)write_label_info_checkbox.GetCheck() != Preferences::write_label_info.get_value()) return true;
 		
 			pfc::string8 temp;
 			uGetWindowText(albumtype, temp);
@@ -112,6 +122,7 @@ namespace foo_musicbrainz {
 			Preferences::write_ids = (bool)write_ids_checkbox.GetCheck();
 			Preferences::albumtype = (bool)write_albumtype_checkbox.GetCheck();
 			Preferences::albumstatus = (bool)write_albumstatus_checkbox.GetCheck();
+			Preferences::write_label_info = (bool)write_label_info_checkbox.GetCheck();
 			uGetWindowText(albumtype, Preferences::albumtype_data);
 			uGetWindowText(albumstatus, Preferences::albumstatus_data);
 		}
@@ -123,10 +134,11 @@ namespace foo_musicbrainz {
 		void reset() {
 			short_date_checkbox.SetCheck(false);
 			no_feat_checkbox.SetCheck(false);
-			ascii_punctuation_checkbox.SetCheck(false);
+			ascii_punctuation_checkbox.SetCheck(Preferences::default_ascii_punctuation);
 			write_ids_checkbox.SetCheck(true);
 			write_albumtype_checkbox.SetCheck(true);
 			write_albumstatus_checkbox.SetCheck(true);
+			write_label_info_checkbox.SetCheck(Preferences::default_write_label_info);
 			uSetWindowText(albumtype, "MUSICBRAINZ_ALBUMTYPE");
 			uSetWindowText(albumstatus, "MUSICBRAINZ_ALBUMSTATUS");
 			on_change();

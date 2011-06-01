@@ -28,5 +28,9 @@ namespace foo_musicbrainz {
 		extern const GUID guid_ascii_punctuation;
 		extern const bool default_ascii_punctuation;
 		extern cfg_bool ascii_punctuation;
+
+		extern const GUID guid_write_label_info;
+		extern const bool default_write_label_info;
+		extern cfg_bool write_label_info;
 	}
 }

@@ -69,22 +69,24 @@ Tag::Tag(Release &release, Medium &medium, Track &track) {
 		}
 	}
 
-	// Barcode
-	set("BARCODE", release.get_barcode());
+	if (Preferences::write_label_info) {
+		// Barcode
+		set("BARCODE", release.get_barcode());
 
-	// Label info
-	TagValues labels, catalog_numbers;
-	for (auto i = 0; i < release.label_info_count(); i++) {
-		// TODO: possibly remove duplicates?
-		if (auto label = release.get_label_info(i)->get_name()) {
-			labels.add_item(label);
+		// Label info
+		TagValues labels, catalog_numbers;
+		for (auto i = 0; i < release.label_info_count(); i++) {
+			// TODO: possibly remove duplicates?
+			if (auto label = release.get_label_info(i)->get_name()) {
+				labels.add_item(label);
+			}
+			if (auto catalog_number = release.get_label_info(i)->get_catalog_number()) {
+				catalog_numbers.add_item(catalog_number);
+			}
 		}
-		if (auto catalog_number = release.get_label_info(i)->get_catalog_number()) {
-			catalog_numbers.add_item(catalog_number);
-		}
+		base_class::set("LABEL", labels);
+		base_class::set("CATALOGNUMBER", catalog_numbers);
 	}
-	base_class::set("LABEL", labels);
-	base_class::set("CATALOGNUMBER", catalog_numbers);
 }
 
 void Tag::set(pfc::string8 key, pfc::string8 value) {
