@@ -5,7 +5,6 @@
 #include "Date.h"
 #include "Artist.h"
 #include "DiscID.h"
-#include "Label.h"
 #include "LabelInfo.h"
 #include "Medium.h"
 #include "Metadata.h"
@@ -21,7 +20,6 @@ namespace foo_musicbrainz {
 		static Artist *artist(const TiXmlElement *);
 		static ArtistCredit *artist_credit(const TiXmlElement *);
 		static DiscID *discid(const TiXmlElement *);
-		static Label *label(const TiXmlElement *);
 		static LabelInfo *label_info(const TiXmlElement *);
 		static Medium *medium(const TiXmlElement *);
 		static NameCredit *name_credit(const TiXmlElement *);

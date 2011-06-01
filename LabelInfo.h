@@ -4,15 +4,11 @@
 #include "Label.h"
 
 namespace foo_musicbrainz {
-	class LabelInfo {
+	class LabelInfo : public Label {
 		STRING_MEMBER(catalog_number)
-		POINTER_MEMBER(Label, label)
 
 	public:
-		LabelInfo()
-			: label(nullptr) {};
-		~LabelInfo() {
-			POINTER_MEMBER_DESTRUCTOR(label)
-		}
+		LabelInfo() {};
+		~LabelInfo() {}
 	};
 }

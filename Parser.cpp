@@ -4,7 +4,6 @@
 #include "Artist.h"
 #include "ArtistCredit.h"
 #include "DiscID.h"
-#include "Label.h"
 #include "LabelInfo.h"
 #include "Medium.h"
 #include "NameCredit.h"
@@ -124,7 +123,7 @@ int Parser::integer(const TiXmlElement *element, int default_value) {
 #define ID PARSE_ATTRIBUTE(id, id, text)
 #define JOINPHRASE PARSE_ATTRIBUTE(joinphrase, joinphrase, text)
 #define NAME PARSE_SINGLE_CHILD(name, name, text)
-#define LABEL PARSE_SINGLE_CHILD(label, label, label)
+#define LABEL(children, attributes) INLINE(label, children, attributes)
 #define LABEL_CODE PARSE_SINGLE_CHILD(label-code, label_code, text)
 #define LABEL_INFO PARSE_CHILDREN_MIXED(label-info, label_info, label_info)
 #define LABEL_INFO_LIST(children, attributes) INLINE(label-info-list, children, attributes)
@@ -162,12 +161,11 @@ ELEMENT(DiscID, discid,
 	RELEASE_LIST SECTORS,
 	ID
 )
-ELEMENT(Label, label,
-	NAME LABEL_CODE SORT_NAME,
-	ID
-)
 ELEMENT(LabelInfo, label_info,
-	CATALOG_NUMBER LABEL
+	CATALOG_NUMBER LABEL(
+		NAME LABEL_CODE SORT_NAME,
+		ID
+	)
 )
 ELEMENT(Medium, medium,
 	POSITION TITLE TRACK_LIST(

@@ -146,11 +146,12 @@ namespace foo_musicbrainz {
 				// Label
 				if (release->label_info_count() > 0) {
 					auto label_info = release->get_label_info(0);
-					auto label = label_info->get_label()->get_name();
+					auto label = label_info->get_name();
 					auto cat = label_info->get_catalog_number();
 					pfc::string8 labelcat;
-					labelcat << label;
-					if (!cat.is_empty()) labelcat << " / " << cat;
+					labelcat << (label.is_empty() ? "?" : label);
+					labelcat << " / ";
+					labelcat << (cat.is_empty() ? "?" : cat);
 					listview_helper::set_item_text(release_list, i, 3, labelcat);
 				} else {
 					listview_helper::set_item_text(release_list, i, 3, "-");
@@ -201,7 +202,7 @@ namespace foo_musicbrainz {
 			label_info_listview.Resize(release->label_info_count());
 			for (size_t i = 0; i < release->label_info_count(); i++) {
 				auto label_item = release->get_label_info(i);
-				listview_helper::set_item_text(label_info_listview, i, 0, label_item->get_label()->get_name());
+				listview_helper::set_item_text(label_info_listview, i, 0, label_item->get_name());
 				listview_helper::set_item_text(label_info_listview, i, 1, label_item->get_catalog_number());
 			}
 

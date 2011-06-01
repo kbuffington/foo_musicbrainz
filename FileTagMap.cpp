@@ -76,7 +76,7 @@ Tag::Tag(Release &release, Medium &medium, Track &track) {
 	TagValues labels, catalog_numbers;
 	for (auto i = 0; i < release.label_info_count(); i++) {
 		// TODO: possibly remove duplicates?
-		if (auto label = release.get_label_info(i)->get_label()->get_name()) {
+		if (auto label = release.get_label_info(i)->get_name()) {
 			labels.add_item(label);
 		}
 		if (auto catalog_number = release.get_label_info(i)->get_catalog_number()) {
