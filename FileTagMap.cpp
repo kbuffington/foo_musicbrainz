@@ -31,9 +31,9 @@ Tag::Tag(Release &release, Medium &medium, Track &track) {
 	if (Preferences::albumtype) {
 		auto type = release.get_release_group()->get_type();
 		if (type != ReleaseGroup::types[0]) {
-			set(Preferences::albumstatus_data, type);
+			set(Preferences::albumtype_data, type);
 		} else {
-			set(Preferences::albumstatus_data, "");
+			set(Preferences::albumtype_data, "");
 		}
 	}
 
