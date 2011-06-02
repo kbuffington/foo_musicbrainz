@@ -36,6 +36,11 @@ int Parser::integer(const TiXmlElement *element, int default_value) {
 	return value == nullptr ? default_value : atoi(value);
 }
 
+int Parser::integer_attr(const TiXmlElement *element, const char *name, int default_value) {
+	auto value = element->Attribute(name);
+	return value == nullptr ? default_value : atoi(value);
+}
+
 // Loop for parsing children and attributes.
 // @param method_name This name will be given to the generated method. 
 // @param children Place where to put children and attribute parsing.
@@ -130,6 +135,7 @@ int Parser::integer(const TiXmlElement *element, int default_value) {
 #define LANGUAGE PARSE_SINGLE_CHILD(language, language, text)
 #define LENGTH PARSE_SINGLE_CHILD(length, length, integer)
 #define MEDIUM PARSE_CHILDREN_MIXED(medium, medium, medium)
+#define MEDIUM_COUNT PARSE_ATTRIBUTE(count, medium_total_count, integer)
 #define MEDIUM_LIST(children, attributes) INLINE(medium-list, children, attributes)
 #define NAME PARSE_SINGLE_CHILD(name, name, text)
 #define NAME_CREDIT PARSE_CHILDREN(name-credit, name_credit)
@@ -185,7 +191,8 @@ ELEMENT(Release, release,
 		LABEL_INFO
 	)
 	MEDIUM_LIST(
-		MEDIUM
+		MEDIUM,
+		MEDIUM_COUNT
 	)
 	TEXT_REPRESENTATION(
 		LANGUAGE SCRIPT

@@ -34,6 +34,6 @@ namespace foo_musicbrainz {
 		static pfc::string8 text(const TiXmlElement *);
 		static Date date(const TiXmlElement *);
 		static int integer(const TiXmlElement *, int default_value = 0);
+		static int integer_attr(const TiXmlElement *, const char *, int default_value = 0);
 	};
-	
 }

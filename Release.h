@@ -16,6 +16,7 @@ namespace foo_musicbrainz {
 		STRING_MEMBER(asin)
 		STRING_MEMBER(language)
 		STRING_MEMBER(script)
+		MEMBER(int, medium_total_count)
 		MEMBER_BY_REFERENCE(Date, date)
 		POINTER_MEMBER(ArtistCredit, artist_credit)
 		POINTER_MEMBER(ReleaseGroup, release_group)
@@ -50,6 +51,7 @@ namespace foo_musicbrainz {
 		Release() :
 			CoreEntity(),
 			status(0),
+			medium_total_count(0),
 			va(-1),
 			artist_credit(nullptr),
 			release_group(nullptr) {};
