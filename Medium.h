@@ -11,6 +11,21 @@ namespace foo_musicbrainz {
 		COLLECTION(Track, track)
 
 	public:
+		pfc::string8 get_info() {
+			pfc::string8 info;
+			info << "Disc " << position;
+			if (!title.is_empty()) {
+				info << ": " << title;
+			}
+			auto track_count = track_items.get_count();
+			info << " (" << track_count << " track";
+			if (track_count > 1) {
+				info << "s";
+			}
+			info << ")";
+			return info;
+		}
+
 		Medium()
 			: position(0) {};
 		~Medium() {
