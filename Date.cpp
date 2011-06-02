@@ -28,7 +28,7 @@ Date::Date(short year, short month, short day) {
 }
 
 Date::Date(string8 str) {
-	static regex rx("^\\s*(?:([12][0-9]{3})(?:-(?:([01]?[0-9])(?:-([012]?[0-9])?)?)?)?)?\\s*$");
+	static regex rx("^\\s*(?:([12][0-9]{3})(?:-(?:([01]?[0-9])(?:-([0123]?[0-9])?)?)?)?)?\\s*$");
 	cmatch matches;
 	if (regex_search(str.get_ptr(), matches, rx)) {
 		STRING_TO_DATE_PART(year, 1)
