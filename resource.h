@@ -12,6 +12,7 @@
 #define IDC_DATE                        1016
 #define IDC_TYPE                        1018
 #define IDC_STATUS                      1019
+#define IDC_SUBTITLE                    1020
 #define IDC_ARTIST                      1023
 #define IDC_ALBUM                       1024
 #define IDC_MBID                        1025
@@ -27,6 +28,9 @@
 #define IDC_MEDIUM_LIST                 1039
 #define IDC_LABEL_INFO_LIST             1041
 #define IDC_BARCODE                     1042
+#define IDC_LABEL                       1043
+#define IDC_CATALOG                     1044
+#define IDC_CHOOSE_DISC                 1046
 
 // Next default values for new objects
 // 
@@ -35,7 +39,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        106
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1041
+#define _APS_NEXT_CONTROL_VALUE         1047
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

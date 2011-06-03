@@ -4,6 +4,7 @@
 #include "Query.h"
 #include "TrackListView.h"
 #include "TagWriter.h"
+#include "ComboBox.h"
 #include "ListView.h"
 #include "RequestThread.h"
 #include "Release.h"
@@ -14,8 +15,8 @@ namespace foo_musicbrainz {
 	class TaggerDialog : public CDialogImpl<TaggerDialog> {
 	private:
 		CListViewCtrl release_list;
-		ListView medium_list;
-		ListView label_info_listview;
+		ComboBox medium_list;
+		ComboBox label_info_list;
 		ListView track_list;
 		CComboBox type;
 		CComboBox status;
@@ -24,12 +25,17 @@ namespace foo_musicbrainz {
 		CEdit date;
 		CEdit barcode;
 		CEdit url;
+		CEdit discsubtitle;
+		CEdit label;
+		CEdit catalog;
+		CButton groupbox;
 		ReleaseList *mbc;
 		pfc::list_t<metadb_handle_ptr> tracks;
 		TrackListView track_list_view;
 		bool loaded;
 		size_t current_release;
 		size_t current_medium;
+		size_t current_label_info;
 
 	public:
 		enum { IDD = IDD_TAGGER };
@@ -39,7 +45,8 @@ namespace foo_musicbrainz {
 			tracks(_tracks),
 			loaded(false),
 			current_release(0),
-			current_medium(0)
+			current_medium(0),
+			current_label_info(0)
 		{
 			mbc = new ReleaseList();
 			Create(core_api::get_main_window());
@@ -52,7 +59,6 @@ namespace foo_musicbrainz {
 			MSG_WM_SHOWWINDOW(OnShowWindow)
 			MSG_WM_CLOSE(OnClose)
 			NOTIFY_HANDLER_EX(IDC_RELEASE_LIST, LVN_ITEMCHANGED, OnReleaseListChange)
-			NOTIFY_HANDLER_EX(IDC_MEDIUM_LIST, LVN_ITEMCHANGED, OnMediumChange)
 			NOTIFY_HANDLER_EX(IDC_TRACK_LIST, NM_CLICK, OnTrackListClick)
 			NOTIFY_HANDLER_EX(IDC_URL, NM_CLICK, OnLink)
 			NOTIFY_HANDLER_EX(IDC_URL, NM_RETURN, OnLink)
@@ -64,6 +70,11 @@ namespace foo_musicbrainz {
 			COMMAND_HANDLER_EX(IDC_ALBUM, EN_UPDATE, OnAlbumUpdate)
 			COMMAND_HANDLER_EX(IDC_DATE, EN_UPDATE, OnDateUpdate)
 			COMMAND_HANDLER_EX(IDC_BARCODE, EN_UPDATE, on_barcode_update)
+			COMMAND_HANDLER_EX(IDC_MEDIUM_LIST, CBN_SELCHANGE, on_medium_change)
+			COMMAND_HANDLER_EX(IDC_LABEL_INFO_LIST, CBN_SELCHANGE, on_label_info_change)
+			COMMAND_HANDLER_EX(IDC_SUBTITLE, EN_UPDATE, on_disc_subtitle_update)
+			COMMAND_HANDLER_EX(IDC_LABEL, EN_UPDATE, on_label_info_update)
+			COMMAND_HANDLER_EX(IDC_CATALOG, EN_UPDATE, on_label_info_update)
 			//CHAIN_MSG_MAP(CDialogImpl<TaggerDialog>)
 		END_MSG_MAP()
 
@@ -75,11 +86,15 @@ namespace foo_musicbrainz {
 			return get_current_release()->get_medium(current_medium);
 		}
 
+		LabelInfo *get_current_label_info() {
+			return get_current_release()->get_label_info(current_label_info);
+		}
+
 		bool OnInitDialog(CWindow wndFocus, LPARAM lInitParam) {
 			static_api_ptr_t<modeless_dialog_manager>()->add(m_hWnd);
 			release_list = GetDlgItem(IDC_RELEASE_LIST);
-			medium_list = GetDlgItem(IDC_MEDIUM_LIST);
-			label_info_listview = GetDlgItem(IDC_LABEL_INFO_LIST);
+			medium_list.Attach(GetDlgItem(IDC_MEDIUM_LIST));
+			label_info_list.Attach(GetDlgItem(IDC_LABEL_INFO_LIST));
 			track_list = GetDlgItem(IDC_TRACK_LIST);
 			type = GetDlgItem(IDC_TYPE);
 			status = GetDlgItem(IDC_STATUS);
@@ -88,13 +103,15 @@ namespace foo_musicbrainz {
 			album = GetDlgItem(IDC_ALBUM);
 			date = GetDlgItem(IDC_DATE);
 			barcode = GetDlgItem(IDC_BARCODE);
+			discsubtitle = GetDlgItem(IDC_SUBTITLE);
+			label = GetDlgItem(IDC_LABEL);
+			catalog = GetDlgItem(IDC_CATALOG);
+			groupbox = GetDlgItem(IDC_CHOOSE_DISC);
 			track_list_view.Attach(track_list);
-		
+
 			// List view styles
 			auto styles = LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP;
 			release_list.SetExtendedListViewStyle(styles, styles);
-			label_info_listview.SetExtendedListViewStyle(styles, styles);
-			medium_list.SetExtendedListViewStyle(styles, styles);
 			track_list.SetExtendedListViewStyle(styles, styles);
 
 			// Adding release list columns
@@ -102,16 +119,6 @@ namespace foo_musicbrainz {
 			listview_helper::insert_column(release_list, 1, "Release", 110);
 			listview_helper::insert_column(release_list, 2, "Date", 45);
 			listview_helper::insert_column(release_list, 3, "Label/Cat#", 80);
-
-			// Medium list columns
-			listview_helper::insert_column(medium_list, 0, "", 0); // Fake column
-			medium_list.InsertColumn(1, L"#", LVCFMT_RIGHT, 30);
-			medium_list.DeleteColumn(0);
-			listview_helper::insert_column(medium_list, 1, "Title", 49);
-
-			// Event list columns
-			listview_helper::insert_column(label_info_listview, 0, "Label", 80);
-			listview_helper::insert_column(label_info_listview, 1, "Cat#", 80);
 
 			// Adding track list columns
 			listview_helper::insert_column(track_list, 0, "", 0); // Fake column
@@ -144,18 +151,10 @@ namespace foo_musicbrainz {
 				// Date
 				listview_helper::set_item_text(release_list, i, 2, static_cast<pfc::string8>(release->get_date()));
 				// Label
-				if (release->label_info_count() > 0) {
-					auto label_info = release->get_label_info(0);
-					auto label = label_info->get_name();
-					auto cat = label_info->get_catalog_number();
-					pfc::string8 labelcat;
-					labelcat << (label.is_empty() ? "?" : label);
-					labelcat << " / ";
-					labelcat << (cat.is_empty() ? "?" : cat);
-					listview_helper::set_item_text(release_list, i, 3, labelcat);
-				} else {
-					listview_helper::set_item_text(release_list, i, 3, "-");
+				if (release->label_info_count() == 0) {
+					release->add_label_info(new LabelInfo());
 				}
+				listview_helper::set_item_text(release_list, i, 3, release->get_label_info(0)->get_info());
 			}
 
 			UpdateRelease();
@@ -187,33 +186,39 @@ namespace foo_musicbrainz {
 			}
 
 			// Media
-			medium_list.Resize(release->medium_count());
-			for (size_t item = 0; item < release->medium_count(); item++) {
-				pfc::string8 position;
-				position << release->get_medium(item)->get_position();
-				listview_helper::set_item_text(medium_list, item, 0, position);
-				listview_helper::set_item_text(medium_list, item, 1, release->get_medium(item)->get_title());
+			medium_list.DeleteAll();
+			for (size_t i = 0; i < release->medium_count(); i++) {
+				auto info = release->get_medium(i)->get_info();
+				medium_list.AddString(pfc::stringcvt::string_os_from_utf8(info));
 			}
 			if (current_medium >= release->medium_count()) {
 				current_medium = 0;
 			}
+			medium_list.SetCurSel(current_medium);
+			update_medium();
+
+			// "Choose disc" 
+			if (release->track_count() > tracks.get_count()) {
+				uSetWindowText(groupbox, "Discs (choose one)");
+			} else {
+				uSetWindowText(groupbox, "Discs");
+			}
 
 			// Labels
-			label_info_listview.Resize(release->label_info_count());
+			label_info_list.DeleteAll();
 			for (size_t i = 0; i < release->label_info_count(); i++) {
-				auto label_item = release->get_label_info(i);
-				listview_helper::set_item_text(label_info_listview, i, 0, label_item->get_name());
-				listview_helper::set_item_text(label_info_listview, i, 1, label_item->get_catalog_number());
-			}
+				auto info = release->get_label_info(i)->get_info();
+				label_info_list.AddString(pfc::stringcvt::string_os_from_utf8(info));
+			} 
+			current_label_info = 0;
+			label_info_list.SetCurSel(0);
+			update_label_info();
 
 			// Link
 			pfc::string8 url_string = "<a href=\"http://musicbrainz.org/release/";
 			url_string += release->get_id();
 			url_string += "\">MusicBrainz release page</a>";
 			uSetWindowText(url, url_string);
-
-			// Tracks
-			update_tracks();
 		}
 
 		void update_tracks() {
@@ -230,6 +235,21 @@ namespace foo_musicbrainz {
 			}
 		}
 
+		void update_medium() {
+			auto release = get_current_release();
+			auto medium = get_current_medium();
+			uSetWindowText(discsubtitle, medium->get_title());
+
+			// Tracks
+			update_tracks();
+		}
+
+		void update_label_info() {
+			auto label_info = get_current_label_info();
+			uSetWindowText(label, label_info->get_name());
+			uSetWindowText(catalog, label_info->get_catalog_number());
+		}
+
 		LRESULT OnTrackListClick(LPNMHDR pnmh) {
 			if (((LPNMITEMACTIVATE)pnmh)->iItem != -1 && ((LPNMITEMACTIVATE)pnmh)->iSubItem != 0) {
 				track_list_view.Start(((LPNMITEMACTIVATE)pnmh)->iItem, ((LPNMITEMACTIVATE)pnmh)->iSubItem);
@@ -237,14 +257,15 @@ namespace foo_musicbrainz {
 			return 0;
 		}
 
-		LRESULT OnMediumChange(LPNMHDR pnmh) {
-			if (((LPNMLISTVIEW)pnmh)->iItem != -1 && ((LPNMLISTVIEW)pnmh)->uChanged & LVIS_DROPHILITED && ((LPNMLISTVIEW)pnmh)->uNewState & LVIS_SELECTED) {
-				if (current_medium != ((LPNMITEMACTIVATE)pnmh)->iItem) {
-					if (track_list_view.IsActive()) track_list_view.Abort();
-					current_medium = ((LPNMITEMACTIVATE)pnmh)->iItem;
-					update_tracks();
-				}
-			}
+		LRESULT on_medium_change(UINT, int, CWindow) {
+			current_medium = medium_list.GetCurSel();
+			update_medium();
+			return 0;
+		}
+
+		LRESULT on_label_info_change(UINT, int, CWindow) {
+			current_label_info = label_info_list.GetCurSel();
+			update_label_info();
 			return 0;
 		}
 
@@ -320,6 +341,35 @@ namespace foo_musicbrainz {
 			pfc::string8 barcode_value;
 			uGetWindowText(barcode, barcode_value);
 			get_current_release()->set_barcode(barcode_value);
+		}
+
+		void on_disc_subtitle_update(UINT, int, CWindow) {
+			pfc::string8 str;
+			uGetWindowText(discsubtitle, str);
+			auto medium = get_current_medium();
+			medium->set_title(str);
+			pfc::stringcvt::string_os_from_utf8 info(medium->get_info());
+			medium_list.SetCurrentString(info);
+		}
+
+		void on_label_info_update(UINT, int id, CWindow ctrl) {
+			pfc::string8 str;
+			uGetWindowText(ctrl, str);
+			auto label_info = get_current_label_info();
+			switch (id) {
+			case IDC_LABEL:
+				label_info->set_name(str);
+				break;
+			case IDC_CATALOG:
+				label_info->set_catalog_number(str);
+				break;
+			}
+
+			pfc::stringcvt::string_os_from_utf8 info(label_info->get_info());
+			label_info_list.SetCurrentString(info);
+			if (current_label_info == 0) {
+				release_list.SetItemText(current_release, 3, info);
+			}
 		}
 	};
 }
