@@ -18,9 +18,9 @@ namespace foo_musicbrainz {
 
 		void get_item_name(unsigned p_index, pfc::string_base & p_out) {
 			static const char *item_name[] = {
-				"Get Tags From MusicBrainz (by TOC)",
-				"Get Tags From MusicBrainz (by Artist & Album)",
-				"Get Tags From MusicBrainz (by MusicBrainz Album ID)",
+				"Get tags from MusicBrainz (by TOC)",
+				"Get tags from MusicBrainz (by artist & album)",
+				"Get tags from MusicBrainz (by MusicBrainz album ID)",
 				"Add TOC to MusicBrainz"
 			};
 			p_out = item_name[p_index];

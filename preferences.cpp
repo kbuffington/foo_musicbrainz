@@ -162,7 +162,7 @@ namespace foo_musicbrainz {
 	class PreferencesPage : public preferences_page_impl<PreferencesPageInstance> {
 	public:
 		const char * get_name() {
-			return "MusicBrainz Tagger";
+			return COMPONENT_TITLE;
 		}
 
 		GUID get_guid() {
