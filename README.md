@@ -26,15 +26,16 @@ You should have Visual Studio 2010 to build this component. Also, you will need 
 * [foobar2000 SDK](http://www.foobar2000.org/SDK)
 * [TinyXML](http://sourceforge.net/projects/tinyxml/files/tinyxml/)
 
-Both dependencies and foo_musicbrainz should have a single parent directory, so the catalog structure will be similar to this:
+Download archives with dependencies and extract their contents to the desired directory, following the structure as shown below:
 
-* Projects
+* foobar2000 _(foobar2000 SDK root)_
+  * app _(optional, install foobar2000 here for debugging purposes)_
   * foo_musicbrainz
-  * foobar2000
-  * pfc _(included with the foobar2000 SDK)_
+  * foobar2000 _(part of the foobar2000 SDK)_
+  * pfc _(part of the foobar2000 SDK)_
   * tinyxml
 
-Download archives with dependencies and extract their contents to the desired directory. From the same directory, type in your console:
+From the SDK root directory, type in your console:
 
     git clone git://github.com/Dremora/foo_musicbrainz.git
 
