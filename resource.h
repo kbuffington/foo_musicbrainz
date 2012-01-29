@@ -10,6 +10,7 @@
 #define IDC_TRACK_LIST                  1002
 #define IDC_URL                         1003
 #define IDC_DATE                        1016
+#define IDC_FIRST_RELEASE_DATE          1017
 #define IDC_TYPE                        1018
 #define IDC_STATUS                      1019
 #define IDC_SUBTITLE                    1020

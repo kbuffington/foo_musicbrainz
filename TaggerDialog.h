@@ -23,6 +23,7 @@ namespace foo_musicbrainz {
 		CEdit artist;
 		CEdit album;
 		CEdit date;
+		CEdit first_release_date;
 		CEdit barcode;
 		CEdit url;
 		CEdit discsubtitle;
@@ -39,6 +40,13 @@ namespace foo_musicbrainz {
 
 	public:
 		enum { IDD = IDD_TAGGER };
+
+		enum columns {
+			artist_column,
+			release_column,
+			date_column,
+			label_column
+		};
 
 		TaggerDialog(foo_musicbrainz::Query *query, pfc::list_t<metadb_handle_ptr> _tracks) :
 			CDialogImpl<TaggerDialog>(),
@@ -69,6 +77,7 @@ namespace foo_musicbrainz {
 			COMMAND_HANDLER_EX(IDC_ARTIST, EN_UPDATE, OnArtistUpdate)
 			COMMAND_HANDLER_EX(IDC_ALBUM, EN_UPDATE, OnAlbumUpdate)
 			COMMAND_HANDLER_EX(IDC_DATE, EN_UPDATE, OnDateUpdate)
+			COMMAND_HANDLER_EX(IDC_FIRST_RELEASE_DATE, EN_UPDATE, on_first_release_date_update)
 			COMMAND_HANDLER_EX(IDC_BARCODE, EN_UPDATE, on_barcode_update)
 			COMMAND_HANDLER_EX(IDC_MEDIUM_LIST, CBN_SELCHANGE, on_medium_change)
 			COMMAND_HANDLER_EX(IDC_LABEL_INFO_LIST, CBN_SELCHANGE, on_label_info_change)
@@ -102,6 +111,7 @@ namespace foo_musicbrainz {
 			artist = GetDlgItem(IDC_ARTIST);
 			album = GetDlgItem(IDC_ALBUM);
 			date = GetDlgItem(IDC_DATE);
+			first_release_date = GetDlgItem(IDC_FIRST_RELEASE_DATE);
 			barcode = GetDlgItem(IDC_BARCODE);
 			discsubtitle = GetDlgItem(IDC_SUBTITLE);
 			label = GetDlgItem(IDC_LABEL);
@@ -115,10 +125,10 @@ namespace foo_musicbrainz {
 			track_list.SetExtendedListViewStyle(styles, styles);
 
 			// Adding release list columns
-			listview_helper::insert_column(release_list, 0, "Artist", 104);
-			listview_helper::insert_column(release_list, 1, "Release", 110);
-			listview_helper::insert_column(release_list, 2, "Date", 45);
-			listview_helper::insert_column(release_list, 3, "Label/Cat#", 80);
+			listview_helper::insert_column(release_list, artist_column, "Artist", 104);
+			listview_helper::insert_column(release_list, release_column, "Release", 110);
+			listview_helper::insert_column(release_list, date_column, "Date", 45);
+			listview_helper::insert_column(release_list, label_column, "Label/Cat#", 80);
 
 			// Adding track list columns
 			listview_helper::insert_column(track_list, 0, "", 0); // Fake column
@@ -147,14 +157,14 @@ namespace foo_musicbrainz {
 				// Artist
 				listview_helper::insert_item(release_list, i, release->get_artist_credit()->get_name(), NULL);
 				// Title
-				listview_helper::set_item_text(release_list, i, 1, release->get_title());
+				listview_helper::set_item_text(release_list, i, release_column, release->get_title());
 				// Date
-				listview_helper::set_item_text(release_list, i, 2, static_cast<pfc::string8>(release->get_date()));
+				listview_helper::set_item_text(release_list, i, date_column, static_cast<pfc::string8>(release->get_date()));
 				// Label
 				if (release->label_info_count() == 0) {
 					release->add_label_info(new LabelInfo());
 				}
-				listview_helper::set_item_text(release_list, i, 3, release->get_label_info(0)->get_info());
+				listview_helper::set_item_text(release_list, i, label_column, release->get_label_info(0)->get_info());
 			}
 
 			UpdateRelease();
@@ -169,6 +179,8 @@ namespace foo_musicbrainz {
 			uSetWindowText(album, release->get_title());
 			// Date
 			uSetWindowText(date, static_cast<pfc::string8>(release->get_date()));
+			// First release date
+			uSetWindowText(first_release_date, static_cast<pfc::string8>(release->get_release_group()->get_first_release_date()));
 			// Barcode
 			uSetWindowText(barcode, release->get_barcode());
 			// Type
@@ -319,22 +331,28 @@ namespace foo_musicbrainz {
 			pfc::string8 str;
 			uGetWindowText(artist, str);
 			get_current_release()->get_artist_credit()->set_name(str);
-			listview_helper::set_item_text(release_list, current_release, 0, str);
+			listview_helper::set_item_text(release_list, current_release, artist_column, str);
 		}
 
 		void OnAlbumUpdate(UINT uNotifyCode, int nID, CWindow wndCtl) {
 			pfc::string8 str;
 			uGetWindowText(album, str);
 			get_current_release()->set_title(str);
-			listview_helper::set_item_text(release_list, current_release, 1, str);
+			listview_helper::set_item_text(release_list, current_release, release_column, str);
 		}
 
 		void OnDateUpdate(UINT uNotifyCode, int nID, CWindow wndCtl) {
 			pfc::string8 str;
 			uGetWindowText(date, str);
 			get_current_release()->set_date(Date(str));
-			listview_helper::set_item_text(release_list, current_release, 2,
+			listview_helper::set_item_text(release_list, current_release, date_column,
 				static_cast<pfc::string8>(get_current_release()->get_date()));
+		}
+
+		void on_first_release_date_update(UINT uNotifyCode, int nID, CWindow wndCtl) {
+			pfc::string8 str;
+			uGetWindowText(first_release_date, str);
+			get_current_release()->get_release_group()->set_first_release_date(Date(str));
 		}
 
 		void on_barcode_update(UINT, int, CWindow) {
@@ -368,7 +386,7 @@ namespace foo_musicbrainz {
 			pfc::stringcvt::string_os_from_utf8 info(label_info->get_info());
 			label_info_list.SetCurrentString(info);
 			if (current_label_info == 0) {
-				release_list.SetItemText(current_release, 3, info);
+				release_list.SetItemText(current_release, label_column, info);
 			}
 		}
 	};

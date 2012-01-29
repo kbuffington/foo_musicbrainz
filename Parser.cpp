@@ -125,6 +125,7 @@ int Parser::integer_attr(const TiXmlElement *element, const char *name, int defa
 #define COUNTRY PARSE_SINGLE_CHILD(country, country, text)
 #define DATE PARSE_SINGLE_CHILD(date, date, date)
 #define DISCID_SINGLE PARSE_SINGLE_CHILD(disc, discid, discid)
+#define FIRST_RELEASE_DATE PARSE_SINGLE_CHILD(first-release-date, first_release_date, date)
 #define ID PARSE_ATTRIBUTE(id, id, text)
 #define JOINPHRASE PARSE_ATTRIBUTE(joinphrase, joinphrase, text)
 #define NAME PARSE_SINGLE_CHILD(name, name, text)
@@ -200,7 +201,7 @@ ELEMENT(Release, release,
 	ID
 )
 ELEMENT(ReleaseGroup, release_group,
-	TITLE,
+	TITLE FIRST_RELEASE_DATE,
 	ID TYPE
 )
 ELEMENT(ReleaseList, release_list,

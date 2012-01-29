@@ -13,6 +13,13 @@ Tag::Tag(Release &release, Medium &medium, Track &track) {
 		set("DATE", date);
 	}
 
+	pfc::string8 first_release_date = release.get_release_group()->get_first_release_date();
+	if (!first_release_date.is_empty() && first_release_date != date) {
+		set("ORIGINAL RELEASE DATE", date);
+	} else {
+		set("ORIGINAL RELEASE DATE", "");
+	}
+
 	set("TITLE", track.get_title());
 	set("TRACKNUMBER", track.get_position());
 	set("TOTALTRACKS", medium.track_count());
