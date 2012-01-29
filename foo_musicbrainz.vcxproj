@@ -149,9 +149,6 @@
     <ResourceCompile Include="foo_musicbrainz.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="TODO.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\foobar2000\ATLHelpers\foobar2000_ATL_helpers.vcxproj">
       <Project>{622e8b19-8109-4717-bd4d-9657aa78363e}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
