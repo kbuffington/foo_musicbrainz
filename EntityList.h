@@ -31,6 +31,10 @@ namespace foo_musicbrainz {
 			return item;
 		}
 
+		void remove(t_size index) {
+			delete extract(index);
+		}
+
 		EntityList() {};
 		~EntityList() {
 			for (unsigned int i = 0; i < items.get_count(); i++) {
