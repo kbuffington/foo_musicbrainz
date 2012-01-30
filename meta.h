@@ -91,10 +91,10 @@
 		} \
 		name = 0; \
 	} \
-	pfc::string8 get_##name() { \
+	pfc::string8 get_##name() const { \
 		return pfc::string8(name_plural[name]); \
 	} \
-	size_t get_##name##_index() { \
+	size_t get_##name##_index() const { \
 		return name; \
 	} \
 		static const size_t name##_count = count; \
