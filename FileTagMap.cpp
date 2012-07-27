@@ -33,7 +33,7 @@ void Tag::write_date(const Release &release) {
 
 	string8 first_release_date = release.get_release_group()->get_first_release_date();
 	if (!first_release_date.is_empty() && first_release_date != date) {
-		set("ORIGINAL RELEASE DATE", date);
+		set("ORIGINAL RELEASE DATE", first_release_date);
 	} else {
 		unset("ORIGINAL RELEASE DATE");
 	}
