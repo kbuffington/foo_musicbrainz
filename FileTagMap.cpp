@@ -106,13 +106,14 @@ void Tag::write_label_info(const Release &release) {
 
 		TagValues labels, catalog_numbers;
 		for (auto i = 0; i < release.label_info_count(); i++) {
-			// TODO: possibly remove duplicates?
 			if (auto label = release.get_label_info(i)->get_name()) {
 				labels.add_item(label);
 			}
+			labels.remove_duplicates_t(strcmp);
 			if (auto catalog_number = release.get_label_info(i)->get_catalog_number()) {
 				catalog_numbers.add_item(catalog_number);
 			}
+			catalog_numbers.remove_duplicates_t(strcmp);
 		}
 		set("LABEL", labels);
 		set("CATALOGNUMBER", catalog_numbers);
