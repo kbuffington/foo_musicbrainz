@@ -53,19 +53,13 @@ namespace foo_musicbrainz {
 					pfc::string8 artist, album;
 					for (t_size i = 0; i < count; i++) {
 						auto item = p_data.get_item(i);
-						item->metadb_lock();
-						const file_info *info;
-						if (!item->get_info_locked(info)) {
-							item->metadb_unlock();
-							return;
-						}
 
-						auto current_artist = info->meta_get("ALBUM ARTIST", 0);
-						if (current_artist == nullptr) current_artist = info->meta_get("ARTIST", 0);
-						auto current_album = info->meta_get("ALBUM", 0);
+						auto current_artist = item->get_info_ref()->info().meta_get("ALBUM ARTIST", 0);
+						if (current_artist == nullptr) current_artist = item->get_info_ref()->info().meta_get("ARTIST", 0);
+
+						auto current_album = item->get_info_ref()->info().meta_get("ALBUM", 0);
 
 						if (current_artist == nullptr || current_album == nullptr) {
-							item->metadb_unlock();
 							break;
 						}
 
@@ -76,17 +70,14 @@ namespace foo_musicbrainz {
 							if (artist.is_empty() || album.is_empty()) {
 								artist.reset();
 								album.reset();
-								item->metadb_unlock();
 								break;
 							}
 						// Break if artist or album of current item are different from the first one
 						} else if (strcmp(artist, current_artist) != 0 || strcmp(album, current_album) != 0) {
 							artist.reset();
 							album.reset();
-							item->metadb_unlock();
-								break;
+							break;
 						}
-						item->metadb_unlock();
 					}
 					pfc::list_t<metadb_handle_ptr> tracks;
 					tracks.add_items(p_data);
@@ -97,17 +88,10 @@ namespace foo_musicbrainz {
 					pfc::string8 album_id;
 					for (t_size i = 0; i < count; i++) {
 						auto item = p_data.get_item(i);
-						item->metadb_lock();
-						const file_info *info;
-						if (!item->get_info_locked(info)) {
-							item->metadb_unlock();
-							return;
-						}
 
-						auto current_album_id = info->meta_get("MUSICBRAINZ_ALBUMID", 0);
+						auto current_album_id = item->get_info_ref()->info().meta_get("MUSICBRAINZ_ALBUMID", 0);
 
 						if (current_album_id == nullptr) {
-							item->metadb_unlock();
 							break;
 						}
 
@@ -117,16 +101,13 @@ namespace foo_musicbrainz {
 							regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
 							if (!regex_search(album_id.get_ptr(), rx)) {
 								album_id.reset();
-								item->metadb_unlock();
 								break;
 							}
 						// Break if album ID of current item is different from the first one
 						} else if (strcmp(album_id, current_album_id) != 0) {
 							album_id.reset();
-							item->metadb_unlock();
 							break;
 						}
-						item->metadb_unlock();
 					}
 					pfc::list_t<metadb_handle_ptr> tracks;
 					tracks.add_items(p_data);
@@ -171,14 +152,10 @@ namespace foo_musicbrainz {
 			if (count > 99) {
 				return false;
 			}
-			const file_info *info;
 			for (t_size i = 0; i < count; i++) {
-				p_data.get_item(i)->metadb_lock();
-				if (!p_data.get_item(i)->get_info_locked(info) || info->info_get_length_samples() % 588 != 0) {
-					p_data.get_item(i)->metadb_unlock();
+				if (p_data.get_item(i)->get_info_ref()->info().info_get_length_samples() % 588 != 0) {
 					return false;
 				}
-				p_data.get_item(i)->metadb_unlock();
 			}
 			return true;
 		}

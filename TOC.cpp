@@ -15,22 +15,15 @@ TOC::TOC(metadb_handle_list_cref p_data) {
 	cur_track = 0;
 	tracks_lengths = new unsigned int [num_tracks];
 	__int64 samples;
-	const file_info *info;
 
 	for (t_size i = 0; i < num_tracks; i++) {
-		p_data.get_item(i)->metadb_lock();
-		if (!p_data.get_item(i)->get_info_locked(info)) {
-			p_data.get_item(i)->metadb_unlock();
-			return;
-		}
-		samples = info->info_get_length_samples();
+		samples = p_data.get_item(i)->get_info_ref()->info().info_get_length_samples();
 		if (i == 0) {
-			const char *pregap = info->info_get("pregap");
+			const char *pregap = p_data.get_item(i)->get_info_ref()->info().info_get("pregap");
 			if (pregap != nullptr) {
 				setPregap(pregap);
 			}
 		}
-		p_data.get_item(i)->metadb_unlock();
 		if (samples % 588 != 0) {
 			popup_message::g_show("Track length in samples must be divisible by 588.", COMPONENT_TITLE, popup_message::icon_error);
 			return;

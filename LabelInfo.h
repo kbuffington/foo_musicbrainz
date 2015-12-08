@@ -18,7 +18,7 @@ namespace foo_musicbrainz {
 			}
 			pfc::string8 labelcat;
 			labelcat << (label_empty ? "?" : label);
-			labelcat << " / ";
+			labelcat << "/";
 			labelcat << (cat_empty ? "?" : cat);
 			return labelcat;
 		}

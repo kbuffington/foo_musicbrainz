@@ -125,10 +125,10 @@ namespace foo_musicbrainz {
 			track_list.SetExtendedListViewStyle(styles, styles);
 
 			// Adding release list columns
-			listview_helper::insert_column(release_list, artist_column, "Artist", 104);
-			listview_helper::insert_column(release_list, release_column, "Release", 110);
-			listview_helper::insert_column(release_list, date_column, "Date", 45);
-			listview_helper::insert_column(release_list, label_column, "Label/Cat#", 80);
+			listview_helper::insert_column(release_list, artist_column, "Artist", 80);
+			listview_helper::insert_column(release_list, release_column, "Release", 80);
+			listview_helper::insert_column(release_list, date_column, "Date/Country", 60);
+			listview_helper::insert_column(release_list, label_column, "Label/Cat#", 110);
 
 			// Adding track list columns
 			listview_helper::insert_column(track_list, 0, "", 0); // Fake column
@@ -158,8 +158,11 @@ namespace foo_musicbrainz {
 				listview_helper::insert_item(release_list, i, release->get_artist_credit()->get_name(), NULL);
 				// Title
 				listview_helper::set_item_text(release_list, i, release_column, release->get_title());
-				// Date
-				listview_helper::set_item_text(release_list, i, date_column, static_cast<pfc::string8>(release->get_date()));
+				// Date / Country
+				pfc::string8 date_country = static_cast<pfc::string8>(release->get_date()) << "/" << release->get_country();
+				if (strcmp(date_country, "/") == 0)
+					date_country = "-";
+				listview_helper::set_item_text(release_list, i, date_column, date_country);
 				// Label
 				if (release->label_info_count() == 0) {
 					release->add_label_info(new LabelInfo());
@@ -345,8 +348,10 @@ namespace foo_musicbrainz {
 			pfc::string8 str;
 			uGetWindowText(date, str);
 			get_current_release()->set_date(Date(str));
-			listview_helper::set_item_text(release_list, current_release, date_column,
-				static_cast<pfc::string8>(get_current_release()->get_date()));
+			pfc::string8 date_country = static_cast<pfc::string8>(get_current_release()->get_date()) << "/" << get_current_release()->get_country();
+			if (strcmp(date_country, "/") == 0)
+				date_country = "-";
+			listview_helper::set_item_text(release_list, current_release, date_column, date_country);
 		}
 
 		void on_first_release_date_update(UINT uNotifyCode, int nID, CWindow wndCtl) {
