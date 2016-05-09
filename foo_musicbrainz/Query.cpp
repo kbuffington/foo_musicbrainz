@@ -6,7 +6,11 @@
 using namespace foo_musicbrainz;
 
 Query::Query(const char *entity, const char *id) {
-	url << "http://musicbrainz.org/ws/2/" << entity;
+	if (Preferences::server)
+		url << Preferences::server_data;
+	else
+		url << "http://musicbrainz.org";
+	url << "/ws/2/" << entity;
 	if (id != nullptr) {
 		url << "/" << id;
 	}
@@ -51,7 +55,7 @@ TiXmlElement *Query::parse(pfc::string8 &buffer, TiXmlDocument &xml) {
 	xml.Parse(buffer, 0, TIXML_ENCODING_UTF8);
 	if (xml.Error()) {
 #ifdef DEBUG
-		pfc::string8 error = "Error parsing XML, response from musicbrainz.org:\n\n";
+		pfc::string8 error = "Error parsing XML, response from musicbrainz:\n\n";
 		error << buffer;
 		throw XmlParseError(error);
 #else

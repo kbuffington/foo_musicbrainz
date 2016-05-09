@@ -19,11 +19,17 @@ namespace foo_musicbrainz {
 		extern const GUID guid_albumstatus;
 		extern cfg_bool albumstatus;
 
+		extern const GUID guid_server;
+		extern cfg_bool server;
+
 		extern const GUID guid_albumtype_data;
 		extern cfg_string albumtype_data;
 
 		extern const GUID guid_albumstatus_data;
 		extern cfg_string albumstatus_data;
+
+		extern const GUID guid_server_data;
+		extern cfg_string server_data;
 
 		extern const GUID guid_ascii_punctuation;
 		extern const bool default_ascii_punctuation;

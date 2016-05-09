@@ -32,6 +32,8 @@
 #define IDC_LABEL                       1043
 #define IDC_CATALOG                     1044
 #define IDC_CHOOSE_DISC                 1046
+#define IDC_SERVER                      1047
+#define IDC_SERVER_DATA                 1048
 
 // Next default values for new objects
 // 
