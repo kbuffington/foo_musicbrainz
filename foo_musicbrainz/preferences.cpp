@@ -163,6 +163,8 @@ namespace foo_musicbrainz {
 			uSetWindowText(albumtype, "MUSICBRAINZ_ALBUMTYPE");
 			uSetWindowText(albumstatus, "MUSICBRAINZ_ALBUMSTATUS");
 			uSetWindowText(server, "http://musicbrainz.org");
+			albumtype.EnableWindow(true);
+			albumstatus.EnableWindow(true);
 			server.EnableWindow(false);
 			on_change();
 		}
