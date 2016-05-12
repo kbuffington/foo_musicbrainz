@@ -4,6 +4,11 @@ Check the [releases](https://github.com/19379/foo_musicbrainz/releases) page for
 
 Changes in this fork:
 
+##0.3.3.2
+```
+Fix bug where "Reset page" button in the "Preferences" didn't work on all fields.
+```
+
 ##0.3.3.1
 ```
 Fix bug where the "Apply" button in the "Preferences" didn't become active when the
