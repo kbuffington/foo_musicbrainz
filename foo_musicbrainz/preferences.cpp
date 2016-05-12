@@ -113,7 +113,7 @@ namespace foo_musicbrainz {
 			if ((bool)write_ids_checkbox.GetCheck() != Preferences::write_ids.get_value()) return true;
 			if ((bool)write_albumtype_checkbox.GetCheck() != Preferences::albumtype.get_value()) return true;
 			if ((bool)write_albumstatus_checkbox.GetCheck() != Preferences::albumstatus.get_value()) return true;
-			if ((bool)write_server_checkbox.GetCheck != Preferences::server.get_value()) return true;
+			if ((bool)write_server_checkbox.GetCheck() != Preferences::server.get_value()) return true;
 			if ((bool)write_label_info_checkbox.GetCheck() != Preferences::write_label_info.get_value()) return true;
 		
 			pfc::string8 temp;
