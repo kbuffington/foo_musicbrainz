@@ -4,32 +4,16 @@ Check the [releases](https://github.com/19379/foo_musicbrainz/releases) page for
 
 Changes in this fork:
 
-##0.3.3.2
 ```
 Fix bug where "Reset page" button in the "Preferences" didn't work on all fields.
-```
 
-##0.3.3.1
-```
-Fix bug where the "Apply" button in the "Preferences" didn't become active when the
-"Custom server" checkbox state had changed.
-```
-
-##0.3.3
-```
 Preferences has a new "Custom server" option.
+
+Add country to date column.
 
 Repository has been updated with all pre-requisites meaning it should compile as-is
 with Visual Studio 2015.
-```
-
-##0.3.2
-```
-Add country to date column.
 
 Remove deprecated metadb lock/unlock methods and use get_info_ref() from the
 current SDK (2015-08-03). Now requires foobar2000 v1.3 or above.
-
-Updated for Visual Studio 2015. I tried building to support Windows XP but failed
-therefore Windows Vista or later is required.
 ```
