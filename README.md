@@ -4,6 +4,12 @@ Check the [releases](https://github.com/19379/foo_musicbrainz/releases) page for
 
 Changes in this fork:
 
+##0.3.3.1
+```
+Fix bug where the "Apply" button in the "Preferences" didn't become active when the
+"Custom server" checkbox state had changed.
+```
+
 ##0.3.3
 ```
 Preferences has a new "Custom server" option.
