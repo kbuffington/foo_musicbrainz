@@ -2,7 +2,7 @@ You can view the original readme [here](https://github.com/19379/foo_musicbrainz
 
 Check the [releases](https://github.com/19379/foo_musicbrainz/releases) page for the latest version.
 
-Changes in this fork:
+My changes:
 
 ```
 Fix bug where "Reset page" button in the "Preferences" didn't work on all fields.
