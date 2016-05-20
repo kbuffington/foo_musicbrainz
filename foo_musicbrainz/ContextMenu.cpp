@@ -117,7 +117,7 @@ namespace foo_musicbrainz {
 				case 3: {
 					TOC toc(p_data);
 
-					pfc::string8 url = "http://musicbrainz.org/cdtoc/attach?toc=";
+					pfc::string8 url = "https://musicbrainz.org/cdtoc/attach?toc=";
 					url << toc.getTOC();
 					pfc::stringcvt::string_os_from_utf8 url_converter(url);
 					ShellExecute(nullptr, _T("open"), url_converter, nullptr, nullptr, SW_SHOW);

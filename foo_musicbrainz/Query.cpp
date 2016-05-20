@@ -9,7 +9,7 @@ Query::Query(const char *entity, const char *id) {
 	if (Preferences::server)
 		url << Preferences::server_data;
 	else
-		url << "http://musicbrainz.org";
+		url << "https://musicbrainz.org";
 	url << "/ws/2/" << entity;
 	if (id != nullptr) {
 		url << "/" << id;

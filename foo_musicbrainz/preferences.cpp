@@ -27,7 +27,7 @@ namespace foo_musicbrainz {
 		cfg_string albumstatus_data(guid_albumstatus_data, "MUSICBRAINZ_ALBUMSTATUS");
 
 		const GUID guid_server_data = { 0x8732cde8, 0xe1ed, 0x4824,{ 0xae, 0xf6, 0x7d, 0x4b, 0x56, 0x99, 0x23, 0xac } };
-		cfg_string server_data(guid_server_data, "http://musicbrainz.org");
+		cfg_string server_data(guid_server_data, "https://musicbrainz.org");
 
 		const GUID guid_ascii_punctuation =
 		{ 0xd08b1b7c, 0x38fd, 0x4689, { 0x9e, 0x91, 0x8c, 0xdc, 0xbe, 0xc4, 0x26, 0x98 } };
@@ -162,7 +162,7 @@ namespace foo_musicbrainz {
 			write_label_info_checkbox.SetCheck(Preferences::default_write_label_info);
 			uSetWindowText(albumtype, "MUSICBRAINZ_ALBUMTYPE");
 			uSetWindowText(albumstatus, "MUSICBRAINZ_ALBUMSTATUS");
-			uSetWindowText(server, "http://musicbrainz.org");
+			uSetWindowText(server, "https://musicbrainz.org");
 			albumtype.EnableWindow(true);
 			albumstatus.EnableWindow(true);
 			server.EnableWindow(false);

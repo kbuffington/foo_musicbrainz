@@ -230,7 +230,7 @@ namespace foo_musicbrainz {
 			update_label_info();
 
 			// Link
-			pfc::string8 url_string = "<a href=\"http://musicbrainz.org/release/";
+			pfc::string8 url_string = "<a href=\"https://musicbrainz.org/release/";
 			url_string += release->get_id();
 			url_string += "\">MusicBrainz release page</a>";
 			uSetWindowText(url, url_string);
