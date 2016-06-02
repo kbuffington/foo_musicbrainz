@@ -59,7 +59,7 @@ TiXmlElement *Query::parse(pfc::string8 &buffer, TiXmlDocument &xml) {
 		error << buffer;
 		throw XmlParseError(error);
 #else
-		throw XmlParseError();
+		throw XmlParseError("An unexpected error has occurred. The most likely cause is the musicbrainz server being too busy to handle your request.\n\nYou could try setting an alternate server in the Preferences.\n\nhttps://beta.musicbrainz.org");
 #endif
 	}
 
