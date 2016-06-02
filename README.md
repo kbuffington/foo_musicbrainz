@@ -5,11 +5,15 @@ Check the [releases](https://github.com/19379/foo_musicbrainz/releases) page for
 My changes:
 
 ```
+"Preferences" has a new "Custom server" option.
+
+Add "Country" to "Date" column in main dialog.
+
+Defaults to https.
+
+Display a more helpful message when errors occur.
+
 Fix bug where "Reset page" button in the "Preferences" didn't work on all fields.
-
-Preferences has a new "Custom server" option.
-
-Add country to date column.
 
 Repository has been updated with all pre-requisites meaning it should compile as-is
 with Visual Studio 2015.
