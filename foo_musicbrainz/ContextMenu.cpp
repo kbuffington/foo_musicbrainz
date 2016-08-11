@@ -31,13 +31,12 @@ namespace foo_musicbrainz {
 		}
 
 		void context_command(unsigned p_index, metadb_handle_list_cref p_data, const GUID& p_caller) {
-			unsigned int count = p_data.get_count();
-			if ((p_index == 0 || p_index == 3) && count > 99) {
-				popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
-				return;
-			}
+			t_size count = p_data.get_count();
+			if (!context_check_count(p_data)) return popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
 			switch (p_index) {
 				case 0: {
+					if (!context_check_samplerate(p_data)) return popup_message::g_show("The samplerate of each track must match and be either 44100 Hz or 48000 Hz. Also, the number of samples must match CD frame boundaries.", COMPONENT_TITLE, popup_message::icon_error);
+
 					TOC toc(p_data);
 					auto query = new Query("discid", toc.getDiscID());
 					query->add_param("cdstubs", "no");
@@ -115,6 +114,8 @@ namespace foo_musicbrainz {
 					break;
 				}
 				case 3: {
+					if (!context_check_lossless(p_data)) return popup_message::g_show("Only lossless files with a number of samples that match CD frame boundaries can be used for TOC submissions.", COMPONENT_TITLE, popup_message::icon_error);
+
 					TOC toc(p_data);
 
 					pfc::string8 url = "https://musicbrainz.org/cdtoc/attach?toc=";
@@ -147,13 +148,37 @@ namespace foo_musicbrainz {
 			return true;
 		}
 
-		bool context_get_display_toc(metadb_handle_list_cref p_data) {
+		bool context_check_count(metadb_handle_list_cref p_data) {
 			t_size count = p_data.get_count();
 			if (count > 99) {
 				return false;
 			}
+			return true;
+		}
+
+		bool context_check_lossless(metadb_handle_list_cref p_data) {
+			t_size count = p_data.get_count();
 			for (t_size i = 0; i < count; i++) {
-				if (p_data.get_item(i)->get_info_ref()->info().info_get_length_samples() % 588 != 0) {
+				if (p_data.get_item(i)->get_info_ref()->info().is_encoding_lossy() || p_data.get_item(i)->get_info_ref()->info().info_get_length_samples() % 588 != 0) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		bool context_check_samplerate(metadb_handle_list_cref p_data) {
+			t_size count = p_data.get_count();
+			for (t_size i = 0; i < count; i++) {
+				t_int64 srate = p_data.get_item(i)->get_info_ref()->info().info_get_int("samplerate");
+				t_int64 samples = p_data.get_item(i)->get_info_ref()->info().info_get_length_samples();
+				switch (srate) {
+				case 44100:
+					if (samples % 588 != 0) return false;
+					break;
+				case 48000:
+					if (samples % 640 != 0) return false;
+					break;
+				default:
 					return false;
 				}
 			}
@@ -162,11 +187,17 @@ namespace foo_musicbrainz {
 
 		bool context_get_display(unsigned p_index, metadb_handle_list_cref p_data, pfc::string_base & p_out, unsigned & p_displayflags, const GUID & p_caller) {
 			PFC_ASSERT(p_index>=0 && p_index<get_num_items());
-			bool result = true;
+			bool result = false;
 			switch (p_index) {
 			case 0:
+				result = context_check_count(p_data) && context_check_samplerate(p_data);
+				break;
+			case 1:
+			case 2:
+				result = context_check_count(p_data);
+				break;
 			case 3:
-				result = context_get_display_toc(p_data);
+				result = context_check_count(p_data) && context_check_lossless(p_data);
 				break;
 			}
 			if (result) {

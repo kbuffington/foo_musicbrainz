@@ -15,6 +15,7 @@ TOC::TOC(metadb_handle_list_cref p_data) {
 	cur_track = 0;
 	tracks_lengths = new unsigned int [num_tracks];
 	__int64 samples;
+	t_size spf = p_data.get_item(0)->get_info_ref()->info().info_get_int("samplerate") == 48000 ? 640 : 588;
 
 	for (t_size i = 0; i < num_tracks; i++) {
 		samples = p_data.get_item(i)->get_info_ref()->info().info_get_length_samples();
@@ -24,11 +25,7 @@ TOC::TOC(metadb_handle_list_cref p_data) {
 				setPregap(pregap);
 			}
 		}
-		if (samples % 588 != 0) {
-			popup_message::g_show("Track length in samples must be divisible by 588.", COMPONENT_TITLE, popup_message::icon_error);
-			return;
-		}
-		addTrack((unsigned int)samples / 588);
+		addTrack((unsigned int)samples / spf);
 	}
 }
 
