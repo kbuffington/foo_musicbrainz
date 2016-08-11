@@ -168,10 +168,12 @@ namespace foo_musicbrainz {
 
 		bool context_check_samplerate(metadb_handle_list_cref p_data) {
 			t_size count = p_data.get_count();
+			t_int64 srate = p_data.get_item(0)->get_info_ref()->info().info_get_int("samplerate");
 			for (t_size i = 0; i < count; i++) {
-				t_int64 srate = p_data.get_item(i)->get_info_ref()->info().info_get_int("samplerate");
+				t_int64 tmp = p_data.get_item(i)->get_info_ref()->info().info_get_int("samplerate");
 				t_int64 samples = p_data.get_item(i)->get_info_ref()->info().info_get_length_samples();
-				switch (srate) {
+				if (tmp != srate) return false;
+				switch (tmp) {
 				case 44100:
 					if (samples % 588 != 0) return false;
 					break;
