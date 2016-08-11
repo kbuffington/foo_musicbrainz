@@ -5,6 +5,14 @@ Check the [releases](https://github.com/19379/foo_musicbrainz/releases) page for
 My changes:
 
 ```
+Allow TOC lookups from files with a sample rate of 48000 Hz such as Opus. Track sample
+count must still match CD frame boundaries.
+
+Enforce stricter checks for TOC submissions so only lossless files are supported. This
+affects MusicBrainz editors only.
+
+Prevent background lookups if above TOC checks fail.
+
 "Preferences" has a new "Custom server" option.
 
 Add "Country" to "Date" column in main dialog.
