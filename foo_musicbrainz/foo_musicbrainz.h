@@ -7,7 +7,6 @@
 #define COMPONENT_VERSION "0.3.6.1"
 
 #include "resource.h"
-#include "../foobar2000/SDK/foobar2000.h"
 #include "../foobar2000/ATLHelpers/ATLHelpers.h"
 #include "../tinyxml/tinyxml.h"
 #include "meta.h"
