@@ -32,9 +32,9 @@ namespace foo_musicbrainz {
 
 		void context_command(unsigned p_index, metadb_handle_list_cref p_data, const GUID& p_caller) {
 			t_size count = p_data.get_count();
-			if (!context_check_count(p_data)) return popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
 			switch (p_index) {
 				case 0: {
+					if (!context_check_count(p_data)) return popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
 					if (!context_check_samplerate(p_data)) return popup_message::g_show("The sample rate of each track must match and be either 44100 Hz or 48000 Hz. Also, the number of samples must match CD frame boundaries.", COMPONENT_TITLE, popup_message::icon_error);
 
 					TOC toc(p_data);
@@ -114,6 +114,7 @@ namespace foo_musicbrainz {
 					break;
 				}
 				case 3: {
+					if (!context_check_count(p_data)) return popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
 					if (!context_check_lossless(p_data)) return popup_message::g_show("Only lossless files with a number of samples that match CD frame boundaries can be used for TOC submissions.", COMPONENT_TITLE, popup_message::icon_error);
 
 					TOC toc(p_data);
@@ -196,7 +197,7 @@ namespace foo_musicbrainz {
 				break;
 			case 1:
 			case 2:
-				result = context_check_count(p_data);
+				result = true;
 				break;
 			case 3:
 				result = context_check_count(p_data) && context_check_lossless(p_data);
