@@ -5,6 +5,8 @@ Check the [releases](https://github.com/19379/foo_musicbrainz/releases) page for
 My changes:
 
 ```
+Remove 99 track limit for artist/album and MBID lookups.
+
 Allow TOC lookups from files with a sample rate of 48000 Hz such as Opus. Track sample
 count must still match CD frame boundaries.
 
