@@ -96,19 +96,17 @@ namespace foo_musicbrainz {
 			no_feat_checkbox.SetCheck(Preferences::no_feat.get_value());
 			ascii_punctuation_checkbox.SetCheck(Preferences::ascii_punctuation.get_value());
 			write_ids_checkbox.SetCheck(Preferences::write_ids.get_value());
-
 			write_albumtype_checkbox.SetCheck(Preferences::albumtype.get_value());
-			if (Preferences::albumtype.get_value()) albumtype.EnableWindow(true);
-			uSetWindowText(albumtype, Preferences::albumtype_data);
-
 			write_albumstatus_checkbox.SetCheck(Preferences::albumstatus.get_value());
-			if (Preferences::albumstatus.get_value()) albumstatus.EnableWindow(true);
-			uSetWindowText(albumstatus, Preferences::albumstatus_data);
-
 			write_label_info_checkbox.SetCheck(Preferences::write_label_info.get_value());
-
 			write_server_checkbox.SetCheck(Preferences::server.get_value());
+
+			if (Preferences::albumtype.get_value()) albumtype.EnableWindow(true);
+			if (Preferences::albumstatus.get_value()) albumstatus.EnableWindow(true);
 			if (Preferences::server.get_value()) server.EnableWindow(true);
+
+			uSetWindowText(albumtype, Preferences::albumtype_data);
+			uSetWindowText(albumstatus, Preferences::albumstatus_data);
 			uSetWindowText(server, Preferences::server_data);
 
 			return 0;
@@ -147,11 +145,12 @@ namespace foo_musicbrainz {
 			Preferences::ascii_punctuation = (bool)ascii_punctuation_checkbox.GetCheck();
 			Preferences::write_ids = (bool)write_ids_checkbox.GetCheck();
 			Preferences::albumtype = (bool)write_albumtype_checkbox.GetCheck();
-			uGetWindowText(albumtype, Preferences::albumtype_data);
 			Preferences::albumstatus = (bool)write_albumstatus_checkbox.GetCheck();
-			uGetWindowText(albumstatus, Preferences::albumstatus_data);
 			Preferences::write_label_info = (bool)write_label_info_checkbox.GetCheck();
 			Preferences::server = (bool)write_server_checkbox.GetCheck();
+
+			uGetWindowText(albumtype, Preferences::albumtype_data);
+			uGetWindowText(albumstatus, Preferences::albumstatus_data);
 			uGetWindowText(server, Preferences::server_data);
 		}
 
@@ -165,15 +164,18 @@ namespace foo_musicbrainz {
 			ascii_punctuation_checkbox.SetCheck(Preferences::default_ascii_punctuation);
 			write_ids_checkbox.SetCheck(Preferences::default_write_ids);
 			write_albumtype_checkbox.SetCheck(Preferences::default_albumtype);
-			albumtype.EnableWindow(Preferences::default_albumtype);
-			uSetWindowText(albumtype, "MUSICBRAINZ_ALBUMTYPE");
-			albumstatus.EnableWindow(Preferences::default_albumstatus);
 			write_albumstatus_checkbox.SetCheck(Preferences::default_albumstatus);
-			uSetWindowText(albumstatus, "MUSICBRAINZ_ALBUMSTATUS");
 			write_label_info_checkbox.SetCheck(Preferences::default_write_label_info);
-			server.EnableWindow(Preferences::default_server);
 			write_server_checkbox.SetCheck(Preferences::default_server);
+
+			albumtype.EnableWindow(Preferences::default_albumtype);
+			albumstatus.EnableWindow(Preferences::default_albumstatus);
+			server.EnableWindow(Preferences::default_server);
+
+			uSetWindowText(albumtype, "MUSICBRAINZ_ALBUMTYPE");
+			uSetWindowText(albumstatus, "MUSICBRAINZ_ALBUMSTATUS");
 			uSetWindowText(server, "https://musicbrainz.org");
+
 			on_change();
 		}
 
