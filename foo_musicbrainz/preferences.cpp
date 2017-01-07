@@ -53,7 +53,7 @@ namespace foo_musicbrainz {
 		CButton write_albumtype_checkbox;
 		CButton write_albumstatus_checkbox;
 		CButton write_label_info_checkbox;
-		CButton write_server_checkbox;
+		CButton server_checkbox;
 		CEdit albumtype;
 		CEdit albumstatus;
 		CEdit server;
@@ -89,7 +89,7 @@ namespace foo_musicbrainz {
 			write_albumstatus_checkbox = GetDlgItem(IDC_ALBUMSTATUS);
 			albumstatus = GetDlgItem(IDC_ALBUMSTATUS_DATA);
 			write_label_info_checkbox = GetDlgItem(IDC_WRITE_LABEL_INFO);
-			write_server_checkbox = GetDlgItem(IDC_SERVER);
+			server_checkbox = GetDlgItem(IDC_SERVER);
 			server = GetDlgItem(IDC_SERVER_DATA);
 
 			short_date_checkbox.SetCheck(Preferences::short_date.get_value());
@@ -99,7 +99,7 @@ namespace foo_musicbrainz {
 			write_albumtype_checkbox.SetCheck(Preferences::albumtype.get_value());
 			write_albumstatus_checkbox.SetCheck(Preferences::albumstatus.get_value());
 			write_label_info_checkbox.SetCheck(Preferences::write_label_info.get_value());
-			write_server_checkbox.SetCheck(Preferences::server.get_value());
+			server_checkbox.SetCheck(Preferences::server.get_value());
 
 			if (Preferences::albumtype.get_value()) albumtype.EnableWindow(true);
 			if (Preferences::albumstatus.get_value()) albumstatus.EnableWindow(true);
@@ -120,7 +120,7 @@ namespace foo_musicbrainz {
 			if ((bool)write_albumtype_checkbox.GetCheck() != Preferences::albumtype.get_value()) return true;
 			if ((bool)write_albumstatus_checkbox.GetCheck() != Preferences::albumstatus.get_value()) return true;
 			if ((bool)write_label_info_checkbox.GetCheck() != Preferences::write_label_info.get_value()) return true;
-			if ((bool)write_server_checkbox.GetCheck() != Preferences::server.get_value()) return true;
+			if ((bool)server_checkbox.GetCheck() != Preferences::server.get_value()) return true;
 
 			pfc::string8 temp;
 			uGetWindowText(albumtype, temp);
@@ -147,7 +147,7 @@ namespace foo_musicbrainz {
 			Preferences::albumtype = (bool)write_albumtype_checkbox.GetCheck();
 			Preferences::albumstatus = (bool)write_albumstatus_checkbox.GetCheck();
 			Preferences::write_label_info = (bool)write_label_info_checkbox.GetCheck();
-			Preferences::server = (bool)write_server_checkbox.GetCheck();
+			Preferences::server = (bool)server_checkbox.GetCheck();
 
 			uGetWindowText(albumtype, Preferences::albumtype_data);
 			uGetWindowText(albumstatus, Preferences::albumstatus_data);
@@ -166,7 +166,7 @@ namespace foo_musicbrainz {
 			write_albumtype_checkbox.SetCheck(Preferences::default_albumtype);
 			write_albumstatus_checkbox.SetCheck(Preferences::default_albumstatus);
 			write_label_info_checkbox.SetCheck(Preferences::default_write_label_info);
-			write_server_checkbox.SetCheck(Preferences::default_server);
+			server_checkbox.SetCheck(Preferences::default_server);
 
 			albumtype.EnableWindow(Preferences::default_albumtype);
 			albumstatus.EnableWindow(Preferences::default_albumstatus);
@@ -194,7 +194,7 @@ namespace foo_musicbrainz {
 		}
 
 		void OnServer(UINT, int, CButton) {
-			server.EnableWindow((bool)write_server_checkbox.GetCheck());
+			server.EnableWindow((bool)server_checkbox.GetCheck());
 			on_change();
 		}
 	};
