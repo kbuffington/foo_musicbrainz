@@ -6,7 +6,7 @@ namespace foo_musicbrainz {
 	class ComboBox : public CComboBox {
 	public:
 		void DeleteAll() {
-			auto count = GetCount();
+			size_t count = GetCount();
 			for (size_t i = 0; i < count; i++) {
 				DeleteString(0);
 			}

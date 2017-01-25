@@ -11,7 +11,7 @@ namespace foo_musicbrainz {
 		}
 
 		void Resize(size_t new_size) {
-			auto current_size = GetItemCount();
+			size_t current_size = GetItemCount();
 			for (; current_size > new_size; current_size--) {
 				DeleteItem(current_size - 1);
 			}

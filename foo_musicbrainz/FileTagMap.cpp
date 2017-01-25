@@ -105,7 +105,7 @@ void Tag::write_label_info(const Release &release) {
 		set("BARCODE", release.get_barcode());
 
 		TagValues labels, catalog_numbers;
-		for (auto i = 0; i < release.label_info_count(); i++) {
+		for (size_t i = 0; i < release.label_info_count(); i++) {
 			if (auto label = release.get_label_info(i)->get_name()) {
 				labels.add_item(label);
 			}
@@ -145,8 +145,8 @@ void Tag::unset(string8 key) {
 }
 
 FileTagMap::FileTagMap(Release &release, pfc::list_t<metadb_handle_ptr> tracks, size_t selected_medium) {
-	auto current_medium = 0;
-	auto current_track = 0;
+	size_t current_medium = 0;
+	size_t current_track = 0;
 	if (tracks.get_count() < release.track_count()) {
 		current_medium = selected_medium;
 	}
