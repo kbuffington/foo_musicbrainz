@@ -38,6 +38,10 @@ namespace foo_musicbrainz {
 		extern const bool default_write_label_info;
 		extern cfg_bool write_label_info;
 
+		extern const GUID guid_write_country;
+		extern const bool default_write_country;
+		extern cfg_bool write_country;
+
 		extern const GUID guid_server;
 		extern const bool default_server;
 		extern cfg_bool server;

@@ -54,19 +54,18 @@ IDD_PREFERENCES DIALOGEX 0, 0, 274, 183
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "Use year instead of full date",IDC_SHORT_DATE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,7,107,10
-    CONTROL         "Remove (feat. Artist) part from track titles",IDC_NO_FEAT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,22,152,10
-    CONTROL         "Convert Unicode punctuation characters to ASCII",IDC_ASCII_PUNCTUATION,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,37,175,10
-    CONTROL         "Write MusicBrainz IDs",IDC_WRITE_IDS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,52,85,10
-    CONTROL         "Write Album Type, use field:",IDC_ALBUMTYPE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,67,107,10
-    EDITTEXT        IDC_ALBUMTYPE_DATA,122,65,133,14,ES_UPPERCASE | ES_AUTOHSCROLL | WS_DISABLED
-    CONTROL         "Write Album Status, use field:",IDC_ALBUMSTATUS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,111,10
-    EDITTEXT        IDC_ALBUMSTATUS_DATA,122,81,133,14,ES_UPPERCASE | ES_AUTOHSCROLL | WS_DISABLED
-    CONTROL         "Write label, catalog number and barcode",IDC_WRITE_LABEL_INFO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,99,146,10
-    CONTROL         "Custom server:",IDC_SERVER, "Button", BS_AUTOCHECKBOX | WS_TABSTOP,7,115,85,10
-    EDITTEXT        IDC_SERVER_DATA,122,113,133,14,ES_AUTOHSCROLL | WS_DISABLED
+    CONTROL         "Use year instead of full date", IDC_SHORT_DATE, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 7, 107, 10
+    CONTROL         "Remove (feat. Artist) part from track titles", IDC_NO_FEAT, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 22, 152, 10
+    CONTROL         "Convert Unicode punctuation characters to ASCII", IDC_ASCII_PUNCTUATION, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 37, 175, 10
+    CONTROL         "Write MusicBrainz IDs", IDC_WRITE_IDS, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 52, 85, 10
+    CONTROL         "Write Album Type, use field:", IDC_ALBUMTYPE, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 67, 107, 10
+    EDITTEXT        IDC_ALBUMTYPE_DATA, 122, 65, 133, 14, ES_UPPERCASE | ES_AUTOHSCROLL | WS_DISABLED
+    CONTROL         "Write Album Status, use field:", IDC_ALBUMSTATUS, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 83, 111, 10
+    EDITTEXT        IDC_ALBUMSTATUS_DATA, 122, 81, 133, 14, ES_UPPERCASE | ES_AUTOHSCROLL | WS_DISABLED
+    CONTROL         "Write label, catalog number and barcode", IDC_WRITE_LABEL_INFO, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 99, 146, 10
+    CONTROL         "Write release country", IDC_WRITE_COUNTRY, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 115, 146, 10
+    CONTROL         "Custom server:", IDC_SERVER, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 131, 85, 10
+    EDITTEXT        IDC_SERVER_DATA, 122, 129, 133, 14, ES_AUTOHSCROLL | WS_DISABLED
 END
 
 

@@ -36,6 +36,10 @@ namespace foo_musicbrainz {
 		const bool default_write_label_info = true;
 		cfg_bool write_label_info(guid_write_label_info, default_write_label_info);
 
+		const GUID guid_write_country = { 0xa983fbd6, 0x7471, 0x41d7,{ 0xa7, 0x62, 0x27, 0xf9, 0x94, 0xe9, 0x23, 0x1f } };
+		const bool default_write_country = false;
+		cfg_bool write_country(guid_write_country, default_write_country);
+
 		const GUID guid_server = { 0x2ac00b3b, 0x1b04, 0x4fb2,{ 0xa9, 0x98, 0x5c, 0x16, 0x4, 0x9c, 0xce, 0x9d } };
 		const bool default_server = false;
 		cfg_bool server(guid_server, default_server);
@@ -53,6 +57,7 @@ namespace foo_musicbrainz {
 		CButton write_albumtype_checkbox;
 		CButton write_albumstatus_checkbox;
 		CButton write_label_info_checkbox;
+		CButton write_country_checkbox;
 		CButton server_checkbox;
 		CEdit albumtype;
 		CEdit albumstatus;
@@ -74,6 +79,7 @@ namespace foo_musicbrainz {
 			COMMAND_HANDLER_EX(IDC_ALBUMSTATUS, BN_CLICKED, OnAlbumStatus)
 			COMMAND_HANDLER_EX(IDC_SERVER, BN_CLICKED, OnServer)
 			COMMAND_HANDLER_EX(IDC_WRITE_LABEL_INFO, BN_CLICKED, OnChanged)
+			COMMAND_HANDLER_EX(IDC_WRITE_COUNTRY, BN_CLICKED, OnChanged)
 			COMMAND_HANDLER_EX(IDC_ALBUMTYPE_DATA, EN_UPDATE, OnChanged)
 			COMMAND_HANDLER_EX(IDC_ALBUMSTATUS_DATA, EN_UPDATE, OnChanged)
 			COMMAND_HANDLER_EX(IDC_SERVER_DATA, EN_UPDATE, OnChanged)
@@ -89,6 +95,7 @@ namespace foo_musicbrainz {
 			write_albumstatus_checkbox = GetDlgItem(IDC_ALBUMSTATUS);
 			albumstatus = GetDlgItem(IDC_ALBUMSTATUS_DATA);
 			write_label_info_checkbox = GetDlgItem(IDC_WRITE_LABEL_INFO);
+			write_country_checkbox = GetDlgItem(IDC_WRITE_COUNTRY);
 			server_checkbox = GetDlgItem(IDC_SERVER);
 			server = GetDlgItem(IDC_SERVER_DATA);
 
@@ -99,6 +106,7 @@ namespace foo_musicbrainz {
 			write_albumtype_checkbox.SetCheck(Preferences::albumtype.get_value());
 			write_albumstatus_checkbox.SetCheck(Preferences::albumstatus.get_value());
 			write_label_info_checkbox.SetCheck(Preferences::write_label_info.get_value());
+			write_country_checkbox.SetCheck(Preferences::write_country.get_value());
 			server_checkbox.SetCheck(Preferences::server.get_value());
 
 			if (Preferences::albumtype.get_value()) albumtype.EnableWindow(true);
@@ -120,6 +128,7 @@ namespace foo_musicbrainz {
 			if ((bool)write_albumtype_checkbox.GetCheck() != Preferences::albumtype.get_value()) return true;
 			if ((bool)write_albumstatus_checkbox.GetCheck() != Preferences::albumstatus.get_value()) return true;
 			if ((bool)write_label_info_checkbox.GetCheck() != Preferences::write_label_info.get_value()) return true;
+			if ((bool)write_country_checkbox.GetCheck() != Preferences::write_country.get_value()) return true;
 			if ((bool)server_checkbox.GetCheck() != Preferences::server.get_value()) return true;
 
 			pfc::string8 temp;
@@ -147,6 +156,7 @@ namespace foo_musicbrainz {
 			Preferences::albumtype = (bool)write_albumtype_checkbox.GetCheck();
 			Preferences::albumstatus = (bool)write_albumstatus_checkbox.GetCheck();
 			Preferences::write_label_info = (bool)write_label_info_checkbox.GetCheck();
+			Preferences::write_country = (bool)write_country_checkbox.GetCheck();
 			Preferences::server = (bool)server_checkbox.GetCheck();
 
 			uGetWindowText(albumtype, Preferences::albumtype_data);
@@ -166,6 +176,7 @@ namespace foo_musicbrainz {
 			write_albumtype_checkbox.SetCheck(Preferences::default_albumtype);
 			write_albumstatus_checkbox.SetCheck(Preferences::default_albumstatus);
 			write_label_info_checkbox.SetCheck(Preferences::default_write_label_info);
+			write_country_checkbox.SetCheck(Preferences::default_write_country);
 			server_checkbox.SetCheck(Preferences::default_server);
 
 			albumtype.EnableWindow(Preferences::default_albumtype);

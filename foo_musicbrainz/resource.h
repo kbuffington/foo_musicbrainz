@@ -34,6 +34,7 @@
 #define IDC_CHOOSE_DISC                 1046
 #define IDC_SERVER                      1047
 #define IDC_SERVER_DATA                 1048
+#define IDC_WRITE_COUNTRY               1049
 
 // Next default values for new objects
 // 

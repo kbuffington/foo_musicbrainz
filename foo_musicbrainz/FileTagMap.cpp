@@ -16,6 +16,7 @@ Tag::Tag(const Release &release, const Medium &medium, const Track &track) {
 	write_artist(release, track);
 	write_musicbrainz_ids(release, medium, track);
 	write_label_info(release);
+	write_country(release);
 }
 
 void Tag::write_general(const Release &release, const Medium &medium, const Track &track) {
@@ -117,6 +118,12 @@ void Tag::write_label_info(const Release &release) {
 		}
 		set("LABEL", labels);
 		set("CATALOGNUMBER", catalog_numbers);
+	}
+}
+
+void Tag::write_country(const Release &release) {
+	if (Preferences::write_country) {
+		set("RELEASECOUNTRY", release.get_country());
 	}
 }
 

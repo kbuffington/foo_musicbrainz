@@ -28,6 +28,7 @@ namespace foo_musicbrainz {
 		void write_general(const Release &release, const Medium &medium, const Track &track);
 		void write_label_info(const Release &release);
 		void write_musicbrainz_ids(const Release &release, const Medium &medium, const Track &track);
+		void write_country(const Release &release);
 	};
 
 	class FileTagMap : public pfc::map_t<metadb_handle_ptr, Tag>  {
