@@ -104,7 +104,9 @@ void Tag::write_musicbrainz_ids(const Release &release, const Medium &medium, co
 
 void Tag::write_label_info(const Release &release) {
 	if (Preferences::write_label_info) {
-		set("BARCODE", release.get_barcode());
+		auto barcode = release.get_barcode();
+		if (!barcode.is_empty())
+			set("BARCODE", barcode);
 
 		TagValues labels, catalog_numbers;
 		for (size_t i = 0; i < release.label_info_count(); i++) {
@@ -124,13 +126,17 @@ void Tag::write_label_info(const Release &release) {
 
 void Tag::write_country(const Release &release) {
 	if (Preferences::write_country) {
-		set("RELEASECOUNTRY", release.get_country());
+		auto country = release.get_country();
+		if (!country.is_empty())
+			set("RELEASECOUNTRY", country);
 	}
 }
 
 void Tag::write_format(const Medium &medium) {
 	if (Preferences::write_format) {
-		set("MEDIA", medium.get_format());
+		auto format = medium.get_format();
+		if (!format.is_empty())
+			set("MEDIA", format);
 	}
 }
 
