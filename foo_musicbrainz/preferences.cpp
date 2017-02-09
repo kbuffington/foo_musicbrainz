@@ -37,11 +37,11 @@ namespace foo_musicbrainz {
 		cfg_bool write_label_info(guid_write_label_info, default_write_label_info);
 
 		const GUID guid_write_country = { 0xa983fbd6, 0x7471, 0x41d7,{ 0xa7, 0x62, 0x27, 0xf9, 0x94, 0xe9, 0x23, 0x1f } };
-		const bool default_write_country = false;
+		const bool default_write_country = true;
 		cfg_bool write_country(guid_write_country, default_write_country);
 
 		const GUID guid_write_format = { 0x8e0f77e2, 0x50e8, 0x4e66,{ 0x88, 0xe3, 0xab, 0xed, 0x3b, 0x76, 0x84, 0x5a } };
-		const bool default_write_format = false;
+		const bool default_write_format = true;
 		cfg_bool write_format(guid_write_format, default_write_format);
 
 		const GUID guid_server = { 0x2ac00b3b, 0x1b04, 0x4fb2,{ 0xa9, 0x98, 0x5c, 0x16, 0x4, 0x9c, 0xce, 0x9d } };
