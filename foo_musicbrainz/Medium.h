@@ -5,6 +5,7 @@
 
 namespace foo_musicbrainz {
 	class Medium {
+		STRING_MEMBER(format)
 		MEMBER(int, position)
 		STRING_MEMBER(title)
 		STRING_MEMBER(discid)

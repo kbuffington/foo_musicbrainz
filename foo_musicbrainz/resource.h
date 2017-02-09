@@ -35,6 +35,7 @@
 #define IDC_SERVER                      1047
 #define IDC_SERVER_DATA                 1048
 #define IDC_WRITE_COUNTRY               1049
+#define IDC_WRITE_FORMAT                1050
 
 // Next default values for new objects
 // 
