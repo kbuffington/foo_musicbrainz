@@ -5,5 +5,5 @@ DECLARE_COMPONENT_VERSION(
 	COMPONENT_VERSION,
 	"Build: "  __TIME__ ", " __DATE__ "\n"
 	"Copyright (C) 2009-2012 Dremora\n"
-	"Copyright (C) 2015-2016 marc2003"
+	"Copyright (C) 2015-2017 marc2003"
 );

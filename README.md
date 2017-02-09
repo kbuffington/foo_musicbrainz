@@ -5,6 +5,10 @@ Check the [releases](https://github.com/19379/foo_musicbrainz/releases) page for
 My changes:
 
 ```
+Add preferences to write release country (RELEASECOUNTRY) and release format (MEDIA). They're 
+both enabled by default so check File>Preferences>Tools>Tagging>MusicBrainz Tagger if you
+wish to turn them off.
+
 Remove 99 track limit for artist/album and MBID lookups.
 
 Allow TOC lookups from files with a sample rate of 48000 Hz such as Opus. Track sample
