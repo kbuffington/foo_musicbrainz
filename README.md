@@ -9,6 +9,8 @@ Add preferences to write release country (RELEASECOUNTRY) and release format (ME
 both enabled by default so check File>Preferences>Tools>Tagging>MusicBrainz Tagger if you
 wish to turn them off.
 
+Rework tagger dialog layout so release country and format are shown.
+
 Remove 99 track limit for artist/album and MBID lookups.
 
 Allow TOC lookups from files with a sample rate of 48000 Hz such as Opus. Track sample
@@ -22,8 +24,6 @@ affects MusicBrainz editors only.
 Prevent background lookups if above TOC checks fail.
 
 "Preferences" has a new "Custom server" option.
-
-Add "Country" to "Date" column in main dialog.
 
 Defaults to https.
 
