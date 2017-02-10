@@ -45,7 +45,8 @@ namespace foo_musicbrainz {
 			artist_column,
 			release_column,
 			date_column,
-			label_column
+			label_column,
+			format_column
 		};
 
 		TaggerDialog(foo_musicbrainz::Query *query, pfc::list_t<metadb_handle_ptr> _tracks) :
@@ -125,10 +126,11 @@ namespace foo_musicbrainz {
 			track_list.SetExtendedListViewStyle(styles, styles);
 
 			// Adding release list columns
-			listview_helper::insert_column(release_list, artist_column, "Artist", 80);
-			listview_helper::insert_column(release_list, release_column, "Release", 80);
-			listview_helper::insert_column(release_list, date_column, "Date/Country", 60);
-			listview_helper::insert_column(release_list, label_column, "Label/Cat#", 110);
+			listview_helper::insert_column(release_list, artist_column, "Artist", 120);
+			listview_helper::insert_column(release_list, release_column, "Release", 120);
+			listview_helper::insert_column(release_list, date_column, "Date/Country", 80);
+			listview_helper::insert_column(release_list, label_column, "Label/Cat#", 140);
+			listview_helper::insert_column(release_list, format_column, "Format", 70);
 
 			// Adding track list columns
 			listview_helper::insert_column(track_list, 0, "", 0); // Fake column
@@ -168,6 +170,8 @@ namespace foo_musicbrainz {
 					release->add_label_info(new LabelInfo());
 				}
 				listview_helper::set_item_text(release_list, i, label_column, release->get_label_info(0)->get_info());
+				// Format
+				listview_helper::set_item_text(release_list, i, format_column, release->get_medium(0)->get_format());
 			}
 
 			UpdateRelease();
