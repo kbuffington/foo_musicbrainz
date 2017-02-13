@@ -55,7 +55,12 @@ void RequestThread::run(threaded_process_status &p_status, abort_callback &p_abo
 				if (date.get_year() != 0) {
 					title << " (" << static_cast<pfc::string8>(date) << ")";
 				}
+				title << " " << (i + 1) << " of " << count << ", please wait...";
 				p_status.set_title(title);
+
+				if (i > 0) {
+					Sleep(1000);
+				}
 
 				Query query("release", release->get_id());
 				query.add_param("inc", "artists+labels+recordings+release-groups+artist-credits", false);
