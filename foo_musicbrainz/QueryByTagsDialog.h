@@ -73,6 +73,7 @@ namespace foo_musicbrainz {
 				search << " AND (tracks:" << tracks.get_count();
 				search << " OR tracksmedium:" << tracks.get_count() << ")";
 				query->add_param("query", search);
+				query->add_param("limit", 100);
 				new TaggerDialog(query, tracks);
 				DestroyWindow();
 			}
