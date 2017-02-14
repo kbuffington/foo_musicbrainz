@@ -57,6 +57,7 @@ namespace foo_musicbrainz {
 						if (current_artist == nullptr) current_artist = item->get_info_ref()->info().meta_get("ARTIST", 0);
 
 						auto current_album = item->get_info_ref()->info().meta_get("ALBUM", 0);
+						if (current_album == nullptr && count == 1) current_album = item->get_info_ref()->info().meta_get("TITLE", 0);
 
 						if (current_artist == nullptr || current_album == nullptr) {
 							break;
