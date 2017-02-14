@@ -47,11 +47,17 @@ namespace foo_musicbrainz {
 		}
 	
 		void OnUpdate(UINT uNotifyCode, int nID, CWindow wndCtl) {
-			std::tr1::regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
-			if (regex_search(string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr(), rx)) {
-				ok.EnableWindow(true);
+			pfc::string8 t = string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr();
+			pfc::string8 u = "https://musicbrainz.org/release/";
+			size_t l = u.get_length();
+			if (strncmp(t, u, l) == 0) {
+				t.replace_string(u, "");
+				uSetDlgItemText(m_hWnd, IDC_MBID, t);
+				return;
 			}
-			else ok.EnableWindow(false);
+
+			std::tr1::regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+			ok.EnableWindow(regex_search(string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr(), rx));
 		}
 
 		void OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl) {
