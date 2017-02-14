@@ -5,6 +5,19 @@ Check the [releases](https://github.com/19379/foo_musicbrainz/releases) page for
 My changes:
 
 ```
+We now obey the rate limit rules with a delay inbetween each request so any lookup with more than
+several releases should complete.
+
+You can now paste full release URLs like "https://musicbrainz.org/release/76a601d9-a1a6-4112-aad5-d63bc85db9b6"
+in to the MBID query dialog and it will automatically strip the URL so you're left with just the MBID like
+"76a601d9-a1a6-4112-aad5-d63bc85db9b6". This is useful if a given artist/album has many releases and
+you find it easier to find the correct one on the musicbrainz.org website. This will only work
+with "release" URLs and not "release-group" and the track count must always match the selection.
+
+Using the artist/album lookup dialog will populate the album field with the "TITLE" if there is
+no album tag present and the track count is one. There are some releases with just one track on
+Musicbrainz so this should make them easier to find.
+
 Add preferences to write release country (RELEASECOUNTRY) and release format (MEDIA). They're 
 both enabled by default so check File>Preferences>Tools>Tagging>MusicBrainz Tagger if you
 wish to turn them off.
