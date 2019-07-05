@@ -2,6 +2,11 @@
 // Microsoft Visual C++ generated include file.
 // Used by foo_musicbrainz.rc
 //
+
+#ifndef IDC_STATIC
+#define IDC_STATIC -1
+#endif
+
 #define IDD_TAGGER                      101
 #define IDD_PREFERENCES                 102
 #define IDD_CUSTOM_QUERY_MBID           103
