@@ -7,7 +7,9 @@
 #define COMPONENT_VERSION "0.3.9"
 
 #include "resource.h"
-#include "../foobar2000/ATLHelpers/ATLHelpers.h"
+#include "../foobar2000/ATLHelpers/ATLHelpersLean.h"
+#include "../foobar2000/ATLHelpers/misc.h"
+#include "../foobar2000/ATLHelpers/inplace_edit_v2.h"
 #include "../tinyxml/tinyxml.h"
 #include "meta.h"
 #include "Preferences.h"
