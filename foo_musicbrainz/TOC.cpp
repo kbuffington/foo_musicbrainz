@@ -4,7 +4,6 @@
 #include "Track.h"
 #include "sha1.h"
 
-using namespace std::tr1;
 using namespace foo_musicbrainz;
 
 TOC::TOC(metadb_handle_list_cref p_data) {
@@ -40,7 +39,7 @@ void TOC::setPregap(int length) {
 }
 
 void TOC::setPregap(pfc::string8 msf) {
-	regex rx("^\\d\\d:\\d\\d:\\d\\d$");
+	std::regex rx("^\\d\\d:\\d\\d:\\d\\d$");
 	if (regex_match(msf.get_ptr(), rx)) {
 		setPregap((((msf[0]-'0')*10+(msf[1]-'0'))*60 + (msf[3]-'0')*10+(msf[4]-'0'))*75 + (msf[6]-'0')*10+(msf[7]-'0'));
 	}

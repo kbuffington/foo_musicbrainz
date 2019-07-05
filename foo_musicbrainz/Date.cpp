@@ -2,7 +2,6 @@
 #include "foo_musicbrainz.h"
 #include "Date.h"
 
-using namespace std::tr1;
 using namespace pfc;
 using namespace foo_musicbrainz;
 
@@ -28,8 +27,8 @@ Date::Date(short year, short month, short day) {
 }
 
 Date::Date(string8 str) {
-	static regex rx("^\\s*(?:([12][0-9]{3})(?:-(?:([01]?[0-9])(?:-([0123]?[0-9])?)?)?)?)?\\s*$");
-	cmatch matches;
+	static std::regex rx("^\\s*(?:([12][0-9]{3})(?:-(?:([01]?[0-9])(?:-([0123]?[0-9])?)?)?)?)?\\s*$");
+	std::cmatch matches;
 	if (regex_search(str.get_ptr(), matches, rx)) {
 		STRING_TO_DATE_PART(year, 1)
 		STRING_TO_DATE_PART(month, 2)

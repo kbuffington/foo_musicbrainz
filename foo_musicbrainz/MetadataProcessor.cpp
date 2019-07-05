@@ -2,8 +2,6 @@
 #include "foo_musicbrainz.h"
 #include "MetadataProcessor.h"
 
-using namespace std::tr1;
-
 namespace foo_musicbrainz {
 	// {2311DC1D-1A81-4496-9139-678481C813F8}
 	const GUID MetadataProcessor::class_guid =
@@ -67,8 +65,8 @@ namespace foo_musicbrainz {
 
 		void process(Track &track) {
 			auto title = track.get_title();
-			static regex rx("^(.+?)(\\s+\\(feat\\.\\s+.+\\))?$");
-			cmatch matches;
+			static std::regex rx("^(.+?)(\\s+\\(feat\\.\\s+.+\\))?$");
+			std::cmatch matches;
 			if (regex_search(title.get_ptr(), matches, rx)) {
 				track.set_title(matches[1].str().data());
 			}

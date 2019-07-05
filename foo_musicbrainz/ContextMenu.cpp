@@ -6,7 +6,6 @@
 #include "QueryByTagsDialog.h"
 #include "TaggerDialog.h"
 
-using namespace std::tr1;
 using namespace foo_musicbrainz;
 
 namespace foo_musicbrainz {
@@ -98,7 +97,7 @@ namespace foo_musicbrainz {
 						// Save album ID of the first item
 						if (i == 0) {
 							album_id = current_album_id;
-							regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+							std::regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
 							if (!regex_search(album_id.get_ptr(), rx)) {
 								album_id.reset();
 								break;
