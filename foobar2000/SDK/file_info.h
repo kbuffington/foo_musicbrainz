@@ -11,6 +11,7 @@ struct replaygain_info
 
 	static bool g_format_gain(float p_value,char p_buffer[text_buffer_size]);
 	static bool g_format_peak(float p_value,char p_buffer[text_buffer_size]);
+	static bool g_format_peak_db(float p_value, char p_buffer[text_buffer_size]);
 
 	inline bool format_album_gain(char p_buffer[text_buffer_size]) const {return g_format_gain(m_album_gain,p_buffer);}
 	inline bool format_track_gain(char p_buffer[text_buffer_size]) const {return g_format_gain(m_track_gain,p_buffer);}
@@ -36,10 +37,13 @@ struct replaygain_info
 	inline void remove_album_peak() {m_album_peak = peak_invalid;}
 	inline void remove_track_peak() {m_track_peak = peak_invalid;}
 
+	float anyGain(bool bPreferAlbum = false) const;
+
 	t_size	get_value_count();
 
 	static replaygain_info g_merge(replaygain_info r1,replaygain_info r2);
 
+	static bool g_equalLoose( const replaygain_info & item1, const replaygain_info & item2);
 	static bool g_equal(const replaygain_info & item1,const replaygain_info & item2);
 
 	void reset();
@@ -50,6 +54,7 @@ public:
 	format_rg_gain(float val) {replaygain_info::g_format_gain(val, m_buffer);}
 
 	operator const char * () const {return m_buffer;}
+	const char * c_str() const { return m_buffer; }
 private:
 	replaygain_info::t_text_buffer m_buffer;
 };
@@ -59,6 +64,7 @@ public:
 	format_rg_peak(float val) {replaygain_info::g_format_peak(val, m_buffer);}
 
 	operator const char * () const {return m_buffer;}
+	const char * c_str() const { return m_buffer; }
 private:
 	replaygain_info::t_text_buffer m_buffer;
 };

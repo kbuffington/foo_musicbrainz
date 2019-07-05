@@ -251,6 +251,39 @@
     <ClInclude Include="output.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="foobar2000-winver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="foobar2000-dsp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="audio_chunk_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="file_format_sanitizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="commonObjects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="service_by_guid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="service_factory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="foobar2000-pfc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="filesystem_transacted.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="foosort.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="file_lock_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="abort_callback.cpp">
@@ -416,6 +449,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="output.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="utility.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="config_io_callback.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="foosort.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

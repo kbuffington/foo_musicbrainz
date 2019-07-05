@@ -22,26 +22,12 @@ class NOVTABLE event_logger_recorder : public event_logger {
 	FB2K_MAKE_SERVICE_INTERFACE( event_logger_recorder , event_logger );
 public:
 	virtual void playback( event_logger::ptr playTo ) = 0;
+	
+	static event_logger_recorder::ptr create();
 };
 
-class event_logger_recorder_impl : public event_logger_recorder {
-public:
-	void playback( event_logger::ptr playTo ) {
-		for(auto i = m_entries.first(); i.is_valid(); ++i ) {
-			playTo->log_entry( i->line.get_ptr(), i->severity );
-		}
-	}
+#define FB2K_LOG_STATUS(X,Y) (X)->log_status(Y)
+#define FB2K_LOG_WARNING(X,Y) (X)->log_warning(Y)
+#define FB2K_LOG_ERROR(X,Y) (X)->log_error(Y)
 
-	void log_entry( const char * line, unsigned severity ) {
-		auto rec = m_entries.insert_last();
-		rec->line = line;
-		rec->severity = severity;
-	}
-private:
-
-	struct entry_t {
-		pfc::string_simple line;
-		unsigned severity;
-	};
-	pfc::chain_list_v2_t< entry_t > m_entries;
-};
+#define FB2K_HAVE_EVENT_LOGGER

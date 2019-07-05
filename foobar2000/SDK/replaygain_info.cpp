@@ -22,6 +22,13 @@ bool replaygain_info::g_format_gain(float p_value,char p_buffer[text_buffer_size
 	}
 }
 
+bool replaygain_info::g_format_peak_db(float p_value, char p_buffer[text_buffer_size]) {
+	const float lo = 1.0 / (float)(1 << 24);
+	if ( p_value == peak_invalid || p_value < lo ) return false;
+	return g_format_gain((float)audio_math::scale_to_gain(p_value), p_buffer);
+
+}
+
 bool replaygain_info::g_format_peak(float p_value,char p_buffer[text_buffer_size])
 {
 	RG_FPU();
@@ -45,7 +52,10 @@ void replaygain_info::reset()
 	m_track_peak = peak_invalid;
 }
 
-static const char meta_album_gain[] = "replaygain_album_gain", meta_album_peak[] = "replaygain_album_peak", meta_track_gain[] = "replaygain_track_gain", meta_track_peak[] = "replaygain_track_peak";
+#define meta_album_gain "replaygain_album_gain"
+#define meta_album_peak "replaygain_album_peak"
+#define meta_track_gain "replaygain_track_gain"
+#define meta_track_peak "replaygain_track_peak"
 
 bool replaygain_info::g_is_meta_replaygain(const char * p_name,t_size p_name_len)
 {
@@ -93,6 +103,16 @@ t_size replaygain_info::get_value_count()
 	if (is_track_gain_present()) ret++;
 	if (is_track_peak_present()) ret++;
 	return ret;
+}
+
+float replaygain_info::anyGain(bool bPreferAlbum) const {
+	if ( bPreferAlbum ) {
+		if ( this->is_album_gain_present() ) return this->m_album_gain;
+		return this->m_track_gain;
+	} else {
+		if ( this->is_track_gain_present() ) return this->m_track_gain;
+		return this->m_album_gain;
+	}
 }
 
 void replaygain_info::set_album_gain_text(const char * p_text,t_size p_text_len)

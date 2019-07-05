@@ -1,4 +1,9 @@
-class CDialogResizeHelper {
+#pragma once
+
+#include "../helpers/dialog_resize_helper.h"
+#include "WindowPositionUtils.h"
+
+class CDialogResizeHelper : public CMessageMap {
 public:
 	typedef dialog_resize_helper::param ParamOld;
 

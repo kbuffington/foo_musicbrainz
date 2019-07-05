@@ -21,8 +21,10 @@ void string_base::skip_trailing_char(unsigned skip)
 		if (delta==0) break;
 		if (c==skip)
 		{
-			need_trunc = true;
-			trunc = ptr;
+			if (!need_trunc) {
+				need_trunc = true;
+				trunc = ptr;
+			}
 		}
 		else
 		{
@@ -98,12 +100,39 @@ string_filename::string_filename(const char * fn)
 	else set_string(fn);
 }
 
+const char * filename_ext_v2(const char * fn, char slash) {
+	if (slash == 0) {
+		slash = pfc::io::path::getDefaultSeparator();
+	}
+	size_t split = pfc::string_find_last(fn, slash);
+	if (split == pfc_infinite) return fn;
+	return fn + split + 1;
+}
+
 string_filename_ext::string_filename_ext(const char * fn)
 {
 	fn += pfc::scan_filename(fn);
 	const char * ptr = fn;
 	while(*ptr && *ptr!='?') ptr++;
 	set_string(fn,ptr-fn);
+}
+
+size_t find_extension_offset(const char * src) {
+	const char * start = src + pfc::scan_filename(src);
+	const char * end = start + strlen(start);
+	const char * ptr = end - 1;
+	while (ptr > start && *ptr != '.')
+	{
+		if (*ptr == '?') end = ptr;
+		ptr--;
+	}
+
+	if (ptr >= start && *ptr == '.')
+	{
+		return ptr - src;
+	}
+
+	return SIZE_MAX;
 }
 
 string_extension::string_extension(const char * src)
@@ -153,7 +182,7 @@ void float_to_string(char * out,t_size out_max,double val,unsigned precision,boo
 	if (outptr == out_max) {out[outptr]=0;return;}
 
 	if (val<0) {out[outptr++] = '-'; val = -val;}
-	else if (b_sign) {out[outptr++] = '+';}
+	else if (val > 0 && b_sign) {out[outptr++] = '+';}
 
 	if (outptr == out_max) {out[outptr]=0;return;}
 
@@ -416,6 +445,26 @@ int stricmp_ascii_ex(const char * const s1,t_size const len1,const char * const 
 	}
 
 }
+
+int wstricmp_ascii( const wchar_t * s1, const wchar_t * s2 ) throw() {
+	for(;;) {
+		wchar_t c1 = *s1, c2 = *s2;
+
+		if (c1 > 0 && c2 > 0 && c1 < 128 && c2 < 128) {
+			c1 = ascii_tolower_lookup((char)c1);
+			c2 = ascii_tolower_lookup((char)c2);
+		} else {
+			if (c1 == 0 && c2 == 0) return 0;
+		}
+		if (c1<c2) return -1;
+		else if (c1>c2) return 1;
+		else if (c1 == 0) return 0;
+
+		s1++;
+		s2++;
+	}
+}
+
 int stricmp_ascii(const char * s1,const char * s2) throw() {
 	for(;;) {
 		char c1 = *s1, c2 = *s2;
@@ -1216,4 +1265,29 @@ void string_base::fix_dir_separator(char c) {
 		return strdup(src);
 #endif
 	}
+
+
+	string_part_ref string_part_ref::make(const char * ptr, t_size len) {
+		string_part_ref val = {ptr, len}; return val;
+	}
+
+	string_part_ref string_part_ref::substring(t_size base) const {
+		PFC_ASSERT( base <= m_len );
+		return make(m_ptr + base, m_len - base);
+	}
+	string_part_ref string_part_ref::substring(t_size base, t_size len) const {
+		PFC_ASSERT( base <= m_len && base + len <= m_len );
+		return make(m_ptr + base, len);
+	}
+
+	string_part_ref string_part_ref::make( const char * str ) {return make( str, strlen(str) ); }
+
+	bool string_part_ref::equals( string_part_ref other ) const {
+		if ( other.m_len != this->m_len ) return false;
+		return memcmp( other.m_ptr, this->m_ptr, m_len ) == 0;
+	}
+	bool string_part_ref::equals( const char * str ) const {
+		return equals(make(str) );
+	}
+
 } //namespace pfc

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "create_directory_helper.h"
 
 namespace create_directory_helper
 {
@@ -120,12 +121,13 @@ pfc::string create_directory_helper::sanitize_formatted_path(pfc::stringp format
 	t_size curSegBase = 0;
 	for(t_size walk = 0; ; ++walk) {
 		const char c = formatted[walk];
-		if (c == 0 || pfc::io::path::isSeparator(c)) {
+		const bool end = (c == 0);
+		if (end || pfc::io::path::isSeparator(c)) {
 			if (curSegBase < walk) {
 				pfc::string seg( formatted + curSegBase, walk - curSegBase );
-				out = pfc::io::path::combine(out, pfc::io::path::validateFileName(seg, allowWC));
+				out = pfc::io::path::combine(out, pfc::io::path::validateFileName(seg, allowWC, end /*preserve ext*/));
 			}
-			if (c == 0) break;
+			if ( end ) break;
 			curSegBase = walk + 1;
 		}
 	}
@@ -145,7 +147,7 @@ void create_directory_helper::format_filename(const metadb_handle_ptr & handle,t
 void create_directory_helper::format_filename(const metadb_handle_ptr & handle,titleformat_hook * p_hook,const char * spec,pfc::string_base & out)
 {
 	service_ptr_t<titleformat_object> script;
-	if (static_api_ptr_t<titleformat_compiler>()->compile(script,spec)) {
+	if (titleformat_compiler::get()->compile(script,spec)) {
 		format_filename(handle, p_hook, script, out);
 	} else {
 		out.reset();

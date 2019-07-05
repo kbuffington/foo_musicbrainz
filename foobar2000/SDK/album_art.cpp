@@ -1,5 +1,13 @@
 #include "foobar2000.h"
 
+bool album_art_extractor_instance::query(const GUID & what, album_art_data::ptr & out, abort_callback & abort) {
+	try { out = query(what, abort); return true; } catch (exception_album_art_not_found) { return false; }
+}
+
+bool album_art_extractor_instance::have_entry(const GUID & what, abort_callback & abort) {
+	try { query(what, abort); return true; } catch(exception_album_art_not_found) { return false; }
+}
+
 bool album_art_editor::g_get_interface(service_ptr_t<album_art_editor> & out,const char * path) {
 	service_enum_t<album_art_editor> e; ptr ptr;
 	pfc::string_extension ext(path);
@@ -45,4 +53,22 @@ album_art_extractor_instance_ptr album_art_extractor::g_open_allowempty(file_ptr
 	} catch(exception_album_art_not_found) {
 		return new service_impl_t<album_art_extractor_instance_simple>();
 	}
+}
+
+namespace {
+	class now_playing_album_art_notify_lambda : public now_playing_album_art_notify {
+	public:
+		void on_album_art(album_art_data::ptr data) {
+			f(data);
+		}
+		std::function<void(album_art_data::ptr) > f;
+	};
+}
+
+now_playing_album_art_notify * now_playing_album_art_notify_manager::add(std::function<void (album_art_data::ptr) > f ) {
+	PFC_ASSERT ( f != nullptr );
+	auto obj = new now_playing_album_art_notify_lambda;
+	obj->f = f;
+	add(obj);
+	return obj;
 }
