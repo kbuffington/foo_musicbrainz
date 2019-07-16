@@ -37,7 +37,8 @@ Opus. Track sample count must still match CD frame boundaries.
 Ensure sample rate of all tracks are identical for TOC lookups.
 
 Enforce stricter checks for TOC submissions so only lossless files
-are supported. This affects MusicBrainz editors only.
+with a sample rate of 44100 Hz are supported. This affects
+MusicBrainz editors only.
 
 Prevent background lookups if above TOC checks fail.
 
