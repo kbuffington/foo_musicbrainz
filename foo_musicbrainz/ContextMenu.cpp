@@ -115,7 +115,7 @@ namespace foo_musicbrainz {
 				}
 				case 3: {
 					if (!context_check_count(p_data)) return popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
-					if (!context_check_lossless(p_data)) return popup_message::g_show("Only lossless files with a number of samples that match CD frame boundaries can be used for TOC submissions.", COMPONENT_TITLE, popup_message::icon_error);
+					if (!context_check_lossless(p_data)) return popup_message::g_show("Only lossless files with a sample rate of 44100Hz may be used for TOC submissions. Also, the number of samples must match CD frame boundaries.", COMPONENT_TITLE, popup_message::icon_error);
 
 					TOC toc(p_data);
 
@@ -160,9 +160,11 @@ namespace foo_musicbrainz {
 		bool context_check_lossless(metadb_handle_list_cref p_data) {
 			t_size count = p_data.get_count();
 			for (t_size i = 0; i < count; i++) {
-				if (p_data.get_item(i)->get_info_ref()->info().is_encoding_lossy() || p_data.get_item(i)->get_info_ref()->info().info_get_length_samples() % 588 != 0) {
-					return false;
-				}
+				if (p_data.get_item(i)->get_info_ref()->info().is_encoding_lossy()) return false;
+
+				t_int64 srate = p_data.get_item(i)->get_info_ref()->info().info_get_int("samplerate");
+				t_int64 samples = p_data.get_item(i)->get_info_ref()->info().info_get_length_samples();
+				if (srate != 44100 || samples % 588 != 0) return false;
 			}
 			return true;
 		}
