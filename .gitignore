@@ -1,3 +1,6 @@
+*.dll
+Release FB2K/
+Debug FB2K/
 Debugtinyxml/
 Releasetinyxml/
 app/
