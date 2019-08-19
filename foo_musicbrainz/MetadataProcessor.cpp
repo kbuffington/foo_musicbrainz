@@ -58,23 +58,6 @@ namespace foo_musicbrainz {
 		}
 	}
 
-	class RemoveFeatProcessor : public MetadataProcessor {
-	public:
-		unsigned int get_entities() { return track_entity; }
-		bool is_enabled() { return Preferences::no_feat; }
-
-		void process(Track &track) {
-			auto title = track.get_title();
-			static std::regex rx("^(.+?)(\\s+\\(feat\\.\\s+.+\\))?$");
-			std::cmatch matches;
-			if (regex_search(title.get_ptr(), matches, rx)) {
-				track.set_title(matches[1].str().data());
-			}
-		}
-	};
-
-	service_factory_single_t<RemoveFeatProcessor> remove_feat_processor;
-
 	class ShortDate : public MetadataProcessor {
 		unsigned int get_entities() { return release_entity; }
 		bool is_enabled() { return Preferences::short_date; }

@@ -8,10 +8,6 @@ namespace foo_musicbrainz {
 		extern const bool default_short_date;
 		extern cfg_bool short_date;
 
-		extern const GUID guid_no_feat;
-		extern const bool default_no_feat;
-		extern cfg_bool no_feat;
-
 		extern const GUID guid_ascii_punctuation;
 		extern const bool default_ascii_punctuation;
 		extern cfg_bool ascii_punctuation;

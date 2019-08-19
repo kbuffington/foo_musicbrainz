@@ -24,7 +24,6 @@
 #define IDC_MBID                        1025
 #define IDC_SHORT_DATE                  1027
 #define IDC_WRITE_IDS                   1029
-#define IDC_NO_FEAT                     1030
 #define IDC_ALBUMTYPE                   1031
 #define IDC_ALBUMTYPE_DATA              1032
 #define IDC_ALBUMSTATUS                 1033
@@ -49,7 +48,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        106
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1047
+#define _APS_NEXT_CONTROL_VALUE         1060
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

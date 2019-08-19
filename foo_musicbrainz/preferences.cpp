@@ -6,10 +6,6 @@ namespace foo_musicbrainz {
 		const bool default_short_date = false;
 		cfg_bool short_date(guid_short_date, default_short_date);
 
-		const GUID guid_no_feat = { 0x98f9ce46, 0xe0c5, 0x48f4,{ 0xa6, 0x3e, 0x19, 0x34, 0x39, 0x64, 0x35, 0x55 } };
-		const bool default_no_feat = false;
-		cfg_bool no_feat(guid_no_feat, default_no_feat);
-
 		const GUID guid_ascii_punctuation = { 0xd08b1b7c, 0x38fd, 0x4689,{ 0x9e, 0x91, 0x8c, 0xdc, 0xbe, 0xc4, 0x26, 0x98 } };
 		const bool default_ascii_punctuation = false;
 		cfg_bool ascii_punctuation(guid_ascii_punctuation, default_ascii_punctuation);
@@ -55,7 +51,6 @@ namespace foo_musicbrainz {
 	class PreferencesPageInstance : public CDialogImpl<PreferencesPageInstance>, public preferences_page_instance {
 	private:
 		CButton short_date_checkbox;
-		CButton no_feat_checkbox;
 		CButton ascii_punctuation_checkbox;
 		CButton write_ids_checkbox;
 		CButton write_albumtype_checkbox;
@@ -77,7 +72,6 @@ namespace foo_musicbrainz {
 		BEGIN_MSG_MAP(CPreferencesDialog)
 			MSG_WM_INITDIALOG(OnInitDialog)
 			COMMAND_HANDLER_EX(IDC_SHORT_DATE, BN_CLICKED, OnChanged)
-			COMMAND_HANDLER_EX(IDC_NO_FEAT, BN_CLICKED, OnChanged)
 			COMMAND_HANDLER_EX(IDC_ASCII_PUNCTUATION, BN_CLICKED, OnChanged)
 			COMMAND_HANDLER_EX(IDC_WRITE_IDS, BN_CLICKED, OnChanged)
 			COMMAND_HANDLER_EX(IDC_ALBUMTYPE, BN_CLICKED, OnAlbumType)
@@ -93,7 +87,6 @@ namespace foo_musicbrainz {
 
 		BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam) {
 			short_date_checkbox = GetDlgItem(IDC_SHORT_DATE);
-			no_feat_checkbox = GetDlgItem(IDC_NO_FEAT);
 			ascii_punctuation_checkbox = GetDlgItem(IDC_ASCII_PUNCTUATION);
 			write_ids_checkbox = GetDlgItem(IDC_WRITE_IDS);
 			write_albumtype_checkbox = GetDlgItem(IDC_ALBUMTYPE);
@@ -107,7 +100,6 @@ namespace foo_musicbrainz {
 			server = GetDlgItem(IDC_SERVER_DATA);
 
 			short_date_checkbox.SetCheck(Preferences::short_date.get_value());
-			no_feat_checkbox.SetCheck(Preferences::no_feat.get_value());
 			ascii_punctuation_checkbox.SetCheck(Preferences::ascii_punctuation.get_value());
 			write_ids_checkbox.SetCheck(Preferences::write_ids.get_value());
 			write_albumtype_checkbox.SetCheck(Preferences::albumtype.get_value());
@@ -130,7 +122,6 @@ namespace foo_musicbrainz {
 
 		bool has_changed() {
 			if ((bool)short_date_checkbox.GetCheck() != Preferences::short_date.get_value()) return true;
-			if ((bool)no_feat_checkbox.GetCheck() != Preferences::no_feat.get_value()) return true;
 			if ((bool)ascii_punctuation_checkbox.GetCheck() != Preferences::ascii_punctuation.get_value()) return true;
 			if ((bool)write_ids_checkbox.GetCheck() != Preferences::write_ids.get_value()) return true;
 			if ((bool)write_albumtype_checkbox.GetCheck() != Preferences::albumtype.get_value()) return true;
@@ -159,7 +150,6 @@ namespace foo_musicbrainz {
 
 		void apply() {
 			Preferences::short_date = (bool)short_date_checkbox.GetCheck();
-			Preferences::no_feat = (bool)no_feat_checkbox.GetCheck();
 			Preferences::ascii_punctuation = (bool)ascii_punctuation_checkbox.GetCheck();
 			Preferences::write_ids = (bool)write_ids_checkbox.GetCheck();
 			Preferences::albumtype = (bool)write_albumtype_checkbox.GetCheck();
@@ -180,7 +170,6 @@ namespace foo_musicbrainz {
 
 		void reset() {
 			short_date_checkbox.SetCheck(Preferences::default_short_date);
-			no_feat_checkbox.SetCheck(Preferences::default_no_feat);
 			ascii_punctuation_checkbox.SetCheck(Preferences::default_ascii_punctuation);
 			write_ids_checkbox.SetCheck(Preferences::default_write_ids);
 			write_albumtype_checkbox.SetCheck(Preferences::default_albumtype);
