@@ -4,7 +4,7 @@
 
 #define COMPONENT_TITLE "MusicBrainz Tagger"
 #define COMPONENT_DLL_NAME "foo_musicbrainz"
-#define COMPONENT_VERSION "0.3.10"
+#define COMPONENT_VERSION "0.3.11"
 
 #include "resource.h"
 #include "../foobar2000-SDK/foobar2000/helpers/foobar2000+atl.h"

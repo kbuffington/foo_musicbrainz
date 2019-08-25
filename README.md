@@ -27,6 +27,9 @@ format (MEDIA). They're both enabled by default so check
 File>Preferences>Tools>Tagging>MusicBrainz Tagger if you wish to
 turn them off.
 
+Add a preference to always write "Album Artist" even for single artist
+albums. It's off by default so check the Preferences.
+
 Rework tagger dialog layout so release country and format are shown.
 
 Remove 99 track limit for artist/album and MBID lookups.
