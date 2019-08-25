@@ -85,7 +85,7 @@ Metadata *Query::perform(abort_callback &callback) {
 #endif
 
 	// Download
-	static_api_ptr_t<http_client> http;
+	auto http = http_client::get();
 	auto request = http->create_request("GET");
 	request->add_header("User-Agent", "foo_musicbrainz/" COMPONENT_VERSION);
 	auto response = request->run_ex(url, callback);

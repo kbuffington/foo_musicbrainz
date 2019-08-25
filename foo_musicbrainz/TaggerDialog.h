@@ -49,7 +49,7 @@ namespace foo_musicbrainz {
 			format_column
 		};
 
-		TaggerDialog(foo_musicbrainz::Query *query, pfc::list_t<metadb_handle_ptr> _tracks) :
+		TaggerDialog(Query *query, pfc::list_t<metadb_handle_ptr> _tracks) :
 			CDialogImpl<TaggerDialog>(),
 			tracks(_tracks),
 			loaded(false),
@@ -59,7 +59,7 @@ namespace foo_musicbrainz {
 		{
 			mbc = new ReleaseList();
 			Create(core_api::get_main_window());
-			threaded_process::g_run_modeless(new service_impl_t<foo_musicbrainz::RequestThread>(query, m_hWnd, mbc, &tracks),
+			threaded_process::g_run_modeless(fb2k::service_new<RequestThread>(query, m_hWnd, mbc, &tracks),
 				threaded_process::flag_show_progress | threaded_process::flag_show_abort, m_hWnd, "Querying data from MusicBrainz");
 		}
 
@@ -101,7 +101,7 @@ namespace foo_musicbrainz {
 		}
 
 		bool OnInitDialog(CWindow wndFocus, LPARAM lInitParam) {
-			static_api_ptr_t<modeless_dialog_manager>()->add(m_hWnd);
+			modeless_dialog_manager::g_add(m_hWnd);
 			release_list = GetDlgItem(IDC_RELEASE_LIST);
 			medium_list.Attach(GetDlgItem(IDC_MEDIUM_LIST));
 			label_info_list.Attach(GetDlgItem(IDC_LABEL_INFO_LIST));
@@ -310,7 +310,7 @@ namespace foo_musicbrainz {
 		}
 
 		void OnFinalMessage(HWND hwnd) {
-			static_api_ptr_t<modeless_dialog_manager>()->remove(m_hWnd);
+			modeless_dialog_manager::g_remove(m_hWnd);
 			delete mbc;
 			delete this;
 		}
@@ -321,8 +321,8 @@ namespace foo_musicbrainz {
 
 		void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl) {
 			FileTagMap file_tag_map(*get_current_release(), tracks, current_medium);
-			static_api_ptr_t<metadb_io_v2>()->update_info_async(tracks,
-				new service_impl_t<TagWriter>(file_tag_map),
+			metadb_io_v2::get()->update_info_async(tracks,
+				fb2k::service_new<TagWriter>(file_tag_map),
 				core_api::get_main_window(), metadb_io_v2::op_flag_delay_ui, nullptr);
 			DestroyWindow();
 		}

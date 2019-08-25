@@ -31,7 +31,7 @@ namespace foo_musicbrainz {
 		END_MSG_MAP()
 
 		BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam) {
-			static_api_ptr_t<modeless_dialog_manager>()->add(m_hWnd);
+			modeless_dialog_manager::g_add(m_hWnd);
 			ok = GetDlgItem(IDOK);
 			uSetDlgItemText(m_hWnd, IDC_MBID, mbid);
 			return true;
@@ -42,7 +42,7 @@ namespace foo_musicbrainz {
 		}
 
 		void OnFinalMessage(HWND hwnd) {
-			static_api_ptr_t<modeless_dialog_manager>()->remove(m_hWnd);
+			modeless_dialog_manager::g_remove(m_hWnd);
 			delete this;
 		}
 	
