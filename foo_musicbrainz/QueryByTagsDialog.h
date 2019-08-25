@@ -51,11 +51,7 @@ namespace foo_musicbrainz {
 		}
 	
 		void OnUpdate(UINT uNotifyCode, int nID, CWindow wndCtl) {
-			if (string_utf8_from_window(m_hWnd, IDC_ARTIST).is_empty() || string_utf8_from_window(m_hWnd, IDC_ALBUM).is_empty()) {
-				ok.EnableWindow(false);
-			} else {
-				ok.EnableWindow(true);
-			}
+			ok.EnableWindow(string_utf8_from_window(m_hWnd, IDC_ARTIST).length() && string_utf8_from_window(m_hWnd, IDC_ALBUM).length());
 		}
 
 		void OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl) {
@@ -65,7 +61,7 @@ namespace foo_musicbrainz {
 		void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl) {
 			pfc::string8 artist = string_utf8_from_window(m_hWnd, IDC_ARTIST);
 			pfc::string8 album = string_utf8_from_window(m_hWnd, IDC_ALBUM);
-			if (!artist.is_empty() && !album.is_empty()) {
+			if (artist.get_length() && album.get_length()) {
 				auto query = new Query("release");
 				pfc::string8 search;
 				search << "artist:\"" << artist << "\"";

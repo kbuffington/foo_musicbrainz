@@ -4,6 +4,13 @@
 
 namespace foo_musicbrainz {
 	namespace Preferences {
+		extern const GUID guid_server;
+		extern const bool default_server;
+		extern cfg_bool server;
+
+		extern const GUID guid_server_data;
+		extern cfg_string server_data;
+
 		extern const GUID guid_short_date;
 		extern const bool default_short_date;
 		extern cfg_bool short_date;
@@ -42,11 +49,8 @@ namespace foo_musicbrainz {
 		extern const bool default_write_format;
 		extern cfg_bool write_format;
 
-		extern const GUID guid_server;
-		extern const bool default_server;
-		extern cfg_bool server;
-
-		extern const GUID guid_server_data;
-		extern cfg_string server_data;
+		extern const GUID guid_write_albumartist;
+		extern const bool default_write_albumartist;
+		extern cfg_bool write_albumartist;
 	}
 }

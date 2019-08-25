@@ -15,7 +15,7 @@ namespace foo_musicbrainz {
 		pfc::string8 get_info() {
 			pfc::string8 info;
 			info << "Disc " << position;
-			if (!title.is_empty()) {
+			if (title.get_length()) {
 				info << ": " << title;
 			}
 			auto track_count = track_items.get_count();

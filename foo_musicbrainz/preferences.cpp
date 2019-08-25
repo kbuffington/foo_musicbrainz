@@ -2,6 +2,13 @@
 
 namespace foo_musicbrainz {
 	namespace Preferences {
+		const GUID guid_server = { 0x2ac00b3b, 0x1b04, 0x4fb2,{ 0xa9, 0x98, 0x5c, 0x16, 0x4, 0x9c, 0xce, 0x9d } };
+		const bool default_server = false;
+		cfg_bool server(guid_server, default_server);
+
+		const GUID guid_server_data = { 0x8732cde8, 0xe1ed, 0x4824,{ 0xae, 0xf6, 0x7d, 0x4b, 0x56, 0x99, 0x23, 0xac } };
+		cfg_string server_data(guid_server_data, "https://musicbrainz.org");
+
 		const GUID guid_short_date = { 0x18734618, 0x7920, 0x4d24,{ 0x84, 0xa1, 0xb9, 0xd6, 0x6e, 0xd8, 0x25, 0xbc } };
 		const bool default_short_date = false;
 		cfg_bool short_date(guid_short_date, default_short_date);
@@ -40,16 +47,14 @@ namespace foo_musicbrainz {
 		const bool default_write_format = true;
 		cfg_bool write_format(guid_write_format, default_write_format);
 
-		const GUID guid_server = { 0x2ac00b3b, 0x1b04, 0x4fb2,{ 0xa9, 0x98, 0x5c, 0x16, 0x4, 0x9c, 0xce, 0x9d } };
-		const bool default_server = false;
-		cfg_bool server(guid_server, default_server);
-
-		const GUID guid_server_data = { 0x8732cde8, 0xe1ed, 0x4824,{ 0xae, 0xf6, 0x7d, 0x4b, 0x56, 0x99, 0x23, 0xac } };
-		cfg_string server_data(guid_server_data, "https://musicbrainz.org");
+		const GUID guid_write_albumartist = { 0x5cbeb3ba, 0xae9f, 0x4975, { 0xb9, 0x94, 0xd7, 0x50, 0xda, 0x2b, 0x22, 0x0 } };
+		const bool default_write_albumartist = false;
+		cfg_bool write_albumartist(guid_write_albumartist, default_write_albumartist);
 	}
 
 	class PreferencesPageInstance : public CDialogImpl<PreferencesPageInstance>, public preferences_page_instance {
 	private:
+		CButton server_checkbox;
 		CButton short_date_checkbox;
 		CButton ascii_punctuation_checkbox;
 		CButton write_ids_checkbox;
@@ -58,7 +63,7 @@ namespace foo_musicbrainz {
 		CButton write_label_info_checkbox;
 		CButton write_country_checkbox;
 		CButton write_format_checkbox;
-		CButton server_checkbox;
+		CButton write_albumartist_checkbox;
 		CEdit albumtype;
 		CEdit albumstatus;
 		CEdit server;
@@ -71,21 +76,24 @@ namespace foo_musicbrainz {
 
 		BEGIN_MSG_MAP(CPreferencesDialog)
 			MSG_WM_INITDIALOG(OnInitDialog)
+			COMMAND_HANDLER_EX(IDC_SERVER, BN_CLICKED, OnServer)
+			COMMAND_HANDLER_EX(IDC_SERVER_DATA, EN_UPDATE, OnChanged)
 			COMMAND_HANDLER_EX(IDC_SHORT_DATE, BN_CLICKED, OnChanged)
 			COMMAND_HANDLER_EX(IDC_ASCII_PUNCTUATION, BN_CLICKED, OnChanged)
 			COMMAND_HANDLER_EX(IDC_WRITE_IDS, BN_CLICKED, OnChanged)
 			COMMAND_HANDLER_EX(IDC_ALBUMTYPE, BN_CLICKED, OnAlbumType)
+			COMMAND_HANDLER_EX(IDC_ALBUMTYPE_DATA, EN_UPDATE, OnChanged)
 			COMMAND_HANDLER_EX(IDC_ALBUMSTATUS, BN_CLICKED, OnAlbumStatus)
-			COMMAND_HANDLER_EX(IDC_SERVER, BN_CLICKED, OnServer)
+			COMMAND_HANDLER_EX(IDC_ALBUMSTATUS_DATA, EN_UPDATE, OnChanged)
 			COMMAND_HANDLER_EX(IDC_WRITE_LABEL_INFO, BN_CLICKED, OnChanged)
 			COMMAND_HANDLER_EX(IDC_WRITE_COUNTRY, BN_CLICKED, OnChanged)
 			COMMAND_HANDLER_EX(IDC_WRITE_FORMAT, BN_CLICKED, OnChanged)
-			COMMAND_HANDLER_EX(IDC_ALBUMTYPE_DATA, EN_UPDATE, OnChanged)
-			COMMAND_HANDLER_EX(IDC_ALBUMSTATUS_DATA, EN_UPDATE, OnChanged)
-			COMMAND_HANDLER_EX(IDC_SERVER_DATA, EN_UPDATE, OnChanged)
+			COMMAND_HANDLER_EX(IDC_WRITE_ALBUMARTIST, BN_CLICKED, OnChanged)
 		END_MSG_MAP()
 
 		BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam) {
+			server_checkbox = GetDlgItem(IDC_SERVER);
+			server = GetDlgItem(IDC_SERVER_DATA);
 			short_date_checkbox = GetDlgItem(IDC_SHORT_DATE);
 			ascii_punctuation_checkbox = GetDlgItem(IDC_ASCII_PUNCTUATION);
 			write_ids_checkbox = GetDlgItem(IDC_WRITE_IDS);
@@ -96,9 +104,9 @@ namespace foo_musicbrainz {
 			write_label_info_checkbox = GetDlgItem(IDC_WRITE_LABEL_INFO);
 			write_country_checkbox = GetDlgItem(IDC_WRITE_COUNTRY);
 			write_format_checkbox = GetDlgItem(IDC_WRITE_FORMAT);
-			server_checkbox = GetDlgItem(IDC_SERVER);
-			server = GetDlgItem(IDC_SERVER_DATA);
+			write_albumartist_checkbox = GetDlgItem(IDC_WRITE_ALBUMARTIST);
 
+			server_checkbox.SetCheck(Preferences::server.get_value());
 			short_date_checkbox.SetCheck(Preferences::short_date.get_value());
 			ascii_punctuation_checkbox.SetCheck(Preferences::ascii_punctuation.get_value());
 			write_ids_checkbox.SetCheck(Preferences::write_ids.get_value());
@@ -107,11 +115,11 @@ namespace foo_musicbrainz {
 			write_label_info_checkbox.SetCheck(Preferences::write_label_info.get_value());
 			write_country_checkbox.SetCheck(Preferences::write_country.get_value());
 			write_format_checkbox.SetCheck(Preferences::write_format.get_value());
-			server_checkbox.SetCheck(Preferences::server.get_value());
+			write_albumartist_checkbox.SetCheck(Preferences::write_albumartist.get_value());
 
+			if (Preferences::server.get_value()) server.EnableWindow(true);
 			if (Preferences::albumtype.get_value()) albumtype.EnableWindow(true);
 			if (Preferences::albumstatus.get_value()) albumstatus.EnableWindow(true);
-			if (Preferences::server.get_value()) server.EnableWindow(true);
 
 			uSetWindowText(albumtype, Preferences::albumtype_data);
 			uSetWindowText(albumstatus, Preferences::albumstatus_data);
@@ -121,6 +129,7 @@ namespace foo_musicbrainz {
 		}
 
 		bool has_changed() {
+			if ((bool)server_checkbox.GetCheck() != Preferences::server.get_value()) return true;
 			if ((bool)short_date_checkbox.GetCheck() != Preferences::short_date.get_value()) return true;
 			if ((bool)ascii_punctuation_checkbox.GetCheck() != Preferences::ascii_punctuation.get_value()) return true;
 			if ((bool)write_ids_checkbox.GetCheck() != Preferences::write_ids.get_value()) return true;
@@ -129,7 +138,7 @@ namespace foo_musicbrainz {
 			if ((bool)write_label_info_checkbox.GetCheck() != Preferences::write_label_info.get_value()) return true;
 			if ((bool)write_country_checkbox.GetCheck() != Preferences::write_country.get_value()) return true;
 			if ((bool)write_format_checkbox.GetCheck() != Preferences::write_format.get_value()) return true;
-			if ((bool)server_checkbox.GetCheck() != Preferences::server.get_value()) return true;
+			if ((bool)write_albumartist_checkbox.GetCheck() != Preferences::write_albumartist.get_value()) return true;
 
 			pfc::string8 temp;
 			uGetWindowText(albumtype, temp);
@@ -149,6 +158,7 @@ namespace foo_musicbrainz {
 		}
 
 		void apply() {
+			Preferences::server = (bool)server_checkbox.GetCheck();
 			Preferences::short_date = (bool)short_date_checkbox.GetCheck();
 			Preferences::ascii_punctuation = (bool)ascii_punctuation_checkbox.GetCheck();
 			Preferences::write_ids = (bool)write_ids_checkbox.GetCheck();
@@ -157,7 +167,7 @@ namespace foo_musicbrainz {
 			Preferences::write_label_info = (bool)write_label_info_checkbox.GetCheck();
 			Preferences::write_country = (bool)write_country_checkbox.GetCheck();
 			Preferences::write_format = (bool)write_format_checkbox.GetCheck();
-			Preferences::server = (bool)server_checkbox.GetCheck();
+			Preferences::write_albumartist = (bool)write_albumartist_checkbox.GetCheck();
 
 			uGetWindowText(albumtype, Preferences::albumtype_data);
 			uGetWindowText(albumstatus, Preferences::albumstatus_data);
@@ -169,6 +179,7 @@ namespace foo_musicbrainz {
 		}
 
 		void reset() {
+			server_checkbox.SetCheck(Preferences::default_server);
 			short_date_checkbox.SetCheck(Preferences::default_short_date);
 			ascii_punctuation_checkbox.SetCheck(Preferences::default_ascii_punctuation);
 			write_ids_checkbox.SetCheck(Preferences::default_write_ids);
@@ -177,7 +188,7 @@ namespace foo_musicbrainz {
 			write_label_info_checkbox.SetCheck(Preferences::default_write_label_info);
 			write_country_checkbox.SetCheck(Preferences::default_write_country);
 			write_format_checkbox.SetCheck(Preferences::default_write_format);
-			server_checkbox.SetCheck(Preferences::default_server);
+			write_albumartist_checkbox.SetCheck(Preferences::default_write_albumartist);
 
 			albumtype.EnableWindow(Preferences::default_albumtype);
 			albumstatus.EnableWindow(Preferences::default_albumstatus);

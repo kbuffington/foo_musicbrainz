@@ -29,12 +29,12 @@ void Tag::write_general(const Release &release, const Medium &medium, const Trac
 
 void Tag::write_date(const Release &release) {
 	string8 date = release.get_date();
-	if (!date.is_empty()) {
+	if (date.get_length()) {
 		set("DATE", date);
 	}
 
 	string8 first_release_date = release.get_release_group()->get_first_release_date();
-	if (!first_release_date.is_empty() && first_release_date != date) {
+	if (first_release_date.get_length() && first_release_date != date) {
 		set("ORIGINAL RELEASE DATE", first_release_date);
 	} else {
 		unset("ORIGINAL RELEASE DATE");
@@ -77,7 +77,7 @@ void Tag::write_album_status(const Release &release) {
 
 void Tag::write_artist(const Release &release, const Track &track) {
 	set("ARTIST", track.get_artist_credit()->get_name());
-	if (release.is_various()) {
+	if (Preferences::write_albumartist || release.is_various()) {
 		set("ALBUM ARTIST", release.get_artist_credit()->get_name());
 	} else {
 		unset("ALBUM ARTIST");
@@ -90,13 +90,13 @@ void Tag::write_musicbrainz_ids(const Release &release, const Medium &medium, co
 		set("MUSICBRAINZ_RELEASEGROUPID", release.get_release_group()->get_id());
 		set("MUSICBRAINZ_TRACKID", track.get_id());
 		set("MUSICBRAINZ_ARTISTID", track.get_artist_credit()->get_ids());
-		if (release.is_various()) {
+		if (Preferences::write_albumartist || release.is_various()) {
 			set("MUSICBRAINZ_ALBUMARTISTID", release.get_artist_credit()->get_ids());
 		} else {
 			unset("MUSICBRAINZ_ALBUMARTISTID");
 		}
 		auto discid = medium.get_discid();
-		if (!discid.is_empty()) {
+		if (discid.get_length()) {
 			set("MUSICBRAINZ_DISCID", discid);
 		}
 	}
@@ -105,8 +105,9 @@ void Tag::write_musicbrainz_ids(const Release &release, const Medium &medium, co
 void Tag::write_label_info(const Release &release) {
 	if (Preferences::write_label_info) {
 		auto barcode = release.get_barcode();
-		if (!barcode.is_empty())
+		if (barcode.get_length()) {
 			set("BARCODE", barcode);
+		}
 
 		TagValues labels, catalog_numbers;
 		for (size_t i = 0; i < release.label_info_count(); i++) {
@@ -127,16 +128,18 @@ void Tag::write_label_info(const Release &release) {
 void Tag::write_country(const Release &release) {
 	if (Preferences::write_country) {
 		auto country = release.get_country();
-		if (!country.is_empty())
+		if (country.get_length()) {
 			set("RELEASECOUNTRY", country);
+		}
 	}
 }
 
 void Tag::write_format(const Medium &medium) {
 	if (Preferences::write_format) {
 		auto format = medium.get_format();
-		if (!format.is_empty())
+		if (format.get_length()) {
 			set("MEDIA", format);
+		}
 	}
 }
 

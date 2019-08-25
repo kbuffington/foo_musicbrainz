@@ -40,6 +40,7 @@
 #define IDC_SERVER_DATA                 1048
 #define IDC_WRITE_COUNTRY               1049
 #define IDC_WRITE_FORMAT                1050
+#define IDC_WRITE_ALBUMARTIST           1051
 
 // Next default values for new objects
 // 
