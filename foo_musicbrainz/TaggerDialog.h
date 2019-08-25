@@ -256,6 +256,7 @@ namespace foo_musicbrainz {
 
 		void update_medium() {
 			auto release = get_current_release();
+			discsubtitle.EnableWindow(release->is_multidisc());
 			auto medium = get_current_medium();
 			uSetWindowText(discsubtitle, medium->get_title());
 
