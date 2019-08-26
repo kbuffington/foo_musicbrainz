@@ -11,6 +11,8 @@
 #include "ReleaseGroup.h"
 #include "Track.h"
 
+#pragma warning(disable : 4003) // not enough arguments for function-like macro invocation
+
 using namespace foo_musicbrainz;
 
 pfc::string8 Parser::text_attr(const TiXmlElement *element, const char *name) {

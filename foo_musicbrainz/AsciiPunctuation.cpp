@@ -29,7 +29,7 @@ namespace foo_musicbrainz {
 		}
 
 		static const char *replacements[][2];
-		static const int replacement_size;
+		static const t_size replacement_size;
 	};
 
 	// Only to be used with string literals — causes memory leaks.
@@ -62,7 +62,7 @@ namespace foo_musicbrainz {
 		{ u("—"), u("-") },
 		{ u("―"), u("-") }
 	};
-	const int AsciiPunctuation::replacement_size = sizeof(AsciiPunctuation::replacements) / sizeof(const char *) / 2;
+	const t_size AsciiPunctuation::replacement_size = sizeof(AsciiPunctuation::replacements) / sizeof(const char *) / 2;
 
 	service_factory_single_t<AsciiPunctuation> metadata_processor;
 }
