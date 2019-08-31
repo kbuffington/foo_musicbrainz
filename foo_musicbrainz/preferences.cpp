@@ -53,22 +53,6 @@ namespace foo_musicbrainz {
 	}
 
 	class PreferencesPageInstance : public CDialogImpl<PreferencesPageInstance>, public preferences_page_instance {
-	private:
-		CButton server_checkbox;
-		CButton short_date_checkbox;
-		CButton ascii_punctuation_checkbox;
-		CButton write_ids_checkbox;
-		CButton write_albumtype_checkbox;
-		CButton write_albumstatus_checkbox;
-		CButton write_label_info_checkbox;
-		CButton write_country_checkbox;
-		CButton write_format_checkbox;
-		CButton write_albumartist_checkbox;
-		CEdit albumtype;
-		CEdit albumstatus;
-		CEdit server;
-		preferences_page_callback::ptr on_change_callback;
-
 	public:
 		PreferencesPageInstance(preferences_page_callback::ptr callback) : on_change_callback(callback) {}
 
@@ -106,20 +90,20 @@ namespace foo_musicbrainz {
 			write_format_checkbox = GetDlgItem(IDC_WRITE_FORMAT);
 			write_albumartist_checkbox = GetDlgItem(IDC_WRITE_ALBUMARTIST);
 
-			server_checkbox.SetCheck(Preferences::server.get_value());
-			short_date_checkbox.SetCheck(Preferences::short_date.get_value());
-			ascii_punctuation_checkbox.SetCheck(Preferences::ascii_punctuation.get_value());
-			write_ids_checkbox.SetCheck(Preferences::write_ids.get_value());
-			write_albumtype_checkbox.SetCheck(Preferences::albumtype.get_value());
-			write_albumstatus_checkbox.SetCheck(Preferences::albumstatus.get_value());
-			write_label_info_checkbox.SetCheck(Preferences::write_label_info.get_value());
-			write_country_checkbox.SetCheck(Preferences::write_country.get_value());
-			write_format_checkbox.SetCheck(Preferences::write_format.get_value());
-			write_albumartist_checkbox.SetCheck(Preferences::write_albumartist.get_value());
+			server_checkbox.SetCheck(Preferences::server);
+			short_date_checkbox.SetCheck(Preferences::short_date);
+			ascii_punctuation_checkbox.SetCheck(Preferences::ascii_punctuation);
+			write_ids_checkbox.SetCheck(Preferences::write_ids);
+			write_albumtype_checkbox.SetCheck(Preferences::albumtype);
+			write_albumstatus_checkbox.SetCheck(Preferences::albumstatus);
+			write_label_info_checkbox.SetCheck(Preferences::write_label_info);
+			write_country_checkbox.SetCheck(Preferences::write_country);
+			write_format_checkbox.SetCheck(Preferences::write_format);
+			write_albumartist_checkbox.SetCheck(Preferences::write_albumartist);
 
-			if (Preferences::server.get_value()) server.EnableWindow(true);
-			if (Preferences::albumtype.get_value()) albumtype.EnableWindow(true);
-			if (Preferences::albumstatus.get_value()) albumstatus.EnableWindow(true);
+			server.EnableWindow(Preferences::server);
+			albumtype.EnableWindow(Preferences::albumtype);
+			albumstatus.EnableWindow(Preferences::albumstatus);
 
 			uSetWindowText(albumtype, Preferences::albumtype_data);
 			uSetWindowText(albumstatus, Preferences::albumstatus_data);
@@ -129,16 +113,16 @@ namespace foo_musicbrainz {
 		}
 
 		bool has_changed() {
-			if ((bool)server_checkbox.GetCheck() != Preferences::server.get_value()) return true;
-			if ((bool)short_date_checkbox.GetCheck() != Preferences::short_date.get_value()) return true;
-			if ((bool)ascii_punctuation_checkbox.GetCheck() != Preferences::ascii_punctuation.get_value()) return true;
-			if ((bool)write_ids_checkbox.GetCheck() != Preferences::write_ids.get_value()) return true;
-			if ((bool)write_albumtype_checkbox.GetCheck() != Preferences::albumtype.get_value()) return true;
-			if ((bool)write_albumstatus_checkbox.GetCheck() != Preferences::albumstatus.get_value()) return true;
-			if ((bool)write_label_info_checkbox.GetCheck() != Preferences::write_label_info.get_value()) return true;
-			if ((bool)write_country_checkbox.GetCheck() != Preferences::write_country.get_value()) return true;
-			if ((bool)write_format_checkbox.GetCheck() != Preferences::write_format.get_value()) return true;
-			if ((bool)write_albumartist_checkbox.GetCheck() != Preferences::write_albumartist.get_value()) return true;
+			if (server_checkbox.IsChecked() != Preferences::server) return true;
+			if (short_date_checkbox.IsChecked() != Preferences::short_date) return true;
+			if (ascii_punctuation_checkbox.IsChecked() != Preferences::ascii_punctuation) return true;
+			if (write_ids_checkbox.IsChecked() != Preferences::write_ids) return true;
+			if (write_albumtype_checkbox.IsChecked() != Preferences::albumtype) return true;
+			if (write_albumstatus_checkbox.IsChecked() != Preferences::albumstatus) return true;
+			if (write_label_info_checkbox.IsChecked() != Preferences::write_label_info) return true;
+			if (write_country_checkbox.IsChecked() != Preferences::write_country) return true;
+			if (write_format_checkbox.IsChecked() != Preferences::write_format) return true;
+			if (write_albumartist_checkbox.IsChecked() != Preferences::write_albumartist) return true;
 
 			pfc::string8 temp;
 			uGetWindowText(albumtype, temp);
@@ -151,23 +135,23 @@ namespace foo_musicbrainz {
 			return false;
 		}
 
-		t_uint32 get_state() {
+		t_uint32 get_state() override {
 			t_uint32 state = preferences_state::resettable;
 			if (has_changed()) state |= preferences_state::changed;
 			return state;
 		}
 
-		void apply() {
-			Preferences::server = (bool)server_checkbox.GetCheck();
-			Preferences::short_date = (bool)short_date_checkbox.GetCheck();
-			Preferences::ascii_punctuation = (bool)ascii_punctuation_checkbox.GetCheck();
-			Preferences::write_ids = (bool)write_ids_checkbox.GetCheck();
-			Preferences::albumtype = (bool)write_albumtype_checkbox.GetCheck();
-			Preferences::albumstatus = (bool)write_albumstatus_checkbox.GetCheck();
-			Preferences::write_label_info = (bool)write_label_info_checkbox.GetCheck();
-			Preferences::write_country = (bool)write_country_checkbox.GetCheck();
-			Preferences::write_format = (bool)write_format_checkbox.GetCheck();
-			Preferences::write_albumartist = (bool)write_albumartist_checkbox.GetCheck();
+		void apply() override {
+			Preferences::server = server_checkbox.IsChecked();
+			Preferences::short_date = short_date_checkbox.IsChecked();
+			Preferences::ascii_punctuation = ascii_punctuation_checkbox.IsChecked();
+			Preferences::write_ids = write_ids_checkbox.IsChecked();
+			Preferences::albumtype = write_albumtype_checkbox.IsChecked();
+			Preferences::albumstatus = write_albumstatus_checkbox.IsChecked();
+			Preferences::write_label_info = write_label_info_checkbox.IsChecked();
+			Preferences::write_country = write_country_checkbox.IsChecked();
+			Preferences::write_format = write_format_checkbox.IsChecked();
+			Preferences::write_albumartist = write_albumartist_checkbox.IsChecked();
 
 			uGetWindowText(albumtype, Preferences::albumtype_data);
 			uGetWindowText(albumstatus, Preferences::albumstatus_data);
@@ -178,7 +162,7 @@ namespace foo_musicbrainz {
 			on_change_callback->on_state_changed();
 		}
 
-		void reset() {
+		void reset() override {
 			server_checkbox.SetCheck(Preferences::default_server);
 			short_date_checkbox.SetCheck(Preferences::default_short_date);
 			ascii_punctuation_checkbox.SetCheck(Preferences::default_ascii_punctuation);
@@ -205,34 +189,50 @@ namespace foo_musicbrainz {
 			on_change();
 		}
 
-		void OnAlbumType(UINT, int, CButton) {
-			albumtype.EnableWindow((bool)write_albumtype_checkbox.GetCheck());
+		void OnAlbumType(UINT, int, HWND) {
+			albumtype.EnableWindow(write_albumtype_checkbox.IsChecked());
 			on_change();
 		}
 
-		void OnAlbumStatus(UINT, int, CButton) {
-			albumstatus.EnableWindow((bool)write_albumstatus_checkbox.GetCheck());
+		void OnAlbumStatus(UINT, int, HWND) {
+			albumstatus.EnableWindow(write_albumstatus_checkbox.IsChecked());
 			on_change();
 		}
 
-		void OnServer(UINT, int, CButton) {
-			server.EnableWindow((bool)server_checkbox.GetCheck());
+		void OnServer(UINT, int, HWND) {
+			server.EnableWindow(server_checkbox.IsChecked());
 			on_change();
 		}
+
+	private:
+		CCheckBox server_checkbox;
+		CCheckBox short_date_checkbox;
+		CCheckBox ascii_punctuation_checkbox;
+		CCheckBox write_ids_checkbox;
+		CCheckBox write_albumtype_checkbox;
+		CCheckBox write_albumstatus_checkbox;
+		CCheckBox write_label_info_checkbox;
+		CCheckBox write_country_checkbox;
+		CCheckBox write_format_checkbox;
+		CCheckBox write_albumartist_checkbox;
+		CEdit albumtype;
+		CEdit albumstatus;
+		CEdit server;
+		preferences_page_callback::ptr on_change_callback;
 	};
 
 	class PreferencesPage : public preferences_page_impl<PreferencesPageInstance> {
 	public:
-		const char * get_name() {
+		const char* get_name() override {
 			return COMPONENT_TITLE;
 		}
 
-		GUID get_guid() {
+		GUID get_guid() override {
 			static const GUID guid = { 0x79179a37, 0x5942, 0x4fdf,{ 0xbb, 0xb7, 0x93, 0xfd, 0x35, 0xfc, 0xfe, 0x97 } };
 			return guid;
 		}
 
-		GUID get_parent_guid() {
+		GUID get_parent_guid() override {
 			return preferences_page::guid_tagging;
 		}
 	};
