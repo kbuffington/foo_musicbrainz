@@ -24,7 +24,7 @@ namespace foo_musicbrainz {
 			Create(core_api::get_main_window());
 		}
 
-		BEGIN_MSG_MAP(CCustomQueryTags)
+		BEGIN_MSG_MAP(QueryByTagsDialog)
 			MSG_WM_INITDIALOG(OnInitDialog)
 			MSG_WM_CLOSE(OnClose)
 			COMMAND_CODE_HANDLER_EX(EN_UPDATE, OnUpdate)

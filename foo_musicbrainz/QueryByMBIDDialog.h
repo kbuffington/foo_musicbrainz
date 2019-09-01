@@ -22,7 +22,7 @@ namespace foo_musicbrainz {
 			Create(core_api::get_main_window());
 		}
 
-		BEGIN_MSG_MAP(CCustomQueryMBID)
+		BEGIN_MSG_MAP(QueryByMBIDDialog)
 			MSG_WM_INITDIALOG(OnInitDialog)
 			MSG_WM_CLOSE(OnClose)
 			COMMAND_HANDLER_EX(IDC_MBID, EN_UPDATE, OnUpdate)

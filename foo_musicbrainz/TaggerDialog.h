@@ -85,7 +85,6 @@ namespace foo_musicbrainz {
 			COMMAND_HANDLER_EX(IDC_SUBTITLE, EN_UPDATE, on_disc_subtitle_update)
 			COMMAND_HANDLER_EX(IDC_LABEL, EN_UPDATE, on_label_info_update)
 			COMMAND_HANDLER_EX(IDC_CATALOG, EN_UPDATE, on_label_info_update)
-			//CHAIN_MSG_MAP(CDialogImpl<TaggerDialog>)
 		END_MSG_MAP()
 
 		Release *get_current_release() {

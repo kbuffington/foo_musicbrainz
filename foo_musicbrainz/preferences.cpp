@@ -58,21 +58,10 @@ namespace foo_musicbrainz {
 
 		enum { IDD = IDD_PREFERENCES };
 
-		BEGIN_MSG_MAP(CPreferencesDialog)
+		BEGIN_MSG_MAP(PreferencesPageInstance)
 			MSG_WM_INITDIALOG(OnInitDialog)
-			COMMAND_HANDLER_EX(IDC_SERVER, BN_CLICKED, OnServer)
-			COMMAND_HANDLER_EX(IDC_SERVER_DATA, EN_UPDATE, OnChanged)
-			COMMAND_HANDLER_EX(IDC_SHORT_DATE, BN_CLICKED, OnChanged)
-			COMMAND_HANDLER_EX(IDC_ASCII_PUNCTUATION, BN_CLICKED, OnChanged)
-			COMMAND_HANDLER_EX(IDC_WRITE_IDS, BN_CLICKED, OnChanged)
-			COMMAND_HANDLER_EX(IDC_ALBUMTYPE, BN_CLICKED, OnAlbumType)
-			COMMAND_HANDLER_EX(IDC_ALBUMTYPE_DATA, EN_UPDATE, OnChanged)
-			COMMAND_HANDLER_EX(IDC_ALBUMSTATUS, BN_CLICKED, OnAlbumStatus)
-			COMMAND_HANDLER_EX(IDC_ALBUMSTATUS_DATA, EN_UPDATE, OnChanged)
-			COMMAND_HANDLER_EX(IDC_WRITE_LABEL_INFO, BN_CLICKED, OnChanged)
-			COMMAND_HANDLER_EX(IDC_WRITE_COUNTRY, BN_CLICKED, OnChanged)
-			COMMAND_HANDLER_EX(IDC_WRITE_FORMAT, BN_CLICKED, OnChanged)
-			COMMAND_HANDLER_EX(IDC_WRITE_ALBUMARTIST, BN_CLICKED, OnChanged)
+			COMMAND_CODE_HANDLER_EX(EN_UPDATE, OnChanged)
+			COMMAND_RANGE_HANDLER_EX(IDC_SERVER, IDC_WRITE_ALBUMARTIST, OnChanged)
 		END_MSG_MAP()
 
 		BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam) {
@@ -105,9 +94,9 @@ namespace foo_musicbrainz {
 			albumtype.EnableWindow(Preferences::albumtype);
 			albumstatus.EnableWindow(Preferences::albumstatus);
 
+			uSetWindowText(server, Preferences::server_data);
 			uSetWindowText(albumtype, Preferences::albumtype_data);
 			uSetWindowText(albumstatus, Preferences::albumstatus_data);
-			uSetWindowText(server, Preferences::server_data);
 
 			return 0;
 		}
@@ -125,12 +114,12 @@ namespace foo_musicbrainz {
 			if (write_albumartist_checkbox.IsChecked() != Preferences::write_albumartist) return true;
 
 			pfc::string8 temp;
+			uGetWindowText(server, temp);
+			if (Preferences::server_data != temp) return true;
 			uGetWindowText(albumtype, temp);
 			if (Preferences::albumtype_data != temp) return true;
 			uGetWindowText(albumstatus, temp);
 			if (Preferences::albumstatus_data != temp) return true;
-			uGetWindowText(server, temp);
-			if (Preferences::server_data != temp) return true;
 
 			return false;
 		}
@@ -153,9 +142,9 @@ namespace foo_musicbrainz {
 			Preferences::write_format = write_format_checkbox.IsChecked();
 			Preferences::write_albumartist = write_albumartist_checkbox.IsChecked();
 
+			uGetWindowText(server, Preferences::server_data);
 			uGetWindowText(albumtype, Preferences::albumtype_data);
 			uGetWindowText(albumstatus, Preferences::albumstatus_data);
-			uGetWindowText(server, Preferences::server_data);
 		}
 
 		void on_change() {
@@ -186,21 +175,10 @@ namespace foo_musicbrainz {
 		}
 
 		void OnChanged(UINT, int, HWND) {
-			on_change();
-		}
-
-		void OnAlbumType(UINT, int, HWND) {
-			albumtype.EnableWindow(write_albumtype_checkbox.IsChecked());
-			on_change();
-		}
-
-		void OnAlbumStatus(UINT, int, HWND) {
-			albumstatus.EnableWindow(write_albumstatus_checkbox.IsChecked());
-			on_change();
-		}
-
-		void OnServer(UINT, int, HWND) {
 			server.EnableWindow(server_checkbox.IsChecked());
+			albumtype.EnableWindow(write_albumtype_checkbox.IsChecked());
+			albumstatus.EnableWindow(write_albumstatus_checkbox.IsChecked());
+
 			on_change();
 		}
 

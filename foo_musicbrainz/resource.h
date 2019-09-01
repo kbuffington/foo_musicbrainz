@@ -7,40 +7,43 @@
 #define IDC_STATIC -1
 #endif
 
-#define IDD_TAGGER                      101
-#define IDD_PREFERENCES                 102
-#define IDD_CUSTOM_QUERY_MBID           103
-#define IDD_CUSTOM_QUERY_TAGS           104
-#define IDC_RELEASE_LIST                1001
-#define IDC_TRACK_LIST                  1002
-#define IDC_URL                         1003
-#define IDC_DATE                        1016
-#define IDC_FIRST_RELEASE_DATE          1017
-#define IDC_TYPE                        1018
-#define IDC_STATUS                      1019
-#define IDC_SUBTITLE                    1020
-#define IDC_ARTIST                      1023
-#define IDC_ALBUM                       1024
-#define IDC_MBID                        1025
-#define IDC_SHORT_DATE                  1027
-#define IDC_WRITE_IDS                   1029
-#define IDC_ALBUMTYPE                   1031
-#define IDC_ALBUMTYPE_DATA              1032
-#define IDC_ALBUMSTATUS                 1033
-#define IDC_ALBUMSTATUS_DATA            1034
-#define IDC_ASCII_PUNCTUATION           1035
-#define IDC_WRITE_LABEL_INFO            1036
-#define IDC_MEDIUM_LIST                 1039
-#define IDC_LABEL_INFO_LIST             1041
-#define IDC_BARCODE                     1042
-#define IDC_LABEL                       1043
-#define IDC_CATALOG                     1044
-#define IDC_CHOOSE_DISC                 1046
-#define IDC_SERVER                      1047
-#define IDC_SERVER_DATA                 1048
-#define IDC_WRITE_COUNTRY               1049
-#define IDC_WRITE_FORMAT                1050
-#define IDC_WRITE_ALBUMARTIST           1051
+#define IDD_CUSTOM_QUERY_MBID           1001
+#define IDC_MBID                        1002
+
+#define IDD_CUSTOM_QUERY_TAGS           1010
+#define IDC_ARTIST                      1011
+#define IDC_ALBUM                       1012
+
+#define IDD_TAGGER                      1020
+#define IDC_RELEASE_LIST                1021
+#define IDC_TRACK_LIST                  1022
+#define IDC_URL                         1023
+#define IDC_DATE                        1024
+#define IDC_FIRST_RELEASE_DATE          1025
+#define IDC_TYPE                        1026
+#define IDC_STATUS                      1027
+#define IDC_SUBTITLE                    1028
+#define IDC_MEDIUM_LIST                 1029
+#define IDC_LABEL_INFO_LIST             1030
+#define IDC_BARCODE                     1031
+#define IDC_LABEL                       1032
+#define IDC_CATALOG                     1033
+#define IDC_CHOOSE_DISC                 1034
+
+#define IDD_PREFERENCES                 1040
+#define IDC_SERVER                      1041
+#define IDC_SERVER_DATA                 1042
+#define IDC_SHORT_DATE                  1043
+#define IDC_ASCII_PUNCTUATION           1044
+#define IDC_WRITE_IDS                   1045
+#define IDC_ALBUMTYPE                   1046
+#define IDC_ALBUMTYPE_DATA              1047
+#define IDC_ALBUMSTATUS                 1048
+#define IDC_ALBUMSTATUS_DATA            1049
+#define IDC_WRITE_LABEL_INFO            1050
+#define IDC_WRITE_COUNTRY               1051
+#define IDC_WRITE_FORMAT                1052
+#define IDC_WRITE_ALBUMARTIST           1053
 
 // Next default values for new objects
 // 
