@@ -32,18 +32,18 @@
 
 #define IDD_PREFERENCES                 1040
 #define IDC_SERVER                      1041
-#define IDC_SERVER_DATA                 1042
-#define IDC_SHORT_DATE                  1043
-#define IDC_ASCII_PUNCTUATION           1044
-#define IDC_WRITE_IDS                   1045
-#define IDC_ALBUMTYPE                   1046
-#define IDC_ALBUMTYPE_DATA              1047
-#define IDC_ALBUMSTATUS                 1048
-#define IDC_ALBUMSTATUS_DATA            1049
-#define IDC_WRITE_LABEL_INFO            1050
-#define IDC_WRITE_COUNTRY               1051
-#define IDC_WRITE_FORMAT                1052
-#define IDC_WRITE_ALBUMARTIST           1053
+#define IDC_SHORT_DATE                  1042
+#define IDC_ASCII_PUNCTUATION           1043
+#define IDC_WRITE_IDS                   1044
+#define IDC_ALBUMTYPE                   1045
+#define IDC_ALBUMSTATUS                 1046
+#define IDC_WRITE_LABEL_INFO            1047
+#define IDC_WRITE_COUNTRY               1048
+#define IDC_WRITE_FORMAT                1049
+#define IDC_WRITE_ALBUMARTIST           1050
+#define IDC_SERVER_DATA                 1051
+#define IDC_ALBUMTYPE_DATA              1052
+#define IDC_ALBUMSTATUS_DATA            1053
 
 // Next default values for new objects
 // 
