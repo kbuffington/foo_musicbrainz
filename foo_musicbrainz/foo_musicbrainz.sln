@@ -13,8 +13,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pfc", "..\foobar2000-SDK\pf
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "foo_musicbrainz", "foo_musicbrainz.vcxproj", "{AFB5049B-6CAB-477A-A659-936BDFC977DF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyxml", "..\tinyxml\tinyxml_lib.vcxproj", "{C406DAEC-0886-4771-8DEA-9D7329B46CC1}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libPPUI", "..\foobar2000-SDK\libPPUI\libPPUI.vcxproj", "{7729EB82-4069-4414-964B-AD399091A03F}"
 EndProject
 Global
@@ -43,10 +41,6 @@ Global
 		{AFB5049B-6CAB-477A-A659-936BDFC977DF}.Debug|Win32.Build.0 = Debug|Win32
 		{AFB5049B-6CAB-477A-A659-936BDFC977DF}.Release|Win32.ActiveCfg = Release|Win32
 		{AFB5049B-6CAB-477A-A659-936BDFC977DF}.Release|Win32.Build.0 = Release|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Debug|Win32.ActiveCfg = Debug|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Debug|Win32.Build.0 = Debug|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Release|Win32.ActiveCfg = Release|Win32
-		{C406DAEC-0886-4771-8DEA-9D7329B46CC1}.Release|Win32.Build.0 = Release|Win32
 		{7729EB82-4069-4414-964B-AD399091A03F}.Debug|Win32.ActiveCfg = Debug|Win32
 		{7729EB82-4069-4414-964B-AD399091A03F}.Debug|Win32.Build.0 = Debug|Win32
 		{7729EB82-4069-4414-964B-AD399091A03F}.Release|Win32.ActiveCfg = Release|Win32

@@ -115,65 +115,28 @@ copy /Y "$(TargetPath)" "%component_path%\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AsciiPunctuation.cpp" />
-    <ClCompile Include="Date.cpp" />
-    <ClCompile Include="FileTagMap.cpp" />
-    <ClCompile Include="MetadataProcessor.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TagWriter.cpp" />
     <ClCompile Include="foo_musicbrainz.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TrackListView.cpp" />
-    <ClCompile Include="ContextMenu.cpp" />
-    <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="Preferences.cpp" />
-    <ClCompile Include="Release.cpp" />
-    <ClCompile Include="ReleaseGroup.cpp" />
-    <ClCompile Include="Query.cpp" />
-    <ClCompile Include="RequestThread.cpp" />
+    <ClCompile Include="mb_context_menu.cpp" />
+    <ClCompile Include="mb_preferences.cpp" />
     <ClCompile Include="sha1.cpp" />
-    <ClCompile Include="TOC.cpp" />
+    <ClCompile Include="mb_toc.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Artist.h" />
-    <ClInclude Include="ArtistCredit.h" />
-    <ClInclude Include="ComboBox.h" />
-    <ClInclude Include="CoreEntity.h" />
-    <ClInclude Include="Date.h" />
-    <ClInclude Include="DiscID.h" />
-    <ClInclude Include="EntityList.h" />
-    <ClInclude Include="exceptions.h" />
-    <ClInclude Include="FileTagMap.h" />
-    <ClInclude Include="MetadataProcessor.h" />
-    <ClInclude Include="Label.h" />
-    <ClInclude Include="LabelInfo.h" />
-    <ClInclude Include="ListView.h" />
-    <ClInclude Include="Metadata.h" />
-    <ClInclude Include="NameCredit.h" />
-    <ClInclude Include="TagWriter.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="mb_list.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="TrackListView.h" />
-    <ClInclude Include="Medium.h" />
-    <ClInclude Include="meta.h" />
-    <ClInclude Include="Parser.h" />
-    <ClInclude Include="Preferences.h" />
-    <ClInclude Include="Recording.h" />
-    <ClInclude Include="Release.h" />
-    <ClInclude Include="ReleaseGroup.h" />
-    <ClInclude Include="ReleaseList.h" />
-    <ClInclude Include="Query.h" />
-    <ClInclude Include="RequestThread.h" />
+    <ClInclude Include="mb_preferences.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="sha1.h" />
-    <ClInclude Include="TOC.h" />
-    <ClInclude Include="Track.h" />
-    <ClInclude Include="QueryByMBIDDialog.h" />
-    <ClInclude Include="QueryByTagsDialog.h" />
-    <ClInclude Include="TaggerDialog.h" />
+    <ClInclude Include="mb_toc.h" />
+    <ClInclude Include="dialog_mbid.h" />
+    <ClInclude Include="dialog_tags.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="foo_musicbrainz.rc" />
@@ -197,9 +160,6 @@ copy /Y "$(TargetPath)" "%component_path%\"</Command>
     <ProjectReference Include="..\foobar2000-SDK\pfc\pfc.vcxproj">
       <Project>{ebfffb4e-261d-44d3-b89c-957b31a0bf9c}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="..\tinyxml\tinyxml_lib.vcxproj">
-      <Project>{c406daec-0886-4771-8dea-9d7329b46cc1}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

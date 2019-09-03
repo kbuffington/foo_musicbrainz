@@ -1,0 +1,68 @@
+#pragma once
+
+namespace foo_musicbrainz {
+	class QueryByMBIDDialog : public CDialogImpl<QueryByMBIDDialog> {
+	public:
+		QueryByMBIDDialog(pfc::list_t<metadb_handle_ptr> p_tracks, pfc::string8& p_mbid) : m_tracks(p_tracks), m_mbid(p_mbid)
+		{
+			Create(core_api::get_main_window());
+		}
+
+		BEGIN_MSG_MAP(QueryByMBIDDialog)
+			MSG_WM_INITDIALOG(OnInitDialog)
+			MSG_WM_CLOSE(OnClose)
+			COMMAND_HANDLER_EX(IDC_MBID, EN_UPDATE, OnUpdate)
+			COMMAND_ID_HANDLER_EX(IDCANCEL, OnCancel)
+			COMMAND_ID_HANDLER_EX(IDOK, OnOk)
+		END_MSG_MAP()
+
+		enum { IDD = IDD_CUSTOM_QUERY_MBID };
+
+		BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam) {
+			modeless_dialog_manager::g_add(m_hWnd);
+			m_ok = GetDlgItem(IDOK);
+			uSetDlgItemText(m_hWnd, IDC_MBID, m_mbid);
+			return true;
+		}
+
+		void OnClose() {
+			DestroyWindow();
+		}
+
+		void OnFinalMessage(HWND hwnd) override {
+			modeless_dialog_manager::g_remove(m_hWnd);
+			delete this;
+		}
+	
+		void OnUpdate(UINT uNotifyCode, int nID, CWindow wndCtl) {
+			pfc::string8 t = string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr();
+			pfc::string8 u = "https://musicbrainz.org/release/";
+			size_t l = u.get_length();
+			if (strncmp(t, u, l) == 0) {
+				t.replace_string(u, "");
+				uSetDlgItemText(m_hWnd, IDC_MBID, t);
+				return;
+			}
+
+			std::regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+			m_ok.EnableWindow(regex_search(string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr(), rx));
+		}
+
+		void OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl) {
+			DestroyWindow();
+		}
+
+		void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl) {
+			pfc::string8 id = string_utf8_from_window(m_hWnd, IDC_MBID);
+			//auto query = new Query("release", id);
+			//query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits", false);
+			//new TaggerDialog(query, m_tracks);
+			DestroyWindow();
+		}
+
+	private:
+		CButton m_ok;
+		pfc::list_t<metadb_handle_ptr> m_tracks;
+		pfc::string8 m_mbid;
+	};
+}
