@@ -15,8 +15,8 @@ private:
 	t_size cur_track;
 	unsigned int pregap;
 	char* discid;
-	pfc::string8 toc;
+	str8 toc;
 	void calculate_tracks();
-	void set_pregap(pfc::string8 msf);
+	void set_pregap(str8 msf);
 	unsigned char* rfc822_binary(void* src, unsigned long srcl, unsigned long& len);
 };

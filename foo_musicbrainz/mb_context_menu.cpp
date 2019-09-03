@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "dialog_mbid.h"
 #include "dialog_tags.h"
+#include "mb_query.h"
 #include "mb_toc.h"
 
 class mb_context_menu : public contextmenu_item_simple {
@@ -24,6 +25,7 @@ public:
 	}
 
 	void context_command(unsigned p_index, metadb_handle_list_cref p_data, const GUID& p_caller) {
+		HWND wnd = core_api::get_main_window();
 		t_size count = p_data.get_count();
 		switch (p_index) {
 			case 0: {
@@ -31,15 +33,14 @@ public:
 				if (!context_check_samplerate(p_data)) return popup_message::g_show("The sample rate of each track must match and be either 44100 Hz or 48000 Hz. Also, the number of samples must match CD frame boundaries.", COMPONENT_TITLE, popup_message::icon_error);
 
 				mb_toc toc(p_data);
-				//auto query = new mb_query("discid", toc.get_discid());
-				//query->add_param("cdstubs", "no");
-				//query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits");
-
-				//new TaggerDialog(query, tracks);
+				auto query = new mb_query("discid", toc.get_discid());
+				query->add_param("cdstubs", "no");
+				query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits", false);
+				
 				break;
 			}
 			case 1: {
-				pfc::string8 artist, album;
+				str8 artist, album;
 				for (t_size i = 0; i < count; i++) {
 					auto item = p_data.get_item(i);
 
@@ -70,11 +71,28 @@ public:
 					}
 				}
 
-				//new QueryByTagsDialog(tracks, artist, album);
+				modal_dialog_scope scope;
+				if (scope.can_create())
+				{
+					scope.initialize(wnd);
+					dialog_tags dlg(artist, album);
+					if (dlg.DoModal(wnd) == IDOK)
+					{
+						auto query = new mb_query("release");
+						str8 search;
+						search << "artist:\"" << dlg.m_artist << "\"";
+						search << " AND release:\"" << dlg.m_album << "\"";
+						search << " AND (tracks:" << count;
+						search << " OR tracksmedium:" << count << ")";
+						query->add_param("query", search);
+						query->add_param("limit", "100");
+						
+					}
+				}
 				break;
 			}
 			case 2: {
-				pfc::string8 album_id;
+				str8 album_id;
 				for (t_size i = 0; i < count; i++) {
 					auto item = p_data.get_item(i);
 
@@ -98,8 +116,19 @@ public:
 						break;
 					}
 				}
-					
-				//new QueryByMBIDDialog(tracks, album_id);
+
+				modal_dialog_scope scope;
+				if (scope.can_create())
+				{
+					scope.initialize(wnd);
+					dialog_mbid dlg(album_id);
+					if (dlg.DoModal(wnd) == IDOK)
+					{
+						auto query = new mb_query("release", dlg.m_album_id);
+						query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits", false);
+
+					}
+				}
 				break;
 			}
 			case 3: {
@@ -108,10 +137,9 @@ public:
 
 				mb_toc toc(p_data);
 
-				pfc::string8 url = "https://musicbrainz.org/cdtoc/attach?toc=";
+				str8 url = "https://musicbrainz.org/cdtoc/attach?toc=";
 				url << toc.get_toc();
-				pfc::stringcvt::string_os_from_utf8 url_converter(url);
-				ShellExecute(nullptr, _T("open"), url_converter, nullptr, nullptr, SW_SHOW);
+				ShellExecute(nullptr, _T("open"), string_wide_from_utf8_fast(url), nullptr, nullptr, SW_SHOW);
 				break;
 			}
 		}

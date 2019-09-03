@@ -30,7 +30,7 @@ mb_toc::~mb_toc() {
 	if (discid) delete [] discid;
 }
 
-void mb_toc::set_pregap(pfc::string8 msf)
+void mb_toc::set_pregap(str8 msf)
 {
 	std::regex rx("^\\d\\d:\\d\\d:\\d\\d$");
 	if (regex_match(msf.get_ptr(), rx)) {

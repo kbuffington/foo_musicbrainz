@@ -8,6 +8,9 @@
 
 #include <regex>
 
+#include "json.hpp"
+using json = nlohmann::json;
+
 #include "resource.h"
 #include "../foobar2000-SDK/foobar2000/helpers/foobar2000+atl.h"
 #include "../foobar2000-SDK/foobar2000/helpers/atl-misc.h"
@@ -15,3 +18,6 @@
 #include "../foobar2000-SDK/libPPUI/listview_helper.h"
 #include "mb_preferences.h"
 #include "mb_list.h"
+
+using namespace pfc::stringcvt;
+using str8 = pfc::string8;

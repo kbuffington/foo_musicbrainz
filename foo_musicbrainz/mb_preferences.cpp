@@ -113,7 +113,7 @@ public:
 		if (write_format_checkbox.IsChecked() != mb_preferences::write_format) return true;
 		if (write_albumartist_checkbox.IsChecked() != mb_preferences::write_albumartist) return true;
 
-		pfc::string8 temp;
+		str8 temp;
 		uGetWindowText(server_data, temp);
 		if (mb_preferences::server_data != temp) return true;
 		uGetWindowText(albumtype_data, temp);
