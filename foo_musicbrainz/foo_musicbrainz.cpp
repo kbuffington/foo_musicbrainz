@@ -1,4 +1,4 @@
-#include "foo_musicbrainz.h"
+#include "stdafx.h"
 
 DECLARE_COMPONENT_VERSION(
 	COMPONENT_TITLE,

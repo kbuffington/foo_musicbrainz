@@ -1,4 +1,4 @@
-﻿#include "foo_musicbrainz.h"
+﻿#include "stdafx.h"
 #include "MetadataProcessor.h"
 
 namespace foo_musicbrainz {

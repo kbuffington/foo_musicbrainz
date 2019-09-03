@@ -1,7 +1,5 @@
 #pragma once
 
-#include "foo_musicbrainz.h"
-
 namespace foo_musicbrainz {
 	namespace Preferences {
 		extern const GUID guid_server;

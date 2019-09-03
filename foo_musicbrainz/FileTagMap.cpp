@@ -1,4 +1,4 @@
-#include "foo_musicbrainz.h"
+#include "stdafx.h"
 #include "FileTagMap.h"
 #include "Medium.h"
 #include "Release.h"

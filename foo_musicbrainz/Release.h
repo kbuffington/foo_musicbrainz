@@ -1,6 +1,4 @@
 #pragma once
-
-#include "foo_musicbrainz.h"
 #include "CoreEntity.h"
 #include "ArtistCredit.h"
 #include "LabelInfo.h"

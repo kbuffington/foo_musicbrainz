@@ -1,4 +1,4 @@
-#include "foo_musicbrainz.h"
+#include "stdafx.h"
 #include "Query.h"
 #include "Metadata.h"
 #include "Parser.h"

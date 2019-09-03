@@ -1,7 +1,5 @@
 #pragma once
 
-#include "foo_musicbrainz.h"
-
 namespace foo_musicbrainz {
 	template <class T>
 	class EntityList {

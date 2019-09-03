@@ -1,23 +1,11 @@
 #pragma once
-
-#include <regex>
 #include "Query.h"
 #include "TaggerDialog.h"
 
 namespace foo_musicbrainz {
 	class QueryByMBIDDialog : public CDialogImpl<QueryByMBIDDialog> {
-	private:
-		pfc::list_t<metadb_handle_ptr> tracks;
-		CButton ok;
-		pfc::string8 mbid;
-
 	public:
-		enum { IDD = IDD_CUSTOM_QUERY_MBID };
-
-		QueryByMBIDDialog(pfc::list_t<metadb_handle_ptr> _tracks, pfc::string8 &_mbid)
-			: CDialogImpl<QueryByMBIDDialog>(),
-			tracks(_tracks),
-			mbid(_mbid)
+		QueryByMBIDDialog(pfc::list_t<metadb_handle_ptr> p_tracks, pfc::string8& p_mbid) : m_tracks(p_tracks), m_mbid(p_mbid)
 		{
 			Create(core_api::get_main_window());
 		}
@@ -30,10 +18,12 @@ namespace foo_musicbrainz {
 			COMMAND_ID_HANDLER_EX(IDOK, OnOk)
 		END_MSG_MAP()
 
+		enum { IDD = IDD_CUSTOM_QUERY_MBID };
+
 		BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam) {
 			modeless_dialog_manager::g_add(m_hWnd);
-			ok = GetDlgItem(IDOK);
-			uSetDlgItemText(m_hWnd, IDC_MBID, mbid);
+			m_ok = GetDlgItem(IDOK);
+			uSetDlgItemText(m_hWnd, IDC_MBID, m_mbid);
 			return true;
 		}
 
@@ -41,7 +31,7 @@ namespace foo_musicbrainz {
 			DestroyWindow();
 		}
 
-		void OnFinalMessage(HWND hwnd) {
+		void OnFinalMessage(HWND hwnd) override {
 			modeless_dialog_manager::g_remove(m_hWnd);
 			delete this;
 		}
@@ -57,7 +47,7 @@ namespace foo_musicbrainz {
 			}
 
 			std::regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
-			ok.EnableWindow(regex_search(string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr(), rx));
+			m_ok.EnableWindow(regex_search(string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr(), rx));
 		}
 
 		void OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl) {
@@ -68,8 +58,13 @@ namespace foo_musicbrainz {
 			pfc::string8 id = string_utf8_from_window(m_hWnd, IDC_MBID);
 			auto query = new Query("release", id);
 			query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits", false);
-			new TaggerDialog(query, tracks);
+			new TaggerDialog(query, m_tracks);
 			DestroyWindow();
 		}
+
+	private:
+		CButton m_ok;
+		pfc::list_t<metadb_handle_ptr> m_tracks;
+		pfc::string8 m_mbid;
 	};
 }

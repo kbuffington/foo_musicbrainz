@@ -1,4 +1,4 @@
-#include "foo_musicbrainz.h"
+#include "stdafx.h"
 #include "Parser.h"
 #include "Date.h"
 #include "Artist.h"

@@ -1,6 +1,4 @@
 #pragma once
-
-#include "foo_musicbrainz.h"
 #include "ReleaseList.h"
 #include "Release.h"
 #include "Medium.h"

@@ -1,4 +1,4 @@
-#include "foo_musicbrainz.h"
+#include "stdafx.h"
 
 namespace foo_musicbrainz {
 	namespace Preferences {

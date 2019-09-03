@@ -1,6 +1,4 @@
 #pragma once
-
-#include "foo_musicbrainz.h"
 #include "Label.h"
 
 namespace foo_musicbrainz {

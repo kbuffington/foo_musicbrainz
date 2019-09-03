@@ -13,45 +13,9 @@
 
 namespace foo_musicbrainz {
 	class TaggerDialog : public CDialogImpl<TaggerDialog> {
-	private:
-		CListViewCtrl release_list;
-		ComboBox medium_list;
-		ComboBox label_info_list;
-		ListView track_list;
-		CComboBox type;
-		CComboBox status;
-		CEdit artist;
-		CEdit album;
-		CEdit date;
-		CEdit first_release_date;
-		CEdit barcode;
-		CEdit url;
-		CEdit discsubtitle;
-		CEdit label;
-		CEdit catalog;
-		CButton groupbox;
-		ReleaseList *mbc;
-		pfc::list_t<metadb_handle_ptr> tracks;
-		TrackListView track_list_view;
-		bool loaded;
-		size_t current_release;
-		size_t current_medium;
-		size_t current_label_info;
-
 	public:
-		enum { IDD = IDD_TAGGER };
-
-		enum columns {
-			artist_column,
-			release_column,
-			date_column,
-			label_column,
-			format_column
-		};
-
-		TaggerDialog(Query *query, pfc::list_t<metadb_handle_ptr> _tracks) :
-			CDialogImpl<TaggerDialog>(),
-			tracks(_tracks),
+		TaggerDialog(Query* p_query, pfc::list_t<metadb_handle_ptr> p_tracks) :
+			m_tracks(p_tracks),
 			loaded(false),
 			current_release(0),
 			current_medium(0),
@@ -59,8 +23,8 @@ namespace foo_musicbrainz {
 		{
 			mbc = new ReleaseList();
 			Create(core_api::get_main_window());
-			threaded_process::g_run_modeless(fb2k::service_new<RequestThread>(query, m_hWnd, mbc, &tracks),
-				threaded_process::flag_show_progress | threaded_process::flag_show_abort, m_hWnd, "Querying data from MusicBrainz");
+			auto cb = fb2k::service_new<RequestThread>(p_query, m_hWnd, mbc, &m_tracks);
+			threaded_process::get()->run_modeless( cb,threaded_process::flag_show_progress | threaded_process::flag_show_abort, m_hWnd, "Querying data from MusicBrainz");
 		}
 
 		BEGIN_MSG_MAP(TaggerDialog)
@@ -86,6 +50,16 @@ namespace foo_musicbrainz {
 			COMMAND_HANDLER_EX(IDC_LABEL, EN_UPDATE, on_label_info_update)
 			COMMAND_HANDLER_EX(IDC_CATALOG, EN_UPDATE, on_label_info_update)
 		END_MSG_MAP()
+
+		enum { IDD = IDD_TAGGER };
+
+		enum columns {
+			artist_column,
+			release_column,
+			date_column,
+			label_column,
+			format_column
+		};
 
 		Release *get_current_release() {
 			return mbc->get(current_release);
@@ -216,7 +190,7 @@ namespace foo_musicbrainz {
 			update_medium();
 
 			// "Choose disc" 
-			if (release->track_count() > tracks.get_count()) {
+			if (release->track_count() > m_tracks.get_count()) {
 				uSetWindowText(groupbox, "Discs (choose one)");
 			} else {
 				uSetWindowText(groupbox, "Discs");
@@ -319,8 +293,8 @@ namespace foo_musicbrainz {
 		}
 
 		void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl) {
-			FileTagMap file_tag_map(*get_current_release(), tracks, current_medium);
-			metadb_io_v2::get()->update_info_async(tracks,
+			FileTagMap file_tag_map(*get_current_release(), m_tracks, current_medium);
+			metadb_io_v2::get()->update_info_async(m_tracks,
 				fb2k::service_new<TagWriter>(file_tag_map),
 				core_api::get_main_window(), metadb_io_v2::op_flag_delay_ui, nullptr);
 			DestroyWindow();
@@ -398,5 +372,30 @@ namespace foo_musicbrainz {
 				release_list.SetItemText(current_release, label_column, info);
 			}
 		}
+
+	private:
+		CListViewCtrl release_list;
+		ComboBox medium_list;
+		ComboBox label_info_list;
+		ListView track_list;
+		CComboBox type;
+		CComboBox status;
+		CEdit artist;
+		CEdit album;
+		CEdit date;
+		CEdit first_release_date;
+		CEdit barcode;
+		CEdit url;
+		CEdit discsubtitle;
+		CEdit label;
+		CEdit catalog;
+		CButton groupbox;
+		ReleaseList *mbc;
+		pfc::list_t<metadb_handle_ptr> m_tracks;
+		TrackListView track_list_view;
+		bool loaded;
+		size_t current_release;
+		size_t current_medium;
+		size_t current_label_info;
 	};
 }

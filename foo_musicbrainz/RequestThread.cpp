@@ -1,4 +1,4 @@
-#include "foo_musicbrainz.h"
+#include "stdafx.h"
 #include "Metadata.h"
 #include "MetadataProcessor.h"
 #include "Release.h"

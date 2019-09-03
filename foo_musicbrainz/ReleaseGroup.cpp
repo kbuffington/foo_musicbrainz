@@ -1,4 +1,4 @@
-#include "foo_musicbrainz.h"
+#include "stdafx.h"
 #include "ReleaseGroup.h"
 
 using namespace foo_musicbrainz;

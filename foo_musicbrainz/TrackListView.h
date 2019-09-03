@@ -1,6 +1,4 @@
 #pragma once
-
-#include "foo_musicbrainz.h"
 #include "Medium.h"
 
 namespace foo_musicbrainz {

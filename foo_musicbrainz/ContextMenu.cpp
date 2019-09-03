@@ -1,5 +1,4 @@
-#include <regex>
-#include "foo_musicbrainz.h"
+#include "stdafx.h"
 #include "TOC.h"
 #include "Track.h"
 #include "QueryByMBIDDialog.h"

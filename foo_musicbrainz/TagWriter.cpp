@@ -1,4 +1,4 @@
-#include "foo_musicbrainz.h"
+#include "stdafx.h"
 #include "TagWriter.h"
 #include "FileTagMap.h"
 #include "Track.h"

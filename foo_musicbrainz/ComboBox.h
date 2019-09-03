@@ -1,7 +1,5 @@
 #pragma once
 
-#include "foo_musicbrainz.h"
-
 namespace foo_musicbrainz {
 	class ComboBox : public CComboBox {
 	public:
