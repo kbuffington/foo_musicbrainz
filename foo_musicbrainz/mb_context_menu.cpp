@@ -2,6 +2,7 @@
 #include "dialog_mbid.h"
 #include "dialog_tags.h"
 #include "mb_query.h"
+#include "mb_request_thread.h"
 #include "mb_toc.h"
 
 class mb_context_menu : public contextmenu_item_simple {
@@ -36,7 +37,8 @@ public:
 				auto query = new mb_query("discid", toc.get_discid());
 				query->add_param("cdstubs", "no");
 				query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits", false);
-				
+				auto cb = fb2k::service_new<mb_request_thread>(query, p_data);
+				threaded_process::get()->run_modeless(cb, threaded_process::flag_show_progress | threaded_process::flag_show_abort, wnd, "Querying data from MusicBrainz");
 				break;
 			}
 			case 1: {
@@ -86,7 +88,8 @@ public:
 						search << " OR tracksmedium:" << count << ")";
 						query->add_param("query", search);
 						query->add_param("limit", "100");
-						
+						auto cb = fb2k::service_new<mb_request_thread>(query, p_data);
+						threaded_process::get()->run_modeless(cb, threaded_process::flag_show_progress | threaded_process::flag_show_abort, wnd, "Querying data from MusicBrainz");
 					}
 				}
 				break;
@@ -126,7 +129,8 @@ public:
 					{
 						auto query = new mb_query("release", dlg.m_album_id);
 						query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits", false);
-
+						auto cb = fb2k::service_new<mb_request_thread>(query, p_data);
+						threaded_process::get()->run_modeless(cb, threaded_process::flag_show_progress | threaded_process::flag_show_abort, wnd, "Querying data from MusicBrainz");
 					}
 				}
 				break;
