@@ -1,6 +1,4 @@
-#ifndef __SHA1_H__
-#define __SHA1_H__
-
+#pragma once
 #include <stdint.h>
 
 #ifndef _SHA_enum_
@@ -44,5 +42,3 @@ int SHA1Input(  SHA1Context *,
                 unsigned int);
 int SHA1Result( SHA1Context *,
                 uint8_t Message_Digest[SHA1HashSize]);
-
-#endif
