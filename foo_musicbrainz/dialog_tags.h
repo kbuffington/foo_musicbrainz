@@ -2,13 +2,12 @@
 
 class dialog_tags : public CDialogImpl<dialog_tags> {
 public:
-	dialog_tags(str8& p_artist, str8& p_album) : m_artist(p_artist), m_album(p_album) {}
+	dialog_tags(const str8& p_artist, const str8& p_album) : m_artist(p_artist), m_album(p_album) {}
 
 	BEGIN_MSG_MAP(dialog_tags)
 		MSG_WM_INITDIALOG(OnInitDialog)
 		COMMAND_RANGE_HANDLER_EX(IDOK, IDCANCEL, OnCloseCmd)
-		COMMAND_HANDLER_EX(IDC_ARTIST, EN_UPDATE, OnUpdate)
-		COMMAND_HANDLER_EX(IDC_ALBUM, EN_UPDATE, OnUpdate)
+		COMMAND_CODE_HANDLER_EX(EN_UPDATE, OnUpdate)
 	END_MSG_MAP()
 
 	enum { IDD = IDD_CUSTOM_QUERY_TAGS };

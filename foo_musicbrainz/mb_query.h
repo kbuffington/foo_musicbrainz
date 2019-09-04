@@ -4,7 +4,7 @@ class mb_query {
 public:
 	mb_query(const char* entity, const char* id = "");
 
-	json lookup();
+	json lookup(abort_callback& p_abort);
 	void add_param(const char* param, const char* value, bool encode = true);
 
 private:

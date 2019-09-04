@@ -45,7 +45,7 @@ str8 mb_query::url_encode(const char* in)
 	return out;
 }
 
-json mb_query::lookup()
+json mb_query::lookup(abort_callback& p_abort)
 {
 	FB2K_console_formatter() << url;
 
@@ -55,11 +55,11 @@ json mb_query::lookup()
 		auto http = http_client::get();
 		auto request = http->create_request("GET");
 		request->add_header("User-Agent", "foo_musicbrainz/" COMPONENT_VERSION);
-		auto response = request->run_ex(url, fb2k::noAbort);
+		auto response = request->run_ex(url, p_abort);
 
 		// Get string
 		str8 buffer;
-		response->read_string_raw(buffer, fb2k::noAbort);
+		response->read_string_raw(buffer, p_abort);
 
 		return json::parse(buffer.get_ptr());
 	}
