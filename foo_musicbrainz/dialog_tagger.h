@@ -1,10 +1,12 @@
 #pragma once
 
-class dialog_tagger : public CDialogImpl<dialog_tagger> {
+class dialog_tagger : public CDialogImpl<dialog_tagger>, private IListControlOwnerDataSource
+{
 public:
 	dialog_tagger(const pfc::list_t<Release>& p_release_list , metadb_handle_list_cref p_handles) :
 		m_release_list(p_release_list),
 		m_handles(p_handles),
+		track_list(this),
 		current_release(0),
 		current_disc(0)
 	{
@@ -17,7 +19,6 @@ public:
 		COMMAND_ID_HANDLER_EX(IDOK, OnOk)
 		COMMAND_ID_HANDLER_EX(IDCANCEL, OnCancel)
 		NOTIFY_HANDLER_EX(IDC_RELEASE_LIST, LVN_ITEMCHANGED, OnReleaseListChange)
-		NOTIFY_HANDLER_EX(IDC_TRACK_LIST, NM_CLICK, OnTrackListClick)
 		NOTIFY_HANDLER_EX(IDC_URL, NM_CLICK, OnLink)
 		NOTIFY_HANDLER_EX(IDC_URL, NM_RETURN, OnLink)
 
@@ -53,7 +54,7 @@ public:
 		CenterWindow();
 
 		release_list = GetDlgItem(IDC_RELEASE_LIST);
-		track_list = GetDlgItem(IDC_TRACK_LIST);
+		track_list.CreateInDialog(*this, IDC_TRACK_LIST);
 		
 		type = GetDlgItem(IDC_TYPE);
 		status = GetDlgItem(IDC_STATUS);
@@ -73,7 +74,6 @@ public:
 		// List view styles
 		auto styles = LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP;
 		release_list.SetExtendedListViewStyle(styles, styles);
-		track_list.SetExtendedListViewStyle(styles, styles);
 
 		// Adding release list columns
 		listview_helper::insert_column(release_list, artist_column, "Artist", 120);
@@ -83,10 +83,10 @@ public:
 		listview_helper::insert_column(release_list, format_column, "Format", 70);
 
 		// Adding track list columns
-		listview_helper::insert_column(track_list, 0, "", 0); // Fake column
-		track_list.InsertColumn(1, L"#", LVCFMT_RIGHT, 30);
-		track_list.DeleteColumn(0);
-		listview_helper::insert_column(track_list, 1, "Title", 260);
+		auto DPI = track_list.GetDPI();
+		track_list.AddColumn("#", MulDiv(30, DPI.cx, 96));
+		track_list.AddColumn("Title", MulDiv(250, DPI.cx, 96));
+		track_list.AddColumn("Track Artist", MulDiv(170, DPI.cx, 96));
 
 		for (const auto& i : release_group_types)
 		{
@@ -105,18 +105,18 @@ public:
 
 		for (t_size i = 0; i < m_release_list.get_count(); i++)
 		{
-			auto release = m_release_list.get_item(i);
+			auto& release = m_release_list[i];
 			// Artist
 			listview_helper::insert_item(release_list, i, release.album_artist, NULL);
 			// Title
 			listview_helper::set_item_text(release_list, i, release_column, release.title);
 			// Date / Country
-			str8 date_country = release.date << "/" << release.country;
+			str8 date_country = PFC_string_formatter() << release.date << "/" << release.country;
 			if (strcmp(date_country, "/") == 0)
 				date_country = "-";
 			listview_helper::set_item_text(release_list, i, date_column, date_country);
 			// Label
-			str8 label_catalog = release.label << "/" << release.catalognumber;
+			str8 label_catalog = PFC_string_formatter() << release.label << "/" << release.catalognumber;
 			if (strcmp(label_catalog, "/") == 0)
 				label_catalog = "-";
 			listview_helper::set_item_text(release_list, i, label_column, label_catalog);
@@ -133,19 +133,12 @@ public:
 		int new_index = ((LPNMLISTVIEW)pnmh)->iItem;
 		if (new_index != -1 && ((LPNMLISTVIEW)pnmh)->uChanged & LVIS_DROPHILITED && ((LPNMLISTVIEW)pnmh)->uNewState & LVIS_SELECTED && current_release != new_index)
 		{
-			if (track_list_view.is_active()) track_list_view.abort();
+			if (track_list.TableEdit_IsActive())
+			{
+				track_list.TableEdit_Abort(true);
+			}
 			current_release = new_index;
 			UpdateRelease();
-		}
-		return 0;
-	}
-
-	LRESULT OnTrackListClick(LPNMHDR pnmh)
-	{
-		int item = ((LPNMITEMACTIVATE)pnmh)->iItem;
-		int sub_item = ((LPNMITEMACTIVATE)pnmh)->iSubItem;
-		if (item != -1 && sub_item != 0) {
-			track_list_view.start(item, sub_item);
 		}
 		return 0;
 	}
@@ -174,7 +167,7 @@ public:
 
 	void UpdateRelease()
 	{
-		auto release = m_release_list.get_item(current_release);
+		auto release = m_release_list[current_release];
 
 		uSetWindowText(artist, release.album_artist);
 		uSetWindowText(album, release.title);
@@ -195,9 +188,9 @@ public:
 
 	void UpdateDisc()
 	{
-		auto release = m_release_list.get_item(current_release);
+		auto& release = m_release_list[current_release];
 		discsubtitle.EnableWindow(release.discs.get_count() > 1);
-		auto d = release.discs[current_disc];
+		auto& d = release.discs[current_disc];
 		uSetWindowText(discsubtitle, d.subtitle);
 
 		disc.ResetContent();
@@ -208,19 +201,7 @@ public:
 		disc.SetCurSel(current_disc);
 
 		// Tracks
-		UpdateTracks();
-	}
-
-	void UpdateTracks()
-	{
-		auto release = m_release_list.get_item(current_release);
-		Disc d = release.discs[current_disc];
-
-		for (t_size i = 0; i < d.tracks.get_count(); ++i)
-		{
-			listview_helper::set_item_text(track_list, i, 1, d.tracks[i].title);
-			listview_helper::set_item_text(track_list, i, 2, d.tracks[i].artist);
-		}
+		track_list.ReloadData();
 	}
 
 	void OnClose()
@@ -260,7 +241,7 @@ public:
 	{
 		uGetWindowText(date, m_release_list[current_release].date);
 
-		str8 date_country = m_release_list[current_release].date << "/" << m_release_list[current_release].country;
+		str8 date_country = PFC_string_formatter() << m_release_list[current_release].date << "/" << m_release_list[current_release].country;
 		if (strcmp(date_country, "/") == 0)
 			date_country = "-";
 		listview_helper::set_item_text(release_list, current_release, date_column, date_country);
@@ -285,13 +266,62 @@ public:
 	{
 		uGetWindowText(label, m_release_list[current_release].label);
 		uGetWindowText(catalog, m_release_list[current_release].catalognumber);
-		str8 label_catalog = m_release_list[current_release].label << "/" << m_release_list[current_release].catalognumber;
+		str8 label_catalog = PFC_string_formatter() << m_release_list[current_release].label << "/" << m_release_list[current_release].catalognumber;
 		if (strcmp(label_catalog, "/") == 0)
 			label_catalog = "-";
 		listview_helper::set_item_text(release_list, current_release, label_column, label_catalog);
 	}
 
 private:
+	// IListControlOwnerDataSource methods
+
+	bool listIsColumnEditable(ctx_t, size_t sub_item) override
+	{ 
+		return sub_item > 0;
+	}
+
+	str8 listGetSubItemText(ctx_t, t_size item, t_size sub_item) override
+	{
+		auto& tracks = m_release_list[current_release].discs[current_disc].tracks;
+		switch (sub_item)
+		{
+		case 0:
+			return tracks[item].track;
+		case 1:
+			return tracks[item].title;
+		case 2:
+			return tracks[item].artist;
+		default:
+			return "";
+		}
+	}
+
+	t_size listGetItemCount(ctx_t ctx) override
+	{
+		return m_handles.get_count();
+	}
+
+	void listSubItemClicked(ctx_t, t_size item, t_size sub_item) override
+	{
+		if (sub_item != 0)
+		{
+			track_list.TableEdit_Start(item, sub_item);
+		}
+	}
+
+	void listSetEditField(ctx_t ctx, t_size item, t_size sub_item, const char* value) override
+	{
+		switch (sub_item)
+		{
+		case 1:
+			m_release_list[current_release].discs[current_disc].tracks[item].title = value;
+			break;
+		case 2:
+			m_release_list[current_release].discs[current_disc].tracks[item].artist = value;
+			break;
+		}
+	}
+
 	CComboBox disc;
 	CComboBox type;
 	CComboBox status;
@@ -305,8 +335,7 @@ private:
 	CEdit label;
 	CEdit catalog;
 	CListViewCtrl release_list;
-	CListViewCtrl track_list;
-	mb_track_list_view track_list_view;
+	CListControlOwnerData track_list;
 	metadb_handle_list m_handles;
 	pfc::list_t<Release> m_release_list;
 	t_size current_release;

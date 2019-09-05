@@ -7,6 +7,8 @@
 #define IDC_STATIC -1
 #endif
 
+#define IDI_SCROLL                      100
+
 #define IDD_CUSTOM_QUERY_MBID           1001
 #define IDC_MBID                        1002
 

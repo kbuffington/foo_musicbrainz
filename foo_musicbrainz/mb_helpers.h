@@ -63,22 +63,6 @@ static const char* release_statuses[] = {
 	"Pseudo-Release"
 };
 
-class mb_track_list_view : public InPlaceEdit::CTableEditHelperV2_ListView {
-public:
-	bool is_active();
-	void abort();
-	void attach(HWND wnd);
-	void start(t_size item, t_size sub_item);
-
-protected:
-	HWND TableEdit_GetParentWnd() const;
-	bool TableEdit_IsColumnEditable(t_size sub_item) const;
-	void TableEdit_SetField(t_size item, t_size sub_item, const char* value);
-
-private:
-	HWND wnd;
-};
-
 Release parser(json release, t_size handle_count);
 str8 get_artist_credit(json j);
 str8 get_status_str(t_size idx);
@@ -86,4 +70,3 @@ str8 get_type_str(t_size idx);
 str8 to_str(json j);
 t_size get_status_index(str8 str);
 t_size get_type_index(str8 str);
-

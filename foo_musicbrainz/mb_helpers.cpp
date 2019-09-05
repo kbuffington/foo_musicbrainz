@@ -1,49 +1,6 @@
 #include "stdafx.h"
 #include "mb_helpers.h"
 
-HWND mb_track_list_view::TableEdit_GetParentWnd() const
-{
-	return wnd;
-}
-
-bool mb_track_list_view::TableEdit_IsColumnEditable(t_size sub_item) const
-{
-	return sub_item != 0;
-}
-
-bool mb_track_list_view::is_active()
-{
-	return TableEdit_IsActive();
-}
-
-void mb_track_list_view::abort()
-{
-	return TableEdit_Abort(true);
-}
-
-void mb_track_list_view::attach(HWND wnd)
-{
-	this->wnd = wnd;
-}
-
-void mb_track_list_view::start(t_size item, t_size sub_item)
-{
-	TableEdit_Start(item, sub_item);
-}
-
-void mb_track_list_view::TableEdit_SetField(t_size item, t_size sub_item, const char* value)
-{
-	switch (sub_item) {
-	case 1:
-		//d->tracks[item].title = value;
-		break;
-	case 2:
-		//d->tracks[item].artist = value;
-		break;
-	}
-	CTableEditHelperV2_ListView::TableEdit_SetField(item, sub_item, value);
-}
-
 Release parser(json release, t_size handle_count)
 {
 	Release r;
