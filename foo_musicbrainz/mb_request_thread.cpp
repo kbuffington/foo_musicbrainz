@@ -10,7 +10,7 @@ void mb_request_thread::on_done(HWND p_wnd, bool p_was_aborted)
 
 	if (m_release_list.get_count() > 0)
 	{
-		new dialog_tagger(m_release_list, m_handles);
+		fb2k::newDialog<dialog_tagger>(m_release_list, m_handles);
 	}
 	else
 	{

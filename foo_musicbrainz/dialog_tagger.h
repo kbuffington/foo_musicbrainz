@@ -9,9 +9,7 @@ public:
 		track_list(this),
 		current_release(0),
 		current_disc(0)
-	{
-		Create(core_api::get_main_window());
-	}
+	{}
 
 	BEGIN_MSG_MAP(dialog_tagger)
 		MSG_WM_INITDIALOG(OnInitDialog)
@@ -49,8 +47,6 @@ public:
 
 	bool OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 	{
-		modeless_dialog_manager::g_add(m_hWnd);
-
 		CenterWindow();
 
 		release_list = GetDlgItem(IDC_RELEASE_LIST);
@@ -60,12 +56,12 @@ public:
 		status = GetDlgItem(IDC_STATUS);
 		disc = GetDlgItem(IDC_DISC);
 
-		artist = GetDlgItem(IDC_ARTIST);
+		album_artist = GetDlgItem(IDC_ARTIST);
 		album = GetDlgItem(IDC_ALBUM);
 		date = GetDlgItem(IDC_DATE);
 		first_release_date = GetDlgItem(IDC_FIRST_RELEASE_DATE);
 		barcode = GetDlgItem(IDC_BARCODE);
-		discsubtitle = GetDlgItem(IDC_SUBTITLE);
+		subtitle = GetDlgItem(IDC_SUBTITLE);
 		label = GetDlgItem(IDC_LABEL);
 		catalog = GetDlgItem(IDC_CATALOG);
 
@@ -111,15 +107,9 @@ public:
 			// Title
 			listview_helper::set_item_text(release_list, i, release_column, release.title);
 			// Date / Country
-			str8 date_country = PFC_string_formatter() << release.date << "/" << release.country;
-			if (strcmp(date_country, "/") == 0)
-				date_country = "-";
-			listview_helper::set_item_text(release_list, i, date_column, date_country);
+			listview_helper::set_item_text(release_list, i, date_column, slasher(release.date, release.country));
 			// Label
-			str8 label_catalog = PFC_string_formatter() << release.label << "/" << release.catalognumber;
-			if (strcmp(label_catalog, "/") == 0)
-				label_catalog = "-";
-			listview_helper::set_item_text(release_list, i, label_column, label_catalog);
+			listview_helper::set_item_text(release_list, i, label_column, slasher(release.label, release.catalognumber));
 			// Format
 			listview_helper::set_item_text(release_list, i, format_column, release.discs[0].format);
 		}
@@ -169,7 +159,7 @@ public:
 	{
 		auto release = m_release_list[current_release];
 
-		uSetWindowText(artist, release.album_artist);
+		uSetWindowText(album_artist, release.album_artist);
 		uSetWindowText(album, release.title);
 		uSetWindowText(date, release.date);
 		uSetWindowText(first_release_date, release.first_release_date);
@@ -189,9 +179,9 @@ public:
 	void UpdateDisc()
 	{
 		auto& release = m_release_list[current_release];
-		discsubtitle.EnableWindow(release.discs.get_count() > 1);
+		subtitle.EnableWindow(release.discs.get_count() > 1);
 		auto& d = release.discs[current_disc];
-		uSetWindowText(discsubtitle, d.subtitle);
+		uSetWindowText(subtitle, d.subtitle);
 
 		disc.ResetContent();
 		for (t_size i = 0; i < release.discs.get_count(); ++i)
@@ -209,12 +199,6 @@ public:
 		DestroyWindow();
 	}
 
-	void OnFinalMessage(HWND hwnd) override
-	{
-		modeless_dialog_manager::g_remove(m_hWnd);
-		delete this;
-	}
-
 	void OnCancel(UINT, int, CWindow)
 	{
 		DestroyWindow();
@@ -227,7 +211,7 @@ public:
 
 	void OnArtistUpdate(UINT, int, CWindow)
 	{
-		uGetWindowText(artist, m_release_list[current_release].album_artist);
+		uGetWindowText(album_artist, m_release_list[current_release].album_artist);
 		listview_helper::set_item_text(release_list, current_release, artist_column, m_release_list[current_release].album_artist);
 	}
 
@@ -266,10 +250,7 @@ public:
 	{
 		uGetWindowText(label, m_release_list[current_release].label);
 		uGetWindowText(catalog, m_release_list[current_release].catalognumber);
-		str8 label_catalog = PFC_string_formatter() << m_release_list[current_release].label << "/" << m_release_list[current_release].catalognumber;
-		if (strcmp(label_catalog, "/") == 0)
-			label_catalog = "-";
-		listview_helper::set_item_text(release_list, current_release, label_column, label_catalog);
+		listview_helper::set_item_text(release_list, current_release, label_column, slasher(m_release_list[current_release].label, m_release_list[current_release].catalognumber));
 	}
 
 private:
@@ -303,7 +284,7 @@ private:
 
 	void listSubItemClicked(ctx_t, t_size item, t_size sub_item) override
 	{
-		if (sub_item != 0)
+		if (sub_item > 0)
 		{
 			track_list.TableEdit_Start(item, sub_item);
 		}
@@ -325,13 +306,13 @@ private:
 	CComboBox disc;
 	CComboBox type;
 	CComboBox status;
-	CEdit artist;
+	CEdit album_artist;
 	CEdit album;
 	CEdit date;
 	CEdit first_release_date;
 	CEdit barcode;
 	CEdit url;
-	CEdit discsubtitle;
+	CEdit subtitle;
 	CEdit label;
 	CEdit catalog;
 	CListViewCtrl release_list;

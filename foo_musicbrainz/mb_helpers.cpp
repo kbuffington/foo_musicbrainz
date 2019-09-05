@@ -101,6 +101,15 @@ str8 get_type_str(t_size idx)
 	return release_group_types[idx];
 }
 
+str8 slasher(const str8& one, const str8& two)
+{
+	if (one.is_empty() && two.is_empty())
+	{
+		return "-";
+	}
+	return PFC_string_formatter() << one << "/" << two;
+}
+
 str8 to_str(json j)
 {
 	if (j.is_null()) return "";
