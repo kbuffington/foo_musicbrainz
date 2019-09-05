@@ -80,6 +80,9 @@
     <ClInclude Include="mb_structs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dialog_tagger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="foo_musicbrainz.rc">

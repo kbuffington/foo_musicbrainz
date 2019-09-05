@@ -4,6 +4,7 @@
 Release parser(json release, t_size handle_count)
 {
 	Release r;
+	str8 handle_count_str = PFC_string_formatter() << handle_count;
 	auto medias = release["media"];
 	if (medias.is_array())
 	{
@@ -20,7 +21,7 @@ Release parser(json release, t_size handle_count)
 					t.title = to_str(track["title"]);
 					t.release_trackid = to_str(track["id"]);
 					t.track = to_str(track["position"]);
-					t.totaltracks = PFC_string_formatter() << handle_count;
+					t.totaltracks = handle_count_str;
 
 					auto recording = track["recording"];
 					if (recording.is_object())
@@ -40,7 +41,28 @@ Release parser(json release, t_size handle_count)
 	r.asin = to_str(release["asin"]);
 	r.barcode = to_str(release["barcode"]);
 	r.country = to_str(release["country"]);
+	r.date = to_str(release["date"]);
 	r.status = to_str(release["status"]);
+	r.title = to_str(release["title"]);
+
+	auto label_info = release["label-info"];
+	if (label_info.is_array())
+	{
+		auto label = label_info[0]["label"];
+		if (label.is_object())
+		{
+			r.label = to_str(label["name"]);
+		}
+		r.catalognumber = to_str(label_info[0]["catalog-number"]);
+	}
+
+	auto text_rep = release["text-representation"];
+	if (text_rep.is_object())
+	{
+		r.language = to_str(text_rep["language"]);
+		r.script = to_str(text_rep["script"]);
+	}
+
 	return r;
 }
 
