@@ -11,6 +11,7 @@ public:
 
 private:
 	bool m_failed;
+	pfc::list_t<Release> m_release_list;
 	mb_query* m_query;
 	metadb_handle_list m_handles;
 };

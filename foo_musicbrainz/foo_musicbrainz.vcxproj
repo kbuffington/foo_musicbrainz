@@ -117,6 +117,7 @@ copy /Y "$(TargetPath)" "%component_path%\"</Command>
   <ItemGroup>
     <ClCompile Include="mb_query.cpp" />
     <ClCompile Include="mb_request_thread.cpp" />
+    <ClCompile Include="mb_helpers.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -130,8 +131,9 @@ copy /Y "$(TargetPath)" "%component_path%\"</Command>
     <ClCompile Include="mb_toc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="mb_helpers.h" />
     <ClInclude Include="json.hpp" />
-    <ClInclude Include="mb_list.h" />
+    <ClInclude Include="mb_structs.h" />
     <ClInclude Include="mb_query.h" />
     <ClInclude Include="mb_request_thread.h" />
     <ClInclude Include="stdafx.h" />
