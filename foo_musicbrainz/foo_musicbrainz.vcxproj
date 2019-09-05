@@ -134,7 +134,6 @@ copy /Y "$(TargetPath)" "%component_path%\"</Command>
     <ClInclude Include="dialog_tagger.h" />
     <ClInclude Include="mb_helpers.h" />
     <ClInclude Include="json.hpp" />
-    <ClInclude Include="mb_structs.h" />
     <ClInclude Include="mb_query.h" />
     <ClInclude Include="mb_request_thread.h" />
     <ClInclude Include="stdafx.h" />

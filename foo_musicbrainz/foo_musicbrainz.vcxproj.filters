@@ -77,9 +77,6 @@
     <ClInclude Include="mb_helpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mb_structs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="dialog_tagger.h">
       <Filter>Header Files</Filter>
     </ClInclude>

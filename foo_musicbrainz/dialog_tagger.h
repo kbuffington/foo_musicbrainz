@@ -63,6 +63,8 @@ public:
 		catalog = GetDlgItem(IDC_CATALOG);
 		groupbox = GetDlgItem(IDC_CHOOSE_DISC);
 
+		track_list_view.attach(track_list);
+
 		// List view styles
 		auto styles = LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP;
 		release_list.SetExtendedListViewStyle(styles, styles);
@@ -112,17 +114,32 @@ public:
 			listview_helper::set_item_text(release_list, i, format_column, release.discs[0].format);
 		}
 
+		UpdateRelease();
+
+		CenterWindow();
+
 		return true;
 	}
 
 	LRESULT OnReleaseListChange(LPNMHDR pnmh)
 	{
-
+		int new_index = ((LPNMLISTVIEW)pnmh)->iItem;
+		if (new_index != -1 && ((LPNMLISTVIEW)pnmh)->uChanged & LVIS_DROPHILITED && ((LPNMLISTVIEW)pnmh)->uNewState & LVIS_SELECTED && current_release != new_index)
+		{
+			if (track_list_view.is_active()) track_list_view.abort();
+			current_release = new_index;
+			UpdateRelease();
+		}
 		return 0;
 	}
 
 	LRESULT OnTrackListClick(LPNMHDR pnmh)
 	{
+		int item = ((LPNMITEMACTIVATE)pnmh)->iItem;
+		int sub_item = ((LPNMITEMACTIVATE)pnmh)->iSubItem;
+		if (item != -1 && sub_item != 0) {
+			track_list_view.start(item, sub_item);
+		}
 		return 0;
 	}
 
@@ -139,12 +156,34 @@ public:
 
 	void UpdateRelease()
 	{
+		auto release = m_release_list.get_item(current_release);
 
+		uSetWindowText(artist, release.album_artist);
+		uSetWindowText(album, release.title);
+		uSetWindowText(date, release.date);
+		uSetWindowText(first_release_date, release.first_release_date);
+		uSetWindowText(barcode, release.barcode);
+		uSetWindowText(label, release.label);
+		uSetWindowText(catalog, release.catalognumber);
+
+		type.SetCurSel(get_type_index(release.primary_type));
+		status.SetCurSel(get_status_index(release.status));
+
+		str8 url_str = PFC_string_formatter() << "<a href=\"https://musicbrainz.org/release/" << release.albumid << "\">MusicBrainz release page</a>";
+		uSetWindowText(url, url_str);
+
+		UpdateDisc();
 	}
 
 	void UpdateDisc()
 	{
+		auto release = m_release_list.get_item(current_release);
+		discsubtitle.EnableWindow(release.discs.get_count() > 1);
+		auto disc = release.discs[current_disc];
+		uSetWindowText(discsubtitle, disc.title);
 
+		// Tracks
+		//UpdateTracks();
 	}
 
 	void OnClose()
@@ -234,6 +273,7 @@ private:
 	CListViewCtrl release_list;
 	CListViewCtrl track_list;
 	metadb_handle_list m_handles;
+	mb_track_list_view track_list_view;
 	pfc::list_t<Release> m_release_list;
 	t_size current_release;
 	t_size current_disc;
