@@ -20,17 +20,19 @@ public:
 		NOTIFY_HANDLER_EX(IDC_TRACK_LIST, NM_CLICK, OnTrackListClick)
 		NOTIFY_HANDLER_EX(IDC_URL, NM_CLICK, OnLink)
 		NOTIFY_HANDLER_EX(IDC_URL, NM_RETURN, OnLink)
+
 		COMMAND_HANDLER_EX(IDC_TYPE, CBN_SELENDOK, OnTypeChange)
 		COMMAND_HANDLER_EX(IDC_STATUS, CBN_SELENDOK, OnStatusChange)
-		COMMAND_HANDLER_EX(IDC_DISC_LIST, CBN_SELCHANGE, OnDiscUpdate)
+		COMMAND_HANDLER_EX(IDC_DISC, CBN_SELENDOK, OnDiscChange)
+
 		COMMAND_HANDLER_EX(IDC_ARTIST, EN_UPDATE, OnArtistUpdate)
 		COMMAND_HANDLER_EX(IDC_ALBUM, EN_UPDATE, OnAlbumUpdate)
 		COMMAND_HANDLER_EX(IDC_BARCODE, EN_UPDATE, OnBarcodeUpdate)
-		COMMAND_HANDLER_EX(IDC_CATALOG, EN_UPDATE, OnCatalogUpdate)
 		COMMAND_HANDLER_EX(IDC_DATE, EN_UPDATE, OnDateUpdate)
 		COMMAND_HANDLER_EX(IDC_FIRST_RELEASE_DATE, EN_UPDATE, OnFirstDateUpdate)
-		COMMAND_HANDLER_EX(IDC_LABEL, EN_UPDATE, OnLabelUpdate)
 		COMMAND_HANDLER_EX(IDC_SUBTITLE, EN_UPDATE, OnSubtitleUpdate)
+
+		COMMAND_RANGE_HANDLER_EX(IDC_LABEL, IDC_CATALOG, OnLabelCatalogUpdate)
 	END_MSG_MAP()
 
 	enum { IDD = IDD_TAGGER };
@@ -47,12 +49,16 @@ public:
 	bool OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 	{
 		modeless_dialog_manager::g_add(m_hWnd);
+
+		CenterWindow();
+
 		release_list = GetDlgItem(IDC_RELEASE_LIST);
 		track_list = GetDlgItem(IDC_TRACK_LIST);
-
+		
 		type = GetDlgItem(IDC_TYPE);
 		status = GetDlgItem(IDC_STATUS);
-		url = GetDlgItem(IDC_URL);
+		disc = GetDlgItem(IDC_DISC);
+
 		artist = GetDlgItem(IDC_ARTIST);
 		album = GetDlgItem(IDC_ALBUM);
 		date = GetDlgItem(IDC_DATE);
@@ -61,10 +67,9 @@ public:
 		discsubtitle = GetDlgItem(IDC_SUBTITLE);
 		label = GetDlgItem(IDC_LABEL);
 		catalog = GetDlgItem(IDC_CATALOG);
-		groupbox = GetDlgItem(IDC_CHOOSE_DISC);
 
-		track_list_view.attach(track_list);
-
+		url = GetDlgItem(IDC_URL);
+		
 		// List view styles
 		auto styles = LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP;
 		release_list.SetExtendedListViewStyle(styles, styles);
@@ -83,16 +88,21 @@ public:
 		track_list.DeleteColumn(0);
 		listview_helper::insert_column(track_list, 1, "Title", 260);
 
-		
 		for (const auto& i : release_group_types)
 		{
 			type.AddString(string_wide_from_utf8_fast(i));
 		}
+
 		for (const auto& i : release_statuses)
 		{
 			status.AddString(string_wide_from_utf8_fast(i));
 		}
 		
+		for (t_size i = 0; i < m_handles.get_count(); ++i)
+		{
+			listview_helper::insert_item(track_list, i, PFC_string_formatter() << (i + 1), NULL);
+		}
+
 		for (t_size i = 0; i < m_release_list.get_count(); i++)
 		{
 			auto release = m_release_list.get_item(i);
@@ -115,9 +125,6 @@ public:
 		}
 
 		UpdateRelease();
-
-		CenterWindow();
-
 		return true;
 	}
 
@@ -143,9 +150,20 @@ public:
 		return 0;
 	}
 
-	LRESULT OnDiscUpdate(UINT, int, CWindow)
+	void OnTypeChange(UINT uNotifyCode, int nID, CWindow wndCtl)
 	{
-		return 0;
+		m_release_list[current_release].primary_type = get_type_str(type.GetCurSel());
+	}
+
+	void OnStatusChange(UINT uNotifyCode, int nID, CWindow wndCtl)
+	{
+		m_release_list[current_release].status = get_status_str(status.GetCurSel());
+	}
+
+	void OnDiscChange(UINT uNotifyCode, int nID, CWindow wndCtl)
+	{
+		current_disc = disc.GetCurSel();
+		UpdateDisc();
 	}
 
 	LRESULT OnLink(LPNMHDR pnmh)
@@ -179,11 +197,30 @@ public:
 	{
 		auto release = m_release_list.get_item(current_release);
 		discsubtitle.EnableWindow(release.discs.get_count() > 1);
-		auto disc = release.discs[current_disc];
-		uSetWindowText(discsubtitle, disc.title);
+		auto d = release.discs[current_disc];
+		uSetWindowText(discsubtitle, d.subtitle);
+
+		disc.ResetContent();
+		for (t_size i = 0; i < release.discs.get_count(); ++i)
+		{
+			disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << release.discs[i].disc << " of " << release.discs[i].totaldiscs));
+		}
+		disc.SetCurSel(current_disc);
 
 		// Tracks
-		//UpdateTracks();
+		UpdateTracks();
+	}
+
+	void UpdateTracks()
+	{
+		auto release = m_release_list.get_item(current_release);
+		Disc d = release.discs[current_disc];
+
+		for (t_size i = 0; i < d.tracks.get_count(); ++i)
+		{
+			listview_helper::set_item_text(track_list, i, 1, d.tracks[i].title);
+			listview_helper::set_item_text(track_list, i, 2, d.tracks[i].artist);
+		}
 	}
 
 	void OnClose()
@@ -197,68 +234,65 @@ public:
 		delete this;
 	}
 
-	void OnCancel(UINT uNotifyCode, int nID, CWindow wndCtl)
+	void OnCancel(UINT, int, CWindow)
 	{
 		DestroyWindow();
 	}
 
-	void OnOk(UINT uNotifyCode, int nID, CWindow wndCtl)
+	void OnOk(UINT, int, CWindow)
 	{
 		DestroyWindow();
 	}
 
-	void OnTypeChange(UINT uNotifyCode, int nID, CWindow wndCtl)
+	void OnArtistUpdate(UINT, int, CWindow)
 	{
+		uGetWindowText(artist, m_release_list[current_release].album_artist);
+		listview_helper::set_item_text(release_list, current_release, artist_column, m_release_list[current_release].album_artist);
 	}
 
-	void OnStatusChange(UINT uNotifyCode, int nID, CWindow wndCtl)
+	void OnAlbumUpdate(UINT, int, CWindow)
 	{
-
+		uGetWindowText(album, m_release_list[current_release].title);
+		listview_helper::set_item_text(release_list, current_release, release_column, m_release_list[current_release].title);
 	}
 
-	void OnArtistUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
+	void OnDateUpdate(UINT, int, CWindow)
 	{
+		uGetWindowText(date, m_release_list[current_release].date);
 
+		str8 date_country = m_release_list[current_release].date << "/" << m_release_list[current_release].country;
+		if (strcmp(date_country, "/") == 0)
+			date_country = "-";
+		listview_helper::set_item_text(release_list, current_release, date_column, date_country);
 	}
 
-	void OnAlbumUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
+	void OnFirstDateUpdate(UINT, int, CWindow)
 	{
-
-	}
-
-	void OnDateUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
-	{
-
-	}
-
-	void OnFirstDateUpdate(UINT uNotifyCode, int nID, CWindow wndCtl)
-	{
-
+		uGetWindowText(first_release_date, m_release_list[current_release].first_release_date);
 	}
 
 	void OnBarcodeUpdate(UINT, int, CWindow)
 	{
-
+		uGetWindowText(barcode, m_release_list[current_release].barcode);
 	}
 
 	void OnSubtitleUpdate(UINT, int, CWindow)
 	{
-
+		uGetWindowText(barcode, m_release_list[current_release].discs[current_disc].subtitle);
 	}
 
-	void OnCatalogUpdate(UINT, int, CWindow)
+	void OnLabelCatalogUpdate(UINT, int, CWindow)
 	{
-
-	}
-
-	void OnLabelUpdate(UINT, int, CWindow)
-	{
-
+		uGetWindowText(label, m_release_list[current_release].label);
+		uGetWindowText(catalog, m_release_list[current_release].catalognumber);
+		str8 label_catalog = m_release_list[current_release].label << "/" << m_release_list[current_release].catalognumber;
+		if (strcmp(label_catalog, "/") == 0)
+			label_catalog = "-";
+		listview_helper::set_item_text(release_list, current_release, label_column, label_catalog);
 	}
 
 private:
-	CButton groupbox;
-	CComboBox disc_list;
+	CComboBox disc;
 	CComboBox type;
 	CComboBox status;
 	CEdit artist;
@@ -272,8 +306,8 @@ private:
 	CEdit catalog;
 	CListViewCtrl release_list;
 	CListViewCtrl track_list;
-	metadb_handle_list m_handles;
 	mb_track_list_view track_list_view;
+	metadb_handle_list m_handles;
 	pfc::list_t<Release> m_release_list;
 	t_size current_release;
 	t_size current_disc;

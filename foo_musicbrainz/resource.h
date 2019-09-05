@@ -22,12 +22,11 @@
 #define IDC_FIRST_RELEASE_DATE          1025
 #define IDC_TYPE                        1026
 #define IDC_STATUS                      1027
+#define IDC_DISC                        1029
 #define IDC_SUBTITLE                    1028
-#define IDC_DISC_LIST                   1029
 #define IDC_BARCODE                     1031
 #define IDC_LABEL                       1032
 #define IDC_CATALOG                     1033
-#define IDC_CHOOSE_DISC                 1034
 
 #define IDD_PREFERENCES                 1040
 #define IDC_SERVER                      1041

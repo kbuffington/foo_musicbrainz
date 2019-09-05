@@ -13,8 +13,10 @@ struct Track
 struct Disc
 {
 	pfc::list_t<Track> tracks;
+	str8 disc;
 	str8 format;
-	str8 title;
+	str8 subtitle;
+	str8 totaldiscs;
 };
 
 struct Release
@@ -67,7 +69,6 @@ public:
 	void abort();
 	void attach(HWND wnd);
 	void start(t_size item, t_size sub_item);
-	void set_disc(Disc* d);
 
 protected:
 	HWND TableEdit_GetParentWnd() const;
@@ -75,12 +76,14 @@ protected:
 	void TableEdit_SetField(t_size item, t_size sub_item, const char* value);
 
 private:
-	Disc* d;
 	HWND wnd;
 };
 
 Release parser(json release, t_size handle_count);
 str8 get_artist_credit(json j);
+str8 get_status_str(t_size idx);
+str8 get_type_str(t_size idx);
 str8 to_str(json j);
 t_size get_status_index(str8 str);
 t_size get_type_index(str8 str);
+

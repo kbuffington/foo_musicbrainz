@@ -26,11 +26,6 @@ void mb_track_list_view::attach(HWND wnd)
 	this->wnd = wnd;
 }
 
-void mb_track_list_view::set_disc(Disc* d)
-{
-	this->d = d;
-}
-
 void mb_track_list_view::start(t_size item, t_size sub_item)
 {
 	TableEdit_Start(item, sub_item);
@@ -40,10 +35,10 @@ void mb_track_list_view::TableEdit_SetField(t_size item, t_size sub_item, const 
 {
 	switch (sub_item) {
 	case 1:
-		d->tracks[item].title = value;
+		//d->tracks[item].title = value;
 		break;
 	case 2:
-		d->tracks[item].artist = value;
+		//d->tracks[item].artist = value;
 		break;
 	}
 	CTableEditHelperV2_ListView::TableEdit_SetField(item, sub_item, value);
@@ -56,6 +51,7 @@ Release parser(json release, t_size handle_count)
 	auto medias = release["media"];
 	if (medias.is_array())
 	{
+		str8 totaldiscs = PFC_string_formatter() << medias.size();
 		for (auto& media : medias)
 		{
 			auto tracks = media["tracks"];
@@ -79,8 +75,12 @@ Release parser(json release, t_size handle_count)
 
 					d.tracks.add_item(t);
 				}
+
+				d.disc = to_str(media["position"]);
 				d.format = to_str(media["format"]);
-				d.title = to_str(media["title"]);
+				d.subtitle = to_str(media["title"]);
+				d.totaldiscs = totaldiscs;
+				
 				r.discs.add_item(d);
 			}
 		}
@@ -132,6 +132,16 @@ str8 get_artist_credit(json j)
 		return to_str(artist_credit[0]["name"]);
 	}
 	return "";
+}
+
+str8 get_status_str(t_size idx)
+{
+	return release_statuses[idx];
+}
+
+str8 get_type_str(t_size idx)
+{
+	return release_group_types[idx];
 }
 
 str8 to_str(json j)
