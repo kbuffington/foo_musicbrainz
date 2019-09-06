@@ -3,6 +3,12 @@ You can view the original readme [here](ORIGINAL%20README.md).
 My changes:
 
 ```
+v0.4.0 has been rewritten almost from the ground up to use the JSON
+webservice instead of XML like the previous versions used. Although
+this doesn't make any difference to the end user, it means I can
+easily make changes that I wasn't able to do before. I may consider
+reasonable feature requests!
+
 We now obey the rate limit rules with a delay inbetween each request
 so any lookup with more than several releases should complete.
 
