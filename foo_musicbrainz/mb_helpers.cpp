@@ -4,7 +4,9 @@
 Release parser(json release, t_size handle_count)
 {
 	Release r;
-	str8 handle_count_str = PFC_string_formatter() << handle_count;
+	get_artist_credit(release, r.album_artist, r.albumartistid);
+	str8 totaltracks = PFC_string_formatter() << handle_count;
+
 	auto medias = release["media"];
 	if (medias.is_array())
 	{
@@ -16,7 +18,6 @@ Release parser(json release, t_size handle_count)
 			{
 				Disc d;
 				str8 artist, id;
-				get_artist_credit(tracks[0], artist, id);
 				d.is_various = false;
 				for (auto& track : tracks)
 				{
@@ -25,7 +26,7 @@ Release parser(json release, t_size handle_count)
 					t.title = to_str(track["title"]);
 					t.releasetrackid = to_str(track["id"]);
 					t.track = to_str(track["position"]);
-					t.totaltracks = handle_count_str;
+					t.totaltracks = totaltracks;
 
 					auto recording = track["recording"];
 					if (recording.is_object())
@@ -33,7 +34,7 @@ Release parser(json release, t_size handle_count)
 						t.trackid = to_str(recording["id"]);
 					}
 
-					if (!artist.equals(t.artist)) d.is_various = true;
+					if (!d.is_various && !r.album_artist.equals(t.artist)) d.is_various = true;
 					d.tracks.add_item(t);
 				}
 
@@ -47,7 +48,6 @@ Release parser(json release, t_size handle_count)
 		}
 	}
 
-	get_artist_credit(release, r.album_artist, r.albumartistid);
 	r.albumid = to_str(release["id"]);
 	r.asin = to_str(release["asin"]);
 	r.barcode = to_str(release["barcode"]);
@@ -169,7 +169,7 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size disc_idx)
 		auto track = d.tracks[i];
 		info[i] = handles[i]->get_info_ref()->info();
 
-		if (mb_preferences::default_write_albumartist || d.is_various)
+		if (mb_preferences::write_albumartist || d.is_various)
 		{
 			info[i].meta_set("ALBUM ARTIST", release.album_artist);
 			if (mb_preferences::write_ids) info[i].meta_set("MUSICBRAINZ_ALBUMARTISTID", release.albumartistid);
@@ -211,6 +211,7 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size disc_idx)
 		{
 			if (release.discid.get_length()) info[i].meta_set("MUSICBRAINZ_DISCID", release.discid);
 			info[i].meta_set("MUSICBRAINZ_ALBUMID", release.albumid);
+			info[i].meta_set("MUSICBRAINZ_ARTISTID", track.artistid);
 			info[i].meta_set("MUSICBRAINZ_RELEASEGROUPID", release.releasegroupid);
 			info[i].meta_set("MUSICBRAINZ_RELEASETRACKID", track.releasetrackid);
 			info[i].meta_set("MUSICBRAINZ_TRACKID", track.trackid);
