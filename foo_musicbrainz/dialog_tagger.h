@@ -114,10 +114,6 @@ public:
 		int new_index = ((LPNMLISTVIEW)pnmh)->iItem;
 		if (new_index != -1 && ((LPNMLISTVIEW)pnmh)->uChanged & LVIS_DROPHILITED && ((LPNMLISTVIEW)pnmh)->uNewState & LVIS_SELECTED && current_release != new_index)
 		{
-			if (track_list.TableEdit_IsActive())
-			{
-				track_list.TableEdit_Abort(true);
-			}
 			current_release = new_index;
 			UpdateRelease();
 		}
@@ -160,26 +156,30 @@ public:
 
 		type.SetCurSel(get_type_index(release.primary_type));
 		status.SetCurSel(get_status_index(release.status));
-
-		str8 url_str = PFC_string_formatter() << "<a href=\"https://musicbrainz.org/release/" << release.albumid << "\">MusicBrainz release page</a>";
-		uSetWindowText(url, url_str);
-
-		UpdateDisc();
-	}
-
-	void UpdateDisc()
-	{
-		auto& release = m_release_list[current_release];
-		subtitle.EnableWindow(release.discs.get_count() > 1);
-		auto& d = release.discs[current_disc];
-		uSetWindowText(subtitle, d.subtitle);
-
+		
+		current_disc = 0;
 		disc.ResetContent();
 		for (t_size i = 0; i < release.discs.get_count(); ++i)
 		{
 			disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << release.discs[i].disc << " of " << release.discs[i].totaldiscs));
 		}
+		subtitle.EnableWindow(release.discs.get_count() > 1);
+		UpdateDisc();
+
+		str8 url_str = PFC_string_formatter() << "<a href=\"https://musicbrainz.org/release/" << release.albumid << "\">MusicBrainz release page</a>";
+		uSetWindowText(url, url_str);
+	}
+
+	void UpdateDisc()
+	{
+		auto& d = m_release_list[current_release].discs[current_disc];
 		disc.SetCurSel(current_disc);
+		uSetWindowText(subtitle, d.subtitle);
+
+		if (track_list.TableEdit_IsActive())
+		{
+			track_list.TableEdit_Abort(false);
+		}
 
 		if (d.is_various)
 		{
@@ -255,7 +255,7 @@ public:
 private:
 	// IListControlOwnerDataSource methods
 
-	bool listIsColumnEditable(ctx_t, size_t sub_item) override
+	bool listIsColumnEditable(ctx_t, t_size sub_item) override
 	{ 
 		return sub_item > 0;
 	}

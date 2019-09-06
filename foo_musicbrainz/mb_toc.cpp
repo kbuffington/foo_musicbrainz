@@ -88,7 +88,7 @@ const char* mb_toc::get_toc() {
 		toc << "1";
 		sprintf(tmp, " %d", num_tracks);
 		toc << tmp;
-		for (size_t i = 0; i <= num_tracks; i++) {
+		for (t_size i = 0; i <= num_tracks; i++) {
 			sprintf(tmp, " %d", tracks[i]);
 			toc << tmp;
 		}

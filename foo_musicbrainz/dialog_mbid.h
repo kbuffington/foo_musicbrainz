@@ -27,7 +27,7 @@ public:
 	void OnUpdate(UINT uNotifyCode, int nID, HWND wndCtl) {
 		str8 t = string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr();
 		str8 u = "https://musicbrainz.org/release/";
-		size_t l = u.get_length();
+		t_size l = u.get_length();
 		if (strncmp(t, u, l) == 0) {
 			t.replace_string(u, "");
 			uSetDlgItemText(m_hWnd, IDC_MBID, t);
