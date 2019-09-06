@@ -15,6 +15,8 @@ Release parser(json release, t_size handle_count)
 			if (tracks.is_array() && tracks.size() == handle_count)
 			{
 				Disc d;
+				d.is_various = false;
+				str8 artist = get_artist_credit(tracks[0]);
 				for (auto& track : tracks)
 				{
 					Track t;
@@ -30,6 +32,7 @@ Release parser(json release, t_size handle_count)
 						t.trackid = to_str(recording["id"]);
 					}
 
+					if (!artist.equals(t.artist)) d.is_various = true;
 					d.tracks.add_item(t);
 				}
 

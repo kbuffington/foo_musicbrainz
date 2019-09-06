@@ -12,6 +12,7 @@ struct Track
 
 struct Disc
 {
+	bool is_various;
 	pfc::list_t<Track> tracks;
 	str8 disc;
 	str8 format;

@@ -82,7 +82,6 @@ public:
 		auto DPI = track_list.GetDPI();
 		track_list.AddColumn("#", MulDiv(30, DPI.cx, 96), HDF_CENTER);
 		track_list.AddColumn("Title", MulDiv(250, DPI.cx, 96));
-		track_list.AddColumn("Track Artist", MulDiv(170, DPI.cx, 96));
 
 		for (const auto& i : release_group_types)
 		{
@@ -190,7 +189,19 @@ public:
 		}
 		disc.SetCurSel(current_disc);
 
-		// Tracks
+		if (d.is_various)
+		{
+			if (track_list.GetColumnCount() == 2)
+			{
+				auto DPI = track_list.GetDPI();
+				track_list.AddColumn("Track Artist", MulDiv(170, DPI.cx, 96));
+			}
+		}
+		else if (track_list.GetColumnCount() == 3)
+		{
+			track_list.DeleteColumn(2, false);
+		}
+
 		track_list.ReloadData();
 	}
 
