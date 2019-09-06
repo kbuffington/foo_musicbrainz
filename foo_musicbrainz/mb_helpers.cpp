@@ -117,6 +117,12 @@ str8 to_str(json j)
 {
 	if (j.is_null()) return "";
 	std::string s = j.type() == json::value_t::string ? j.get<std::string>() : j.dump();
+	if (mb_preferences::ascii_punctuation)
+	{
+		str8 tmp = s.c_str();
+		ascii_replacer(tmp);
+		return tmp;
+	}
 	return s.c_str();
 }
 
@@ -136,4 +142,15 @@ t_size get_type_index(str8 str)
 		if (_stricmp(str.get_ptr(), release_group_types[i]) == 0) return i;
 	}
 	return 0;
+}
+
+void ascii_replacer(str8& out)
+{
+	pfc::string str(out);
+	for (t_size i = 0; i < ascii_replacements_count; ++i) {
+		auto what = ascii_replacements[i][0];
+		auto with = ascii_replacements[i][1];
+		str = str.replace(what, with);
+	}
+	out = str.get_ptr();
 }

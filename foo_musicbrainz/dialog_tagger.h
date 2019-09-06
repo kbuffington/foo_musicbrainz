@@ -3,7 +3,7 @@
 class dialog_tagger : public CDialogImpl<dialog_tagger>, private IListControlOwnerDataSource
 {
 public:
-	dialog_tagger(const pfc::list_t<Release>& p_release_list , metadb_handle_list_cref p_handles) :
+	dialog_tagger(const pfc::list_t<Release>& p_release_list, metadb_handle_list_cref p_handles) :
 		m_release_list(p_release_list),
 		m_handles(p_handles),
 		track_list(this),

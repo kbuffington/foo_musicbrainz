@@ -64,6 +64,30 @@ static const char* release_statuses[] = {
 	"Pseudo-Release"
 };
 
+static const char* ascii_replacements[][2] = {
+	{ "…", "..." },
+	{ "‘", "'" },
+	{ "’", "'" },
+	{ "‚", "'" },
+	{ "“", "\"" },
+	{ "”", "\"" },
+	{ "„", "\"" },
+	{ "′", "'" },
+	{ "″", "\"" },
+	{ "‹", "<" },
+	{ "›", ">" },
+	{ "«", "\"" },
+	{ "»", "\"" },
+	{ "‐", "-" },
+	{ "‒", "-" },
+	{ "–", "-" },
+	{ "−", "-" },
+	{ "—", "-" },
+	{ "―", "-" }
+};
+
+static const t_size ascii_replacements_count = PFC_TABSIZE(ascii_replacements);
+
 Release parser(json release, t_size handle_count);
 str8 get_artist_credit(json j);
 str8 get_status_str(t_size idx);
@@ -72,3 +96,4 @@ str8 slasher(const str8& one, const str8& two);
 str8 to_str(json j);
 t_size get_status_index(str8 str);
 t_size get_type_index(str8 str);
+void ascii_replacer(str8& out);
