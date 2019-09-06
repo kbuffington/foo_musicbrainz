@@ -3,14 +3,8 @@
 
 mb_query::mb_query(const char* entity, const char* id)
 {
-	if (mb_preferences::server)
-		url << mb_preferences::server_data;
-	else
-		url << "https://musicbrainz.org";
-	url << "/ws/2/" << entity;
-	if (id != nullptr) {
-		url << "/" << id;
-	}
+	url << (mb_preferences::server ? mb_preferences::server_data : "https://musicbrainz.org") << "/ws/2/" << entity;
+	if (id != nullptr) url << "/" << id;
 	url << "?fmt=json";
 }
 
@@ -29,7 +23,7 @@ str8 mb_query::url_encode(const char* in)
 	str8 out;
 	out.prealloc(strlen(in) * 3 + 1);
 
-	for (register const char* tmp = in; *tmp != '\0'; tmp++)
+	for (const char* tmp = in; *tmp != '\0'; tmp++)
 	{
 		auto c = static_cast<unsigned char>(*tmp);
 		if (isalnum(c)) {
