@@ -70,6 +70,5 @@ str8 slasher(const str8& one, const str8& two);
 str8 to_str(json j);
 t_size get_status_index(str8 str);
 t_size get_type_index(str8 str);
-void ascii_replacer(str8& out);
 void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids, t_size type);
 void tagger(metadb_handle_list_cref handles, Release release, t_size disc_idx);

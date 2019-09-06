@@ -132,9 +132,13 @@ str8 to_str(json j)
 	std::string s = j.type() == json::value_t::string ? j.get<std::string>() : j.dump();
 	if (mb_preferences::ascii_punctuation)
 	{
-		str8 tmp = s.c_str();
-		ascii_replacer(tmp);
-		return tmp;
+		pfc::string tmp(s.c_str());
+		for (t_size i = 0; i < ascii_replacements_count; ++i) {
+			auto what = ascii_replacements[i][0];
+			auto with = ascii_replacements[i][1];
+			tmp = tmp.replace(what, with);
+		}
+		return tmp.get_ptr();
 	}
 	return s.c_str();
 }
@@ -157,17 +161,6 @@ t_size get_type_index(str8 str)
 	return 0;
 }
 
-void ascii_replacer(str8& out)
-{
-	pfc::string str(out);
-	for (t_size i = 0; i < ascii_replacements_count; ++i) {
-		auto what = ascii_replacements[i][0];
-		auto with = ascii_replacements[i][1];
-		str = str.replace(what, with);
-	}
-	out = str.get_ptr();
-}
-
 void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids, t_size type)
 {
 	auto artist_credit = j["artist-credit"];
@@ -186,8 +179,6 @@ void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids, t_size ty
 			name = to_str(artist_credit[0]["name"]);
 			ids.add_item(to_str(artist_credit[0]["artist"]["id"]));
 		}
-
-
 	}
 }
 
@@ -197,7 +188,7 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size disc_idx)
 	pfc::list_t<file_info_impl> info;
 	info.set_size(count);
 
-	auto& d = release.discs[disc_idx];
+	auto d = release.discs[disc_idx];
 
 	for (t_size i = 0; i < count; ++i)
 	{
