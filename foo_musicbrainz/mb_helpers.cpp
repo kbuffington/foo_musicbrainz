@@ -104,6 +104,21 @@ Release parser(json release, t_size handle_count)
 		r.releasegroupid = to_str(rg["id"]);
 	}
 
+	if (mb_preferences::short_date)
+	{
+		std::string tmp;
+		if (r.date.get_length() > 4)
+		{
+			tmp = r.date.get_ptr();
+			r.date = tmp.substr(0, 4).c_str();
+		}
+		if (r.first_release_date.get_length() > 4)
+		{
+			tmp = r.first_release_date.get_ptr();
+			r.first_release_date = tmp.substr(0, 4).c_str();
+		}
+	}
+
 	return r;
 }
 

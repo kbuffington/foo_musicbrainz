@@ -47,8 +47,6 @@ str8 mb_query::url_encode(const char* in)
 
 json mb_query::lookup(abort_callback& p_abort)
 {
-	FB2K_console_formatter() << url;
-
 	try
 	{
 		// Download
