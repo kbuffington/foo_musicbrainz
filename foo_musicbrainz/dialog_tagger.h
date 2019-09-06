@@ -80,7 +80,7 @@ public:
 
 		// Adding track list columns
 		auto DPI = track_list.GetDPI();
-		track_list.AddColumn("#", MulDiv(30, DPI.cx, 96));
+		track_list.AddColumn("#", MulDiv(30, DPI.cx, 96), HDF_CENTER);
 		track_list.AddColumn("Title", MulDiv(250, DPI.cx, 96));
 		track_list.AddColumn("Track Artist", MulDiv(170, DPI.cx, 96));
 
@@ -224,11 +224,7 @@ public:
 	void OnDateUpdate(UINT, int, CWindow)
 	{
 		uGetWindowText(date, m_release_list[current_release].date);
-
-		str8 date_country = PFC_string_formatter() << m_release_list[current_release].date << "/" << m_release_list[current_release].country;
-		if (strcmp(date_country, "/") == 0)
-			date_country = "-";
-		listview_helper::set_item_text(release_list, current_release, date_column, date_country);
+		listview_helper::set_item_text(release_list, current_release, date_column, slasher(m_release_list[current_release].date, m_release_list[current_release].country));
 	}
 
 	void OnFirstDateUpdate(UINT, int, CWindow)
@@ -243,7 +239,7 @@ public:
 
 	void OnSubtitleUpdate(UINT, int, CWindow)
 	{
-		uGetWindowText(barcode, m_release_list[current_release].discs[current_disc].subtitle);
+		uGetWindowText(subtitle, m_release_list[current_release].discs[current_disc].subtitle);
 	}
 
 	void OnLabelCatalogUpdate(UINT, int, CWindow)
