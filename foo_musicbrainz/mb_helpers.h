@@ -2,8 +2,8 @@
 
 struct Track
 {
+	pfc::string_list_impl artistid;
 	str8 artist;
-	str8 artistid;
 	str8 releasetrackid;
 	str8 title;
 	str8 trackid;
@@ -23,9 +23,9 @@ struct Disc
 
 struct Release
 {
+	pfc::string_list_impl albumartistid;
 	pfc::list_t<Disc> discs;
 	str8 album_artist;
-	str8 albumartistid;
 	str8 albumid;
 	str8 barcode;
 	str8 catalog;
@@ -63,30 +63,6 @@ static const char* release_statuses[] = {
 	"Pseudo-Release"
 };
 
-static const char* ascii_replacements[][2] = {
-	{ "…", "..." },
-	{ "‘", "'" },
-	{ "’", "'" },
-	{ "‚", "'" },
-	{ "“", "\"" },
-	{ "”", "\"" },
-	{ "„", "\"" },
-	{ "′", "'" },
-	{ "″", "\"" },
-	{ "‹", "<" },
-	{ "›", ">" },
-	{ "«", "\"" },
-	{ "»", "\"" },
-	{ "‐", "-" },
-	{ "‒", "-" },
-	{ "–", "-" },
-	{ "−", "-" },
-	{ "—", "-" },
-	{ "―", "-" }
-};
-
-static const t_size ascii_replacements_count = PFC_TABSIZE(ascii_replacements);
-
 Release parser(json release, t_size handle_count);
 str8 get_status_str(t_size idx);
 str8 get_type_str(t_size idx);
@@ -95,5 +71,5 @@ str8 to_str(json j);
 t_size get_status_index(str8 str);
 t_size get_type_index(str8 str);
 void ascii_replacer(str8& out);
-void get_artist_credit(json j, str8& name, str8& id);
+void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids, t_size type);
 void tagger(metadb_handle_list_cref handles, Release release, t_size disc_idx);
