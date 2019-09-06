@@ -1,6 +1,7 @@
 #pragma once
 
-class dialog_tags : public CDialogImpl<dialog_tags> {
+class dialog_tags : public CDialogImpl<dialog_tags>
+{
 public:
 	dialog_tags(const str8& p_artist, const str8& p_album) : m_artist(p_artist), m_album(p_album) {}
 
@@ -12,7 +13,8 @@ public:
 
 	enum { IDD = IDD_CUSTOM_QUERY_TAGS };
 
-	BOOL OnInitDialog(HWND hwndFocus, LPARAM lParam) {
+	BOOL OnInitDialog(HWND hwndFocus, LPARAM lParam)
+	{
 		m_ok = GetDlgItem(IDOK);
 		uSetDlgItemText(m_hWnd, IDC_ARTIST, m_artist);
 		uSetDlgItemText(m_hWnd, IDC_ALBUM, m_album);
@@ -20,13 +22,15 @@ public:
 		return true;
 	}
 
-	void OnCloseCmd(UINT uNotifyCode, int nID, HWND wndCtl) {
+	void OnCloseCmd(UINT uNotifyCode, int nID, HWND wndCtl)
+	{
 		uGetDlgItemText(m_hWnd, IDC_ARTIST, m_artist);
 		uGetDlgItemText(m_hWnd, IDC_ALBUM, m_album);
 		EndDialog(nID);
 	}
 	
-	void OnUpdate(UINT uNotifyCode, int nID, HWND wndCtl) {
+	void OnUpdate(UINT uNotifyCode, int nID, HWND wndCtl)
+	{
 		m_ok.EnableWindow(string_utf8_from_window(m_hWnd, IDC_ARTIST).length() && string_utf8_from_window(m_hWnd, IDC_ALBUM).length());
 	}
 

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
-namespace mb_preferences {
+namespace mb_preferences
+{
 	const GUID guid_server = { 0x2ac00b3b, 0x1b04, 0x4fb2,{ 0xa9, 0x98, 0x5c, 0x16, 0x4, 0x9c, 0xce, 0x9d } };
 	const bool default_server = false;
 	cfg_bool server(guid_server, default_server);
@@ -51,7 +52,8 @@ namespace mb_preferences {
 	cfg_bool write_albumartist(guid_write_albumartist, default_write_albumartist);
 }
 
-class PreferencesPageInstance : public CDialogImpl<PreferencesPageInstance>, public preferences_page_instance {
+class PreferencesPageInstance : public CDialogImpl<PreferencesPageInstance>, public preferences_page_instance
+{
 public:
 	PreferencesPageInstance(preferences_page_callback::ptr p_callback) : m_callback(p_callback) {}
 
@@ -63,7 +65,8 @@ public:
 		COMMAND_RANGE_HANDLER_EX(IDC_SERVER, IDC_WRITE_ALBUMARTIST, OnChanged)
 	END_MSG_MAP()
 
-	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam) {
+	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
+	{
 		server_checkbox = GetDlgItem(IDC_SERVER);
 		short_date_checkbox = GetDlgItem(IDC_SHORT_DATE);
 		ascii_punctuation_checkbox = GetDlgItem(IDC_ASCII_PUNCTUATION);
@@ -101,7 +104,8 @@ public:
 		return 0;
 	}
 
-	bool has_changed() {
+	bool has_changed()
+	{
 		if (server_checkbox.IsChecked() != mb_preferences::server) return true;
 		if (short_date_checkbox.IsChecked() != mb_preferences::short_date) return true;
 		if (ascii_punctuation_checkbox.IsChecked() != mb_preferences::ascii_punctuation) return true;
@@ -124,13 +128,15 @@ public:
 		return false;
 	}
 
-	t_uint32 get_state() override {
+	t_uint32 get_state() override
+	{
 		t_uint32 state = preferences_state::resettable;
 		if (has_changed()) state |= preferences_state::changed;
 		return state;
 	}
 
-	void apply() override {
+	void apply() override
+	{
 		mb_preferences::server = server_checkbox.IsChecked();
 		mb_preferences::short_date = short_date_checkbox.IsChecked();
 		mb_preferences::ascii_punctuation = ascii_punctuation_checkbox.IsChecked();
@@ -147,11 +153,13 @@ public:
 		uGetWindowText(albumstatus_data, mb_preferences::albumstatus_data);
 	}
 
-	void on_change() {
+	void on_change()
+	{
 		m_callback->on_state_changed();
 	}
 
-	void reset() override {
+	void reset() override
+	{
 		server_checkbox.SetCheck(mb_preferences::default_server);
 		short_date_checkbox.SetCheck(mb_preferences::default_short_date);
 		ascii_punctuation_checkbox.SetCheck(mb_preferences::default_ascii_punctuation);
@@ -174,7 +182,8 @@ public:
 		on_change();
 	}
 
-	void OnChanged(UINT, int, HWND) {
+	void OnChanged(UINT, int, HWND)
+	{
 		server_data.EnableWindow(server_checkbox.IsChecked());
 		albumtype_data.EnableWindow(write_albumtype_checkbox.IsChecked());
 		albumstatus_data.EnableWindow(write_albumstatus_checkbox.IsChecked());
@@ -199,18 +208,22 @@ private:
 	preferences_page_callback::ptr m_callback;
 };
 
-class PreferencesPage : public preferences_page_impl<PreferencesPageInstance> {
+class PreferencesPage : public preferences_page_impl<PreferencesPageInstance>
+{
 public:
-	const char* get_name() override {
+	const char* get_name() override
+	{
 		return COMPONENT_TITLE;
 	}
 
-	GUID get_guid() override {
+	GUID get_guid() override
+	{
 		static const GUID guid = { 0x79179a37, 0x5942, 0x4fdf,{ 0xbb, 0xb7, 0x93, 0xfd, 0x35, 0xfc, 0xfe, 0x97 } };
 		return guid;
 	}
 
-	GUID get_parent_guid() override {
+	GUID get_parent_guid() override
+	{
 		return preferences_page::guid_tagging;
 	}
 };

@@ -1,6 +1,7 @@
 #pragma once
 
-class mb_toc {
+class mb_toc
+{
 public:
 	mb_toc(metadb_handle_list_cref p_data);
 	~mb_toc();

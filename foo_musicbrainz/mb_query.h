@@ -1,6 +1,7 @@
 #pragma once
 
-class mb_query {
+class mb_query
+{
 public:
 	mb_query(const char* entity, const char* id = "");
 

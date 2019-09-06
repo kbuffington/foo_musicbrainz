@@ -2,7 +2,8 @@
 #include "mb_toc.h"
 #include "sha1.h"
 
-mb_toc::mb_toc(metadb_handle_list_cref p_data) {
+mb_toc::mb_toc(metadb_handle_list_cref p_data)
+{
 	num_tracks = p_data.get_count();
 	pregap = 150;
 	discid = nullptr;
@@ -11,11 +12,14 @@ mb_toc::mb_toc(metadb_handle_list_cref p_data) {
 	t_int64 samples;
 	t_size spf = p_data.get_item(0)->get_info_ref()->info().info_get_int("samplerate") == 48000 ? 640 : 588;
 
-	for (t_size i = 0; i < num_tracks; i++) {
+	for (t_size i = 0; i < num_tracks; i++)
+	{
 		samples = p_data.get_item(i)->get_info_ref()->info().info_get_length_samples();
-		if (i == 0) {
+		if (i == 0)
+		{
 			const char* tmp = p_data.get_item(i)->get_info_ref()->info().info_get("pregap");
-			if (tmp != nullptr) {
+			if (tmp != nullptr)
+			{
 				set_pregap(tmp);
 			}
 		}
@@ -25,7 +29,8 @@ mb_toc::mb_toc(metadb_handle_list_cref p_data) {
 	calculate_tracks();
 }
 
-mb_toc::~mb_toc() {
+mb_toc::~mb_toc()
+{
 	delete [] tracks_lengths;
 	if (discid) delete [] discid;
 }
@@ -33,7 +38,8 @@ mb_toc::~mb_toc() {
 void mb_toc::set_pregap(str8 msf)
 {
 	std::regex rx("^\\d\\d:\\d\\d:\\d\\d$");
-	if (regex_match(msf.get_ptr(), rx)) {
+	if (regex_match(msf.get_ptr(), rx))
+	{
 		pregap += (((msf[0]-'0')*10+(msf[1]-'0'))*60 + (msf[3]-'0')*10+(msf[4]-'0'))*75 + (msf[6]-'0')*10+(msf[7]-'0');
 	}
 }
@@ -69,7 +75,8 @@ char* mb_toc::get_discid()
 		sprintf(tmp, "%02X", num_tracks);
 		SHA1Input(&sha, (unsigned char *)tmp, 2);
 
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 100; i++)
+		{
 			sprintf(tmp, "%08X", tracks[i]);
 			SHA1Input(&sha, (unsigned char *)tmp, 8);
 		}
@@ -82,13 +89,16 @@ char* mb_toc::get_discid()
 	return discid;
 }
 
-const char* mb_toc::get_toc() {
-	if (toc.is_empty()) {
+const char* mb_toc::get_toc()
+{
+	if (toc.is_empty())
+	{
 		char tmp[9];
 		toc << "1";
 		sprintf(tmp, " %d", num_tracks);
 		toc << tmp;
-		for (t_size i = 0; i <= num_tracks; i++) {
+		for (t_size i = 0; i <= num_tracks; i++)
+		{
 			sprintf(tmp, " %d", tracks[i]);
 			toc << tmp;
 		}
@@ -113,14 +123,16 @@ const char* mb_toc::get_toc() {
  * Returns: destination as BASE64
  */
 
-unsigned char* mb_toc::rfc822_binary(void* src, unsigned long srcl, unsigned long& len) {
+unsigned char* mb_toc::rfc822_binary(void* src, unsigned long srcl, unsigned long& len)
+{
 	unsigned char* ret;
 	unsigned char* d;
 	unsigned char* s = (unsigned char*)src;
 	char* v = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._";
 	len = ((srcl + 2) / 3) * 4;
 	d = ret = new unsigned char [len + 1];
-	while (srcl) { /* process tuplets */
+	while (srcl)
+	{ /* process tuplets */
 		*d++ = v[s[0] >> 2];	/* byte 1: high 6 bits (1) */
 				/* byte 2: low 2 bits (1), high 4 bits (2) */
 		*d++ = v[((s[0] << 4) + (--srcl ? (s[1] >> 4) : 0)) & 0x3f];

@@ -5,13 +5,16 @@
 #include "mb_request_thread.h"
 #include "mb_toc.h"
 
-class mb_context_menu : public contextmenu_item_simple {
+class mb_context_menu : public contextmenu_item_simple
+{
 public:
-	unsigned get_num_items() {
+	t_size get_num_items()
+	{
 		return 4;
 	}
 
-	void get_item_name(unsigned p_index, pfc::string_base & p_out) {
+	void get_item_name(t_size p_index, pfc::string_base & p_out)
+	{
 		static const char *item_name[] = {
 			"Get tags from MusicBrainz (by TOC)",
 			"Get tags from MusicBrainz (by artist & album)",
@@ -21,15 +24,19 @@ public:
 		p_out = item_name[p_index];
 	}
 
-	void get_item_default_path(unsigned p_index, pfc::string_base & p_out) {
+	void get_item_default_path(t_size p_index, pfc::string_base & p_out)
+	{
 		p_out = "Tagging";
 	}
 
-	void context_command(unsigned p_index, metadb_handle_list_cref p_data, const GUID& p_caller) {
+	void context_command(t_size p_index, metadb_handle_list_cref p_data, const GUID& p_caller)
+	{
 		HWND wnd = core_api::get_main_window();
 		t_size count = p_data.get_count();
-		switch (p_index) {
-			case 0: {
+		switch (p_index)
+		{
+			case 0:
+			{
 				if (!context_check_count(p_data)) return popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
 				if (!context_check_samplerate(p_data)) return popup_message::g_show("The sample rate of each track must match and be either 44100 Hz or 48000 Hz. Also, the number of samples must match CD frame boundaries.", COMPONENT_TITLE, popup_message::icon_error);
 
@@ -41,9 +48,11 @@ public:
 				threaded_process::get()->run_modeless(cb, threaded_process::flag_show_progress | threaded_process::flag_show_abort, wnd, "Querying data from MusicBrainz");
 				break;
 			}
-			case 1: {
+			case 1:
+			{
 				str8 artist, album;
-				for (t_size i = 0; i < count; i++) {
+				for (t_size i = 0; i < count; i++)
+				{
 					auto item = p_data.get_item(i);
 
 					auto current_artist = item->get_info_ref()->info().meta_get("ALBUM ARTIST", 0);
@@ -52,21 +61,23 @@ public:
 					auto current_album = item->get_info_ref()->info().meta_get("ALBUM", 0);
 					if (current_album == nullptr && count == 1) current_album = item->get_info_ref()->info().meta_get("TITLE", 0);
 
-					if (current_artist == nullptr || current_album == nullptr) {
-						break;
-					}
+					if (current_artist == nullptr || current_album == nullptr) break;
 
 					// Save album and artist of the first item
-					if (i == 0) {
+					if (i == 0)
+					{
 						artist = current_artist;
 						album = current_album;
-						if (artist.is_empty() || album.is_empty()) {
+						if (artist.is_empty() || album.is_empty())
+						{
 							artist.reset();
 							album.reset();
 							break;
 						}
 					// Break if artist or album of current item are different from the first one
-					} else if (strcmp(artist, current_artist) != 0 || strcmp(album, current_album) != 0) {
+					}
+					else if (strcmp(artist, current_artist) != 0 || strcmp(album, current_album) != 0)
+					{
 						artist.reset();
 						album.reset();
 						break;
@@ -94,27 +105,31 @@ public:
 				}
 				break;
 			}
-			case 2: {
+			case 2:
+			{
 				str8 album_id;
-				for (t_size i = 0; i < count; i++) {
+				for (t_size i = 0; i < count; i++)
+				{
 					auto item = p_data.get_item(i);
 
 					auto current_album_id = item->get_info_ref()->info().meta_get("MUSICBRAINZ_ALBUMID", 0);
 
-					if (current_album_id == nullptr) {
-						break;
-					}
+					if (current_album_id == nullptr) break;
 
 					// Save album ID of the first item
-					if (i == 0) {
+					if (i == 0)
+					{
 						album_id = current_album_id;
 						std::regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
-						if (!regex_search(album_id.get_ptr(), rx)) {
+						if (!regex_search(album_id.get_ptr(), rx))
+						{
 							album_id.reset();
 							break;
 						}
 					// Break if album ID of current item is different from the first one
-					} else if (strcmp(album_id, current_album_id) != 0) {
+					}
+					else if (strcmp(album_id, current_album_id) != 0)
+					{
 						album_id.reset();
 						break;
 					}
@@ -135,7 +150,8 @@ public:
 				}
 				break;
 			}
-			case 3: {
+			case 3:
+			{
 				if (!context_check_count(p_data)) return popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
 				if (!context_check_lossless(p_data)) return popup_message::g_show("Only lossless files with a sample rate of 44100Hz may be used for TOC submissions. Also, the number of samples must match CD frame boundaries.", COMPONENT_TITLE, popup_message::icon_error);
 
@@ -149,7 +165,8 @@ public:
 		}
 	}
 
-	GUID get_item_guid(unsigned p_index) {
+	GUID get_item_guid(unsigned p_index)
+	{
 		static const GUID guid_foo_mb_menu[] = {
 			{ 0x3ca8395b, 0x694e, 0x4845, { 0xb5, 0xea, 0x56, 0x30, 0x5e, 0x7c, 0x24, 0x48 } },
 			{ 0x77f1f5cd, 0xf295, 0x4ef4, { 0xba, 0x7b, 0xc7, 0x70, 0xaa, 0xc6, 0xd0, 0x1e } },
@@ -159,7 +176,8 @@ public:
 		return guid_foo_mb_menu[p_index];
 	}
 
-	bool get_item_description(unsigned p_index, pfc::string_base & p_out) {
+	bool get_item_description(unsigned p_index, pfc::string_base & p_out)
+	{
 		static const char *item_description[] = {
 			"Queries MusicBrainz server for tags for a complete CD using TOC.",
 			"Queries MusicBrainz server for tags for a complete CD using Artist/Album.",
@@ -170,17 +188,18 @@ public:
 		return true;
 	}
 
-	bool context_check_count(metadb_handle_list_cref p_data) {
+	bool context_check_count(metadb_handle_list_cref p_data)
+	{
 		t_size count = p_data.get_count();
-		if (count > 99) {
-			return false;
-		}
+		if (count > 99) return false;
 		return true;
 	}
 
-	bool context_check_lossless(metadb_handle_list_cref p_data) {
+	bool context_check_lossless(metadb_handle_list_cref p_data)
+	{
 		t_size count = p_data.get_count();
-		for (t_size i = 0; i < count; i++) {
+		for (t_size i = 0; i < count; i++)
+		{
 			if (p_data.get_item(i)->get_info_ref()->info().is_encoding_lossy()) return false;
 
 			t_int64 srate = p_data.get_item(i)->get_info_ref()->info().info_get_int("samplerate");
@@ -190,14 +209,17 @@ public:
 		return true;
 	}
 
-	bool context_check_samplerate(metadb_handle_list_cref p_data) {
+	bool context_check_samplerate(metadb_handle_list_cref p_data)
+	{
 		t_size count = p_data.get_count();
 		t_int64 srate = p_data.get_item(0)->get_info_ref()->info().info_get_int("samplerate");
-		for (t_size i = 0; i < count; i++) {
+		for (t_size i = 0; i < count; i++)
+		{
 			t_int64 tmp = p_data.get_item(i)->get_info_ref()->info().info_get_int("samplerate");
 			t_int64 samples = p_data.get_item(i)->get_info_ref()->info().info_get_length_samples();
 			if (tmp != srate) return false;
-			switch (tmp) {
+			switch (tmp)
+			{
 			case 44100:
 				if (samples % 588 != 0) return false;
 				break;
@@ -211,10 +233,12 @@ public:
 		return true;
 	}
 
-	bool context_get_display(unsigned p_index, metadb_handle_list_cref p_data, pfc::string_base & p_out, unsigned & p_displayflags, const GUID & p_caller) {
+	bool context_get_display(unsigned p_index, metadb_handle_list_cref p_data, pfc::string_base & p_out, unsigned & p_displayflags, const GUID & p_caller)
+	{
 		PFC_ASSERT(p_index>=0 && p_index<get_num_items());
 		bool result = false;
-		switch (p_index) {
+		switch (p_index)
+		{
 		case 0:
 			result = context_check_count(p_data) && context_check_samplerate(p_data);
 			break;
@@ -226,7 +250,8 @@ public:
 			result = context_check_count(p_data) && context_check_lossless(p_data);
 			break;
 		}
-		if (result) {
+		if (result)
+		{
 			get_item_name(p_index, p_out);
 		}
 		return result;

@@ -1,6 +1,7 @@
 #pragma once
 
-namespace mb_preferences {
+namespace mb_preferences
+{
 	extern const GUID guid_server;
 	extern const bool default_server;
 	extern cfg_bool server;

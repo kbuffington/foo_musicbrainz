@@ -26,11 +26,16 @@ str8 mb_query::url_encode(const char* in)
 	for (const char* tmp = in; *tmp != '\0'; tmp++)
 	{
 		auto c = static_cast<unsigned char>(*tmp);
-		if (isalnum(c)) {
+		if (isalnum(c))
+		{
 			out.add_char(c);
-		} else if (isspace(c)) {
+		}
+		else if (isspace(c))
+		{
 			out.add_char('+');
-		} else {
+		}
+		else
+		{
 			out.add_char('%');
 			out.add_char(to_hex(c >> 4));
 			out.add_char(to_hex(c % 16));

@@ -148,7 +148,8 @@ str8 to_str(json j)
 	if (mb_preferences::ascii_punctuation)
 	{
 		pfc::string tmp(s.c_str());
-		for (t_size i = 0; i < ascii_replacements_count; ++i) {
+		for (t_size i = 0; i < ascii_replacements_count; ++i)
+		{
 			auto what = ascii_replacements[i][0];
 			auto with = ascii_replacements[i][1];
 			tmp = tmp.replace(what, with);
