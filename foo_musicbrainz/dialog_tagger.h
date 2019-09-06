@@ -71,18 +71,30 @@ public:
 		auto styles = LVS_EX_FULLROWSELECT | LVS_EX_LABELTIP;
 		release_list.SetExtendedListViewStyle(styles, styles);
 
-		// Adding release list columns
+		// Add release list columns
 		listview_helper::insert_column(release_list, artist_column, "Artist", 120);
 		listview_helper::insert_column(release_list, release_column, "Release", 120);
 		listview_helper::insert_column(release_list, date_column, "Date/Country", 80);
 		listview_helper::insert_column(release_list, label_column, "Label/Cat#", 140);
 		listview_helper::insert_column(release_list, format_column, "Format", 70);
 
+		// Add release list rows
+		for (t_size i = 0; i < m_release_list.get_count(); i++)
+		{
+			auto& release = m_release_list[i];
+			listview_helper::insert_item(release_list, i, release.album_artist, NULL);
+			listview_helper::set_item_text(release_list, i, release_column, release.title);
+			listview_helper::set_item_text(release_list, i, date_column, slasher(release.date, release.country));
+			listview_helper::set_item_text(release_list, i, label_column, slasher(release.label, release.catalognumber));
+			listview_helper::set_item_text(release_list, i, format_column, release.discs[0].format);
+		}
+
 		// Adding track list columns
 		auto DPI = track_list.GetDPI();
 		track_list.AddColumn("#", MulDiv(30, DPI.cx, 96), HDF_CENTER);
 		track_list.AddColumn("Title", MulDiv(250, DPI.cx, 96));
 
+		// Fixed combo boxes
 		for (const auto& i : release_group_types)
 		{
 			type.AddString(string_wide_from_utf8_fast(i));
@@ -91,26 +103,6 @@ public:
 		for (const auto& i : release_statuses)
 		{
 			status.AddString(string_wide_from_utf8_fast(i));
-		}
-		
-		for (t_size i = 0; i < m_handles.get_count(); ++i)
-		{
-			listview_helper::insert_item(track_list, i, PFC_string_formatter() << (i + 1), NULL);
-		}
-
-		for (t_size i = 0; i < m_release_list.get_count(); i++)
-		{
-			auto& release = m_release_list[i];
-			// Artist
-			listview_helper::insert_item(release_list, i, release.album_artist, NULL);
-			// Title
-			listview_helper::set_item_text(release_list, i, release_column, release.title);
-			// Date / Country
-			listview_helper::set_item_text(release_list, i, date_column, slasher(release.date, release.country));
-			// Label
-			listview_helper::set_item_text(release_list, i, label_column, slasher(release.label, release.catalognumber));
-			// Format
-			listview_helper::set_item_text(release_list, i, format_column, release.discs[0].format);
 		}
 
 		UpdateRelease();
@@ -156,7 +148,7 @@ public:
 
 	void UpdateRelease()
 	{
-		auto release = m_release_list[current_release];
+		auto& release = m_release_list[current_release];
 
 		uSetWindowText(album_artist, release.album_artist);
 		uSetWindowText(album, release.title);
@@ -284,7 +276,7 @@ private:
 		}
 	}
 
-	t_size listGetItemCount(ctx_t ctx) override
+	t_size listGetItemCount(ctx_t) override
 	{
 		return m_handles.get_count();
 	}
@@ -297,7 +289,7 @@ private:
 		}
 	}
 
-	void listSetEditField(ctx_t ctx, t_size item, t_size sub_item, const char* value) override
+	void listSetEditField(ctx_t, t_size item, t_size sub_item, const char* value) override
 	{
 		switch (sub_item)
 		{
