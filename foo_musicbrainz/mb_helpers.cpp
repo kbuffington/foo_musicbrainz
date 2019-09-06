@@ -63,7 +63,7 @@ Release parser(json release, t_size handle_count)
 		{
 			r.label = to_str(label["name"]);
 		}
-		r.catalognumber = to_str(label_info[0]["catalog-number"]);
+		r.catalog = to_str(label_info[0]["catalog-number"]);
 	}
 
 	auto rg = release["release-group"];
@@ -195,7 +195,7 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size disc_idx)
 		if (mb_preferences::write_label_info)
 		{
 			if (release.label.get_length()) info[i].meta_set("LABEL", release.label);
-			if (release.catalognumber.get_length()) info[i].meta_set("CATALOGNUMBER", release.catalognumber);
+			if (release.catalog.get_length()) info[i].meta_set("CATALOGNUMBER", release.catalog);
 			if (release.barcode.get_length()) info[i].meta_set("BARCODE", release.barcode);
 		}
 

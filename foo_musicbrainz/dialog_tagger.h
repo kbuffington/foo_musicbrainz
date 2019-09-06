@@ -26,12 +26,12 @@ public:
 
 		COMMAND_HANDLER_EX(IDC_ARTIST, EN_UPDATE, OnArtistUpdate)
 		COMMAND_HANDLER_EX(IDC_ALBUM, EN_UPDATE, OnAlbumUpdate)
-		COMMAND_HANDLER_EX(IDC_BARCODE, EN_UPDATE, OnBarcodeUpdate)
 		COMMAND_HANDLER_EX(IDC_DATE, EN_UPDATE, OnDateUpdate)
 		COMMAND_HANDLER_EX(IDC_FIRST_RELEASE_DATE, EN_UPDATE, OnFirstDateUpdate)
+		COMMAND_HANDLER_EX(IDC_LABEL, EN_UPDATE, OnLabelUpdate)
+		COMMAND_HANDLER_EX(IDC_CATALOG, EN_UPDATE, OnCatalogUpdate)
+		COMMAND_HANDLER_EX(IDC_BARCODE, EN_UPDATE, OnBarcodeUpdate)
 		COMMAND_HANDLER_EX(IDC_SUBTITLE, EN_UPDATE, OnSubtitleUpdate)
-
-		COMMAND_RANGE_HANDLER_EX(IDC_LABEL, IDC_CATALOG, OnLabelCatalogUpdate)
 	END_MSG_MAP()
 
 	enum { IDD = IDD_TAGGER };
@@ -81,12 +81,11 @@ public:
 		// Add release list rows
 		for (t_size i = 0; i < m_release_list.get_count(); i++)
 		{
-			auto release = m_release_list[i];
-			listview_helper::insert_item(release_list, i, release.album_artist, NULL);
-			listview_helper::set_item_text(release_list, i, release_column, release.title);
-			listview_helper::set_item_text(release_list, i, date_column, slasher(release.date, release.country));
-			listview_helper::set_item_text(release_list, i, label_column, slasher(release.label, release.catalognumber));
-			listview_helper::set_item_text(release_list, i, format_column, release.discs[0].format);
+			listview_helper::insert_item(release_list, i, m_release_list[i].album_artist, NULL);
+			listview_helper::set_item_text(release_list, i, release_column, m_release_list[i].title);
+			listview_helper::set_item_text(release_list, i, date_column, slasher(m_release_list[i].date, m_release_list[i].country));
+			listview_helper::set_item_text(release_list, i, label_column, slasher(m_release_list[i].label, m_release_list[i].catalog));
+			listview_helper::set_item_text(release_list, i, format_column, m_release_list[i].discs[0].format);
 		}
 
 		// Adding track list columns
@@ -144,44 +143,41 @@ public:
 
 	void UpdateRelease()
 	{
-		auto release = m_release_list[current_release];
+		uSetWindowText(album_artist, m_release_list[current_release].album_artist);
+		uSetWindowText(album, m_release_list[current_release].title);
+		uSetWindowText(date, m_release_list[current_release].date);
+		uSetWindowText(first_release_date, m_release_list[current_release].first_release_date);
+		uSetWindowText(label, m_release_list[current_release].label);
+		uSetWindowText(catalog, m_release_list[current_release].catalog);
+		uSetWindowText(barcode, m_release_list[current_release].barcode);
 
-		uSetWindowText(album_artist, release.album_artist);
-		uSetWindowText(album, release.title);
-		uSetWindowText(date, release.date);
-		uSetWindowText(first_release_date, release.first_release_date);
-		uSetWindowText(label, release.label);
-		uSetWindowText(catalog, release.catalognumber);
-		uSetWindowText(barcode, release.barcode);
-
-		type.SetCurSel(get_type_index(release.primary_type));
-		status.SetCurSel(get_status_index(release.status));
+		type.SetCurSel(get_type_index(m_release_list[current_release].primary_type));
+		status.SetCurSel(get_status_index(m_release_list[current_release].status));
 		
 		current_disc = 0;
 		disc.ResetContent();
-		for (t_size i = 0; i < release.discs.get_count(); ++i)
+		for (t_size i = 0; i < m_release_list[current_release].discs.get_count(); ++i)
 		{
-			disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << release.discs[i].disc << " of " << release.discs[i].totaldiscs));
+			disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].discs[i].disc << " of " << m_release_list[current_release].discs[i].totaldiscs));
 		}
-		subtitle.EnableWindow(release.discs.get_count() > 1);
+		subtitle.EnableWindow(m_release_list[current_release].discs.get_count() > 1);
 		UpdateDisc();
 
-		str8 url_str = PFC_string_formatter() << "<a href=\"https://musicbrainz.org/release/" << release.albumid << "\">MusicBrainz release page</a>";
+		str8 url_str = PFC_string_formatter() << "<a href=\"https://musicbrainz.org/release/" << m_release_list[current_release].albumid << "\">MusicBrainz release page</a>";
 		uSetWindowText(url, url_str);
 	}
 
 	void UpdateDisc()
 	{
-		auto d = m_release_list[current_release].discs[current_disc];
 		disc.SetCurSel(current_disc);
-		uSetWindowText(subtitle, d.subtitle);
+		uSetWindowText(subtitle, m_release_list[current_release].discs[current_disc].subtitle);
 
 		if (track_list.TableEdit_IsActive())
 		{
 			track_list.TableEdit_Abort(false);
 		}
 
-		if (d.is_various)
+		if ( m_release_list[current_release].discs[current_disc].is_various)
 		{
 			if (track_list.GetColumnCount() == 2)
 			{
@@ -236,6 +232,18 @@ public:
 		uGetWindowText(first_release_date, m_release_list[current_release].first_release_date);
 	}
 
+	void OnLabelUpdate(UINT, int, CWindow)
+	{
+		uGetWindowText(label, m_release_list[current_release].label);
+		listview_helper::set_item_text(release_list, current_release, label_column, slasher(m_release_list[current_release].label, m_release_list[current_release].catalog));
+	}
+
+	void OnCatalogUpdate(UINT, int, CWindow)
+	{
+		uGetWindowText(catalog, m_release_list[current_release].catalog);
+		listview_helper::set_item_text(release_list, current_release, label_column, slasher(m_release_list[current_release].label, m_release_list[current_release].catalog));
+	}
+
 	void OnBarcodeUpdate(UINT, int, CWindow)
 	{
 		uGetWindowText(barcode, m_release_list[current_release].barcode);
@@ -244,13 +252,6 @@ public:
 	void OnSubtitleUpdate(UINT, int, CWindow)
 	{
 		uGetWindowText(subtitle, m_release_list[current_release].discs[current_disc].subtitle);
-	}
-
-	void OnLabelCatalogUpdate(UINT, int, CWindow)
-	{
-		uGetWindowText(label, m_release_list[current_release].label);
-		uGetWindowText(catalog, m_release_list[current_release].catalognumber);
-		listview_helper::set_item_text(release_list, current_release, label_column, slasher(m_release_list[current_release].label, m_release_list[current_release].catalognumber));
 	}
 
 private:
@@ -263,15 +264,14 @@ private:
 
 	str8 listGetSubItemText(ctx_t, t_size item, t_size sub_item) override
 	{
-		auto tracks = m_release_list[current_release].discs[current_disc].tracks;
 		switch (sub_item)
 		{
 		case 0:
-			return tracks[item].track;
+			return m_release_list[current_release].discs[current_disc].tracks[item].track;
 		case 1:
-			return tracks[item].title;
+			return m_release_list[current_release].discs[current_disc].tracks[item].title;
 		case 2:
-			return tracks[item].artist;
+			return m_release_list[current_release].discs[current_disc].tracks[item].artist;
 		default:
 			return "";
 		}

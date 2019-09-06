@@ -28,7 +28,7 @@ struct Release
 	str8 albumartistid;
 	str8 albumid;
 	str8 barcode;
-	str8 catalognumber;
+	str8 catalog;
 	str8 country;
 	str8 date;
 	str8 discid;
