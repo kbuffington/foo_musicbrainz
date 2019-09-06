@@ -27,7 +27,6 @@ struct Release
 	str8 album_artist;
 	str8 albumartistid;
 	str8 albumid;
-	str8 asin;
 	str8 barcode;
 	str8 catalognumber;
 	str8 country;
@@ -35,10 +34,8 @@ struct Release
 	str8 discid;
 	str8 first_release_date;
 	str8 label;
-	str8 language;
 	str8 primary_type;
 	str8 releasegroupid;
-	str8 script;
 	str8 status;
 	str8 title;
 };

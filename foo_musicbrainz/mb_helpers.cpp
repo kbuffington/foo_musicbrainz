@@ -49,7 +49,6 @@ Release parser(json release, t_size handle_count)
 	}
 
 	r.albumid = to_str(release["id"]);
-	r.asin = to_str(release["asin"]);
 	r.barcode = to_str(release["barcode"]);
 	r.country = to_str(release["country"]);
 	r.date = to_str(release["date"]);
@@ -65,13 +64,6 @@ Release parser(json release, t_size handle_count)
 			r.label = to_str(label["name"]);
 		}
 		r.catalognumber = to_str(label_info[0]["catalog-number"]);
-	}
-
-	auto text_rep = release["text-representation"];
-	if (text_rep.is_object())
-	{
-		r.language = to_str(text_rep["language"]);
-		r.script = to_str(text_rep["script"]);
 	}
 
 	auto rg = release["release-group"];
