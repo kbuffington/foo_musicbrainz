@@ -81,7 +81,7 @@ public:
 		// Add release list rows
 		for (t_size i = 0; i < m_release_list.get_count(); i++)
 		{
-			auto& release = m_release_list[i];
+			auto release = m_release_list[i];
 			listview_helper::insert_item(release_list, i, release.album_artist, NULL);
 			listview_helper::set_item_text(release_list, i, release_column, release.title);
 			listview_helper::set_item_text(release_list, i, date_column, slasher(release.date, release.country));
@@ -144,15 +144,15 @@ public:
 
 	void UpdateRelease()
 	{
-		auto& release = m_release_list[current_release];
+		auto release = m_release_list[current_release];
 
 		uSetWindowText(album_artist, release.album_artist);
 		uSetWindowText(album, release.title);
 		uSetWindowText(date, release.date);
 		uSetWindowText(first_release_date, release.first_release_date);
-		uSetWindowText(barcode, release.barcode);
 		uSetWindowText(label, release.label);
 		uSetWindowText(catalog, release.catalognumber);
+		uSetWindowText(barcode, release.barcode);
 
 		type.SetCurSel(get_type_index(release.primary_type));
 		status.SetCurSel(get_status_index(release.status));
@@ -172,7 +172,7 @@ public:
 
 	void UpdateDisc()
 	{
-		auto& d = m_release_list[current_release].discs[current_disc];
+		auto d = m_release_list[current_release].discs[current_disc];
 		disc.SetCurSel(current_disc);
 		uSetWindowText(subtitle, d.subtitle);
 
@@ -209,6 +209,7 @@ public:
 
 	void OnOk(UINT, int, CWindow)
 	{
+		tagger(m_handles, m_release_list[current_release], current_disc);
 		DestroyWindow();
 	}
 
@@ -262,7 +263,7 @@ private:
 
 	str8 listGetSubItemText(ctx_t, t_size item, t_size sub_item) override
 	{
-		auto& tracks = m_release_list[current_release].discs[current_disc].tracks;
+		auto tracks = m_release_list[current_release].discs[current_disc].tracks;
 		switch (sub_item)
 		{
 		case 0:

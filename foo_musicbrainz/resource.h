@@ -19,16 +19,16 @@
 #define IDD_TAGGER                      1020
 #define IDC_RELEASE_LIST                1021
 #define IDC_TRACK_LIST                  1022
-#define IDC_URL                         1023
-#define IDC_DATE                        1024
-#define IDC_FIRST_RELEASE_DATE          1025
-#define IDC_TYPE                        1026
-#define IDC_STATUS                      1027
-#define IDC_DISC                        1029
-#define IDC_SUBTITLE                    1028
-#define IDC_BARCODE                     1031
-#define IDC_LABEL                       1032
-#define IDC_CATALOG                     1033
+#define IDC_DATE                        1023
+#define IDC_FIRST_RELEASE_DATE          1024
+#define IDC_LABEL                       1025
+#define IDC_CATALOG                     1026
+#define IDC_BARCODE                     1027
+#define IDC_TYPE                        1028
+#define IDC_STATUS                      1029
+#define IDC_DISC                        1030
+#define IDC_SUBTITLE                    1031
+#define IDC_URL                         1032
 
 #define IDD_PREFERENCES                 1040
 #define IDC_SERVER                      1041

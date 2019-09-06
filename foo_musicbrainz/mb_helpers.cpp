@@ -15,14 +15,15 @@ Release parser(json release, t_size handle_count)
 			if (tracks.is_array() && tracks.size() == handle_count)
 			{
 				Disc d;
+				str8 artist, id;
+				get_artist_credit(tracks[0], artist, id);
 				d.is_various = false;
-				str8 artist = get_artist_credit(tracks[0]);
 				for (auto& track : tracks)
 				{
 					Track t;
-					t.artist = get_artist_credit(track);
+					get_artist_credit(track, t.artist, t.artistid);
 					t.title = to_str(track["title"]);
-					t.release_trackid = to_str(track["id"]);
+					t.releasetrackid = to_str(track["id"]);
 					t.track = to_str(track["position"]);
 					t.totaltracks = handle_count_str;
 
@@ -46,7 +47,7 @@ Release parser(json release, t_size handle_count)
 		}
 	}
 
-	r.album_artist = get_artist_credit(release);
+	get_artist_credit(release, r.album_artist, r.albumartistid);
 	r.albumid = to_str(release["id"]);
 	r.asin = to_str(release["asin"]);
 	r.barcode = to_str(release["barcode"]);
@@ -78,20 +79,10 @@ Release parser(json release, t_size handle_count)
 	{
 		r.first_release_date = to_str(rg["first-release-date"]);
 		r.primary_type = to_str(rg["primary-type"]);
-		r.release_groupid = to_str(rg["id"]);
+		r.releasegroupid = to_str(rg["id"]);
 	}
 
 	return r;
-}
-
-str8 get_artist_credit(json j)
-{
-	auto artist_credit = j["artist-credit"];
-	if (artist_credit.is_array())
-	{
-		return to_str(artist_credit[0]["name"]);
-	}
-	return "";
 }
 
 str8 get_status_str(t_size idx)
@@ -153,4 +144,94 @@ void ascii_replacer(str8& out)
 		str = str.replace(what, with);
 	}
 	out = str.get_ptr();
+}
+
+void get_artist_credit(json j, str8& name, str8& id)
+{
+	auto artist_credit = j["artist-credit"];
+	if (artist_credit.is_array())
+	{
+		name =  to_str(artist_credit[0]["name"]);
+		id = to_str(artist_credit[0]["artist"]["id"]);
+	}
+}
+
+void tagger(metadb_handle_list_cref handles, Release release, t_size disc_idx)
+{
+	t_size count = handles.get_count();
+	pfc::list_t<file_info_impl> info;
+	info.set_size(count);
+
+	auto& d = release.discs[disc_idx];
+
+	for (t_size i = 0; i < count; ++i)
+	{
+		auto track = d.tracks[i];
+		info[i] = handles[i]->get_info_ref()->info();
+
+		if (mb_preferences::default_write_albumartist || d.is_various)
+		{
+			info[i].meta_set("ALBUM ARTIST", release.album_artist);
+			if (mb_preferences::write_ids) info[i].meta_set("MUSICBRAINZ_ALBUMARTISTID", release.albumartistid);
+		}
+
+		info[i].meta_set("ALBUM", release.title);
+		info[i].meta_set("ARTIST", track.artist);
+		info[i].meta_set("TITLE", track.title);
+		info[i].meta_set("TRACKNUMBER", track.track);
+		info[i].meta_set("TOTALTRACKS", track.totaltracks);
+		info[i].meta_set("DATE", release.date);
+		if (release.first_release_date.get_length() && !release.date.equals(release.first_release_date)) info[i].meta_set("ORIGINAL RELEASE DATE", release.first_release_date);
+
+		if (release.discs.get_count() > 1)
+		{
+			info[i].meta_set("DISCNUMBER", d.disc);
+			info[i].meta_set("TOTALDISCS", d.totaldiscs);
+			info[i].meta_set("DISCSUBTITLE", d.subtitle);
+		}
+
+		if (mb_preferences::albumtype)
+		{
+			if (get_type_index(release.primary_type) > 0) info[i].meta_set(mb_preferences::albumtype_data, release.primary_type);
+		}
+
+		if (mb_preferences::albumstatus)
+		{
+			if (get_status_index(release.status) > 0) info[i].meta_set(mb_preferences::albumstatus_data, release.status);
+		}
+
+		if (mb_preferences::write_label_info)
+		{
+			if (release.label.get_length()) info[i].meta_set("LABEL", release.label);
+			if (release.catalognumber.get_length()) info[i].meta_set("CATALOGNUMBER", release.catalognumber);
+			if (release.barcode.get_length()) info[i].meta_set("BARCODE", release.barcode);
+		}
+
+		if (mb_preferences::write_ids)
+		{
+			if (release.discid.get_length()) info[i].meta_set("MUSICBRAINZ_DISCID", release.discid);
+			info[i].meta_set("MUSICBRAINZ_ALBUMID", release.albumid);
+			info[i].meta_set("MUSICBRAINZ_RELEASEGROUPID", release.releasegroupid);
+			info[i].meta_set("MUSICBRAINZ_RELEASETRACKID", track.releasetrackid);
+			info[i].meta_set("MUSICBRAINZ_TRACKID", track.trackid);
+		}
+
+		if (mb_preferences::write_country && release.country.get_length())
+		{
+			info[i].meta_set("RELEASECOUNTRY", release.country);
+		}
+
+		if (mb_preferences::write_format && d.format.get_length())
+		{
+			info[i].meta_set("MEDIA", d.format);
+		}
+	}
+
+	metadb_io_v2::get()->update_info_async_simple(
+		handles,
+		pfc::ptr_list_const_array_t<const file_info, file_info_impl*>(info.get_ptr(), info.get_count()),
+		core_api::get_main_window(),
+		metadb_io_v2::op_flag_delay_ui,
+		nullptr
+	);
 }
