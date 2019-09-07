@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/marc2k3/fb2k/_apis/build/status/marc2k3.foo_musicbrainz?branchName=master)](https://dev.azure.com/marc2k3/fb2k/_build/latest?definitionId=6&branchName=master)
+
 You can view the original readme [here](ORIGINAL%20README.md).
 
 My changes:
