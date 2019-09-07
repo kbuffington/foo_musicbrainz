@@ -70,19 +70,19 @@ char* mb_toc::get_discid()
 		unsigned long discid_length;
 
 		sprintf(tmp, "%02X", 1);
-		SHA1Input(&sha, (unsigned char *)tmp, 2);
+		SHA1Input(&sha, (unsigned char*)tmp, 2);
 
 		sprintf(tmp, "%02X", num_tracks);
-		SHA1Input(&sha, (unsigned char *)tmp, 2);
+		SHA1Input(&sha, (unsigned char*)tmp, 2);
 
 		for (int i = 0; i < 100; i++)
 		{
 			sprintf(tmp, "%08X", tracks[i]);
-			SHA1Input(&sha, (unsigned char *)tmp, 8);
+			SHA1Input(&sha, (unsigned char*)tmp, 8);
 		}
 
 		SHA1Result(&sha, digest);
-		discid = (char *)rfc822_binary(digest, 20, discid_length);
+		discid = (char*)rfc822_binary(digest, 20, discid_length);
 		discid[discid_length] = '\0';
 	}
 

@@ -47,7 +47,6 @@ Release parser(json release, t_size handle_count)
 			if (tracks.is_array() && tracks.size() == handle_count)
 			{
 				Disc d;
-				str8 artist, id;
 				d.is_various = false;
 				for (auto& track : tracks)
 				{
@@ -223,14 +222,14 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size disc_idx)
 			info[i].meta_set("DISCSUBTITLE", d.subtitle);
 		}
 
-		if (mb_preferences::albumtype)
+		if (mb_preferences::albumtype && get_type_index(release.primary_type) > 0)
 		{
-			if (get_type_index(release.primary_type) > 0) info[i].meta_set(mb_preferences::albumtype_data, release.primary_type);
+			info[i].meta_set(mb_preferences::albumtype_data, release.primary_type);
 		}
 
-		if (mb_preferences::albumstatus)
+		if (mb_preferences::albumstatus && get_status_index(release.status) > 0)
 		{
-			if (get_status_index(release.status) > 0) info[i].meta_set(mb_preferences::albumstatus_data, release.status);
+			info[i].meta_set(mb_preferences::albumstatus_data, release.status);
 		}
 
 		if (mb_preferences::write_label_info)

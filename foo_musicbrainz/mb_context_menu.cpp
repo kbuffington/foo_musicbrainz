@@ -15,7 +15,7 @@ public:
 
 	void get_item_name(t_size p_index, pfc::string_base & p_out)
 	{
-		static const char *item_name[] = {
+		static const char* item_name[] = {
 			"Get tags from MusicBrainz (by TOC)",
 			"Get tags from MusicBrainz (by artist & album)",
 			"Get tags from MusicBrainz (by MusicBrainz album ID)",
@@ -33,6 +33,7 @@ public:
 	{
 		HWND wnd = core_api::get_main_window();
 		t_size count = p_data.get_count();
+		t_size flags = threaded_process::flag_show_progress | threaded_process::flag_show_abort | threaded_process::flag_show_delayed;
 		switch (p_index)
 		{
 			case 0:
@@ -45,7 +46,7 @@ public:
 				query->add_param("cdstubs", "no");
 				query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits", false);
 				auto cb = fb2k::service_new<mb_request_thread>(query, p_data);
-				threaded_process::get()->run_modeless(cb, threaded_process::flag_show_progress | threaded_process::flag_show_abort, wnd, "Querying data from MusicBrainz");
+				threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 				break;
 			}
 			case 1:
@@ -100,7 +101,7 @@ public:
 						query->add_param("query", search);
 						query->add_param("limit", "100");
 						auto cb = fb2k::service_new<mb_request_thread>(query, p_data);
-						threaded_process::get()->run_modeless(cb, threaded_process::flag_show_progress | threaded_process::flag_show_abort, wnd, "Querying data from MusicBrainz");
+						threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 					}
 				}
 				break;
@@ -145,7 +146,7 @@ public:
 						auto query = new mb_query("release", dlg.m_album_id);
 						query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits", false);
 						auto cb = fb2k::service_new<mb_request_thread>(query, p_data);
-						threaded_process::get()->run_modeless(cb, threaded_process::flag_show_progress | threaded_process::flag_show_abort, wnd, "Querying data from MusicBrainz");
+						threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 					}
 				}
 				break;
@@ -178,7 +179,7 @@ public:
 
 	bool get_item_description(unsigned p_index, pfc::string_base & p_out)
 	{
-		static const char *item_description[] = {
+		static const char* item_description[] = {
 			"Queries MusicBrainz server for tags for a complete CD using TOC.",
 			"Queries MusicBrainz server for tags for a complete CD using Artist/Album.",
 			"Queries MusicBrainz server for tags for a complete CD using MusicBrainz Album ID.",
