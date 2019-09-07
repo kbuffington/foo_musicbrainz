@@ -160,6 +160,7 @@ public:
 		{
 			disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].discs[i].disc << " of " << m_release_list[current_release].discs[i].totaldiscs));
 		}
+		subtitle.EnableWindow(!m_release_list[current_release].discs[0].totaldiscs.equals("1"));
 		UpdateDisc();
 
 		str8 url_str = PFC_string_formatter() << "<a href=\"https://musicbrainz.org/release/" << m_release_list[current_release].albumid << "\">MusicBrainz release page</a>";
