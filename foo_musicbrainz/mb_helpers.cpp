@@ -216,7 +216,7 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size disc_idx)
 		info[i].meta_set("DATE", release.date);
 		if (release.first_release_date.get_length() && !release.date.equals(release.first_release_date)) info[i].meta_set("ORIGINAL RELEASE DATE", release.first_release_date);
 
-		if (release.discs.get_count() > 1)
+		if (!d.totaldiscs.equals("1"))
 		{
 			info[i].meta_set("DISCNUMBER", d.disc);
 			info[i].meta_set("TOTALDISCS", d.totaldiscs);
