@@ -176,7 +176,7 @@ public:
 			track_list.TableEdit_Abort(false);
 		}
 
-		if ( m_release_list[current_release].discs[current_disc].is_various)
+		if (m_release_list[current_release].discs[current_disc].is_various)
 		{
 			if (track_list.GetColumnCount() == 2)
 			{
@@ -257,7 +257,7 @@ private:
 	// IListControlOwnerDataSource methods
 
 	bool listIsColumnEditable(ctx_t, t_size sub_item) override
-	{ 
+	{
 		return sub_item > 0;
 	}
 
