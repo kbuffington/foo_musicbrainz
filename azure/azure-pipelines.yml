@@ -1,0 +1,15 @@
+variables:
+  solution: src/foo_musicbrainz.sln
+jobs:
+- template: job-build.yml
+  parameters:
+    displayName: VS 2019 v142
+    matrix:
+      Debug:
+        configuration: Debug
+      Release:
+        configuration: Release
+    name: vs2019_v142
+    platform: Win32
+    solution: ${{ variables.solution }}
+    vmImage: windows-2019
