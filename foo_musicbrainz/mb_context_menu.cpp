@@ -121,7 +121,7 @@ public:
 					if (i == 0)
 					{
 						album_id = current_album_id;
-						std::regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+						regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
 						if (!regex_search(album_id.get_ptr(), rx))
 						{
 							album_id.reset();

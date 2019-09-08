@@ -13,21 +13,21 @@ public:
 
 	enum { IDD = IDD_CUSTOM_QUERY_MBID };
 
-	BOOL OnInitDialog(HWND hwndFocus, LPARAM lParam)
+	BOOL OnInitDialog(CWindow, LPARAM)
 	{
 		m_ok = GetDlgItem(IDOK);
 		uSetDlgItemText(m_hWnd, IDC_MBID, m_album_id);
 		CenterWindow();
-		return true;
+		return TRUE;
 	}
 
-	void OnCloseCmd(UINT uNotifyCode, int nID, HWND wndCtl)
+	void OnCloseCmd(UINT, int nID, CWindow)
 	{
 		uGetDlgItemText(m_hWnd, IDC_MBID, m_album_id);
 		EndDialog(nID);
 	}
 	
-	void OnUpdate(UINT uNotifyCode, int nID, HWND wndCtl)
+	void OnUpdate(UINT, int, CWindow)
 	{
 		str8 t = string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr();
 		str8 u = "https://musicbrainz.org/release/";
@@ -39,7 +39,7 @@ public:
 			return;
 		}
 
-		std::regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+		regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
 		m_ok.EnableWindow(regex_search(string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr(), rx));
 	}
 

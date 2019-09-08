@@ -45,7 +45,7 @@ public:
 		format_column
 	};
 
-	bool OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
+	BOOL OnInitDialog(CWindow, LPARAM)
 	{
 		CenterWindow();
 
@@ -105,7 +105,7 @@ public:
 		}
 
 		UpdateRelease();
-		return true;
+		return TRUE;
 	}
 
 	LRESULT OnReleaseListChange(LPNMHDR pnmh)
@@ -119,17 +119,17 @@ public:
 		return 0;
 	}
 
-	void OnTypeChange(UINT uNotifyCode, int nID, CWindow wndCtl)
+	void OnTypeChange(UINT, int, CWindow)
 	{
 		m_release_list[current_release].primary_type = get_type_str(type.GetCurSel());
 	}
 
-	void OnStatusChange(UINT uNotifyCode, int nID, CWindow wndCtl)
+	void OnStatusChange(UINT, int, CWindow)
 	{
 		m_release_list[current_release].status = get_status_str(status.GetCurSel());
 	}
 
-	void OnDiscChange(UINT uNotifyCode, int nID, CWindow wndCtl)
+	void OnDiscChange(UINT, int, CWindow)
 	{
 		current_disc = disc.GetCurSel();
 		UpdateDisc();

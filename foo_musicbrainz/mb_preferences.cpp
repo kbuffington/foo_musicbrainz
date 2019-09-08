@@ -65,7 +65,7 @@ public:
 		COMMAND_RANGE_HANDLER_EX(IDC_SERVER, IDC_WRITE_ALBUMARTIST, OnChanged)
 	END_MSG_MAP()
 
-	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
+	BOOL OnInitDialog(CWindow, LPARAM)
 	{
 		server_checkbox = GetDlgItem(IDC_SERVER);
 		short_date_checkbox = GetDlgItem(IDC_SHORT_DATE);
@@ -101,7 +101,7 @@ public:
 		uSetWindowText(albumtype_data, mb_preferences::albumtype_data);
 		uSetWindowText(albumstatus_data, mb_preferences::albumstatus_data);
 
-		return 0;
+		return FALSE;
 	}
 
 	bool has_changed()
@@ -182,7 +182,7 @@ public:
 		on_change();
 	}
 
-	void OnChanged(UINT, int, HWND)
+	void OnChanged(UINT, int, CWindow)
 	{
 		server_data.EnableWindow(server_checkbox.IsChecked());
 		albumtype_data.EnableWindow(write_albumtype_checkbox.IsChecked());

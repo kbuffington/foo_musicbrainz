@@ -37,7 +37,7 @@ mb_toc::~mb_toc()
 
 void mb_toc::set_pregap(str8 msf)
 {
-	std::regex rx("^\\d\\d:\\d\\d:\\d\\d$");
+	regex rx("^\\d\\d:\\d\\d:\\d\\d$");
 	if (regex_match(msf.get_ptr(), rx))
 	{
 		pregap += (((msf[0]-'0')*10+(msf[1]-'0'))*60 + (msf[3]-'0')*10+(msf[4]-'0'))*75 + (msf[6]-'0')*10+(msf[7]-'0');

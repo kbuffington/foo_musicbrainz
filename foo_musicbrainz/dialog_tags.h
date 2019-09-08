@@ -13,23 +13,23 @@ public:
 
 	enum { IDD = IDD_CUSTOM_QUERY_TAGS };
 
-	BOOL OnInitDialog(HWND hwndFocus, LPARAM lParam)
+	BOOL OnInitDialog(CWindow, LPARAM)
 	{
 		m_ok = GetDlgItem(IDOK);
 		uSetDlgItemText(m_hWnd, IDC_ARTIST, m_artist);
 		uSetDlgItemText(m_hWnd, IDC_ALBUM, m_album);
 		CenterWindow();
-		return true;
+		return TRUE;
 	}
 
-	void OnCloseCmd(UINT uNotifyCode, int nID, HWND wndCtl)
+	void OnCloseCmd(UINT, int nID, CWindow)
 	{
 		uGetDlgItemText(m_hWnd, IDC_ARTIST, m_artist);
 		uGetDlgItemText(m_hWnd, IDC_ALBUM, m_album);
 		EndDialog(nID);
 	}
 	
-	void OnUpdate(UINT uNotifyCode, int nID, HWND wndCtl)
+	void OnUpdate(UINT, int, CWindow)
 	{
 		m_ok.EnableWindow(string_utf8_from_window(m_hWnd, IDC_ARTIST).length() && string_utf8_from_window(m_hWnd, IDC_ALBUM).length());
 	}

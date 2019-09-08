@@ -7,6 +7,7 @@
 #define COMPONENT_VERSION "0.4.0-Beta.2"
 
 #include <regex>
+using std::regex;
 
 #include "json.hpp"
 using json = nlohmann::json;
