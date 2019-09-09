@@ -257,6 +257,11 @@ public:
 private:
 	// IListControlOwnerDataSource methods
 
+	bool listCanSelectItem(ctx_t, t_size) override
+	{
+		return false;
+	}
+
 	bool listIsColumnEditable(ctx_t, t_size sub_item) override
 	{
 		return sub_item > 0;
