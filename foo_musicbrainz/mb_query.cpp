@@ -8,42 +8,6 @@ mb_query::mb_query(const char* entity, const char* id)
 	url << "?fmt=json";
 }
 
-char mb_query::to_hex(char c)
-{
-	return c < 0xa ? '0' + c : 'a' - 0xa + c;
-}
-
-void mb_query::add_param(const char* param, const char* value, bool encode)
-{
-	url << "&" << param << "=" << (encode ? url_encode(value) : value);
-}
-
-str8 mb_query::url_encode(const char* in)
-{
-	str8 out;
-	out.prealloc(strlen(in) * 3 + 1);
-
-	for (const char* tmp = in; *tmp != '\0'; tmp++)
-	{
-		auto c = static_cast<unsigned char>(*tmp);
-		if (isalnum(c))
-		{
-			out.add_char(c);
-		}
-		else if (isspace(c))
-		{
-			out.add_char('+');
-		}
-		else
-		{
-			out.add_char('%');
-			out.add_char(to_hex(c >> 4));
-			out.add_char(to_hex(c % 16));
-		}
-	}
-	return out;
-}
-
 json mb_query::lookup(abort_callback& p_abort)
 {
 	try
@@ -65,4 +29,9 @@ json mb_query::lookup(abort_callback& p_abort)
 		popup_message::g_show(e.what(), COMPONENT_TITLE);
 		return json::array();
 	}
+}
+
+void mb_query::add_param(const char* param, const char* value)
+{
+	url << "&" << param << "=" << value;
 }
