@@ -8,7 +8,8 @@ public:
 		m_handles(p_handles),
 		track_list(this),
 		current_release(0),
-		current_disc(0)
+		current_disc(0),
+		handle_count(p_handles.get_count())
 	{}
 
 	BEGIN_MSG_MAP(dialog_tagger)
@@ -31,7 +32,6 @@ public:
 		COMMAND_HANDLER_EX(IDC_LABEL, EN_UPDATE, OnLabelUpdate)
 		COMMAND_HANDLER_EX(IDC_CATALOG, EN_UPDATE, OnCatalogUpdate)
 		COMMAND_HANDLER_EX(IDC_BARCODE, EN_UPDATE, OnBarcodeUpdate)
-		COMMAND_HANDLER_EX(IDC_SUBTITLE, EN_UPDATE, OnSubtitleUpdate)
 	END_MSG_MAP()
 
 	enum { IDD = IDD_TAGGER };
@@ -61,7 +61,6 @@ public:
 		date = GetDlgItem(IDC_DATE);
 		first_release_date = GetDlgItem(IDC_FIRST_RELEASE_DATE);
 		barcode = GetDlgItem(IDC_BARCODE);
-		subtitle = GetDlgItem(IDC_SUBTITLE);
 		label = GetDlgItem(IDC_LABEL);
 		catalog = GetDlgItem(IDC_CATALOG);
 
@@ -85,13 +84,13 @@ public:
 			listview_helper::set_item_text(release_list, i, release_column, m_release_list[i].title);
 			listview_helper::set_item_text(release_list, i, date_column, slasher(m_release_list[i].date, m_release_list[i].country));
 			listview_helper::set_item_text(release_list, i, label_column, slasher(m_release_list[i].label, m_release_list[i].catalog));
-			listview_helper::set_item_text(release_list, i, format_column, m_release_list[i].discs[0].format);
+			listview_helper::set_item_text(release_list, i, format_column, m_release_list[i].tracks[0].format);
 		}
 
 		// Adding track list columns
 		auto DPI = track_list.GetDPI();
-		track_list.AddColumn("#", MulDiv(30, DPI.cx, 96), HDF_CENTER);
-		track_list.AddColumn("Title", MulDiv(250, DPI.cx, 96));
+		track_list.AddColumn("#", MulDiv(40, DPI.cx, 96), HDF_RIGHT);
+		track_list.AddColumn("Title", MulDiv(220, DPI.cx, 96));
 
 		// Fixed combo boxes
 		for (const auto& i : release_group_types)
@@ -154,30 +153,12 @@ public:
 		type.SetCurSel(get_type_index(m_release_list[current_release].primary_type));
 		status.SetCurSel(get_status_index(m_release_list[current_release].status));
 		
-		current_disc = 0;
-		disc.ResetContent();
-		for (t_size i = 0; i < m_release_list[current_release].discs.get_count(); ++i)
-		{
-			disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].discs[i].disc << " of " << m_release_list[current_release].discs[i].totaldiscs));
-		}
-		subtitle.EnableWindow(!m_release_list[current_release].discs[0].totaldiscs.equals("1"));
-		UpdateDisc();
-
-		str8 url_str = PFC_string_formatter() << "<a href=\"https://musicbrainz.org/release/" << m_release_list[current_release].albumid << "\">MusicBrainz release page</a>";
-		uSetWindowText(url, url_str);
-	}
-
-	void UpdateDisc()
-	{
-		disc.SetCurSel(current_disc);
-		uSetWindowText(subtitle, m_release_list[current_release].discs[current_disc].subtitle);
-
 		if (track_list.TableEdit_IsActive())
 		{
 			track_list.TableEdit_Abort(false);
 		}
 
-		if (m_release_list[current_release].discs[current_disc].is_various)
+		if (m_release_list[current_release].is_various)
 		{
 			if (track_list.GetColumnCount() == 2)
 			{
@@ -189,6 +170,23 @@ public:
 		{
 			track_list.DeleteColumn(2, false);
 		}
+
+		current_disc = 0;
+		disc.ResetContent();
+
+		for (t_size i = 0; i < m_release_list[current_release].disc_count; ++i)
+		{
+			disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].tracks[i * handle_count].discnumber << " of " << m_release_list[current_release].tracks[i * handle_count].totaldiscs));
+		}
+		UpdateDisc();
+
+		str8 url_str = PFC_string_formatter() << "<a href=\"https://musicbrainz.org/release/" << m_release_list[current_release].albumid << "\">MusicBrainz release page</a>";
+		uSetWindowText(url, url_str);
+	}
+
+	void UpdateDisc()
+	{
+		disc.SetCurSel(current_disc);
 
 		track_list.ReloadData();
 	}
@@ -249,11 +247,6 @@ public:
 		uGetWindowText(barcode, m_release_list[current_release].barcode);
 	}
 
-	void OnSubtitleUpdate(UINT, int, CWindow)
-	{
-		uGetWindowText(subtitle, m_release_list[current_release].discs[current_disc].subtitle);
-	}
-
 private:
 	// IListControlOwnerDataSource methods
 
@@ -269,14 +262,15 @@ private:
 
 	str8 listGetSubItemText(ctx_t, t_size item, t_size sub_item) override
 	{
+		item += (current_disc * handle_count);
 		switch (sub_item)
 		{
 		case 0:
-			return m_release_list[current_release].discs[current_disc].tracks[item].track;
+			return PFC_string_formatter() << m_release_list[current_release].tracks[item].discnumber << "." << m_release_list[current_release].tracks[item].tracknumber;
 		case 1:
-			return m_release_list[current_release].discs[current_disc].tracks[item].title;
+			return m_release_list[current_release].tracks[item].title;
 		case 2:
-			return m_release_list[current_release].discs[current_disc].tracks[item].artist;
+			return m_release_list[current_release].tracks[item].artist;
 		default:
 			return "";
 		}
@@ -284,7 +278,7 @@ private:
 
 	t_size listGetItemCount(ctx_t) override
 	{
-		return m_handles.get_count();
+		return handle_count;
 	}
 
 	void listSubItemClicked(ctx_t, t_size item, t_size sub_item) override
@@ -297,13 +291,14 @@ private:
 
 	void listSetEditField(ctx_t, t_size item, t_size sub_item, const char* value) override
 	{
+		item += (current_disc * handle_count);
 		switch (sub_item)
 		{
 		case 1:
-			m_release_list[current_release].discs[current_disc].tracks[item].title = value;
+			m_release_list[current_release].tracks[item].title = value;
 			break;
 		case 2:
-			m_release_list[current_release].discs[current_disc].tracks[item].artist = value;
+			m_release_list[current_release].tracks[item].artist = value;
 			break;
 		}
 	}
@@ -317,7 +312,6 @@ private:
 	CEdit first_release_date;
 	CEdit barcode;
 	CEdit url;
-	CEdit subtitle;
 	CEdit label;
 	CEdit catalog;
 	CListViewCtrl release_list;
@@ -326,4 +320,5 @@ private:
 	pfc::list_t<Release> m_release_list;
 	t_size current_release;
 	t_size current_disc;
+	t_size handle_count;
 };

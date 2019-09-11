@@ -39,28 +39,37 @@ char to_hex(char c)
 Release parser(json release, t_size handle_count)
 {
 	Release r;
+	r.is_various = false;
+
 	get_artist_credit(release, r.album_artist, r.albumartistid, artist_credit_release);
-	str8 totaltracks = PFC_string_formatter() << handle_count;
 
 	auto medias = release["media"];
 	if (medias.is_array())
 	{
-		str8 totaldiscs = PFC_string_formatter() << medias.size();
+		r.totaltracks = get_release_totaltracks(medias);
+		r.disc_count = 0;
+
 		for (auto& media : medias)
 		{
 			auto tracks = media["tracks"];
-			if (tracks.is_array() && tracks.size() == handle_count)
+			if (tracks.is_array() && (r.totaltracks == handle_count || tracks.size() == handle_count))
 			{
-				Disc d;
-				d.is_various = false;
+				str8 format = to_str(media["format"]);
+				str8 subtitle = to_str(media["title"]);
+				t_size discnumber = media["position"].get<t_size>();
+
 				for (auto& track : tracks)
 				{
 					Track t;
 					get_artist_credit(track, t.artist, t.artistid, artist_credit_track);
+					t.discnumber = discnumber;
+					t.format = format;
+					t.subtitle = subtitle;
 					t.title = to_str(track["title"]);
 					t.releasetrackid = to_str(track["id"]);
-					t.track = to_str(track["position"]);
-					t.totaltracks = totaltracks;
+					t.tracknumber = track["position"].get<t_size>();
+					t.totaldiscs = medias.size();
+					t.totaltracks = tracks.size();
 
 					auto recording = track["recording"];
 					if (recording.is_object())
@@ -68,16 +77,14 @@ Release parser(json release, t_size handle_count)
 						t.trackid = to_str(recording["id"]);
 					}
 
-					if (!d.is_various && !r.album_artist.equals(t.artist)) d.is_various = true;
-					d.tracks.add_item(t);
+					if (!r.is_various && !r.album_artist.equals(t.artist)) r.is_various = true;
+					r.tracks.add_item(t);
 				}
 
-				d.disc = to_str(media["position"]);
-				d.format = to_str(media["format"]);
-				d.subtitle = to_str(media["title"]);
-				d.totaldiscs = totaldiscs;
-				
-				r.discs.add_item(d);
+				if (r.totaltracks != handle_count)
+				{
+					r.disc_count++;
+				}
 			}
 		}
 	}
@@ -180,6 +187,16 @@ str8 url_encode(const char* in)
 	return out;
 }
 
+t_size get_release_totaltracks(json j)
+{
+	t_size tmp = 0;
+	for (auto& blah : j)
+	{
+		tmp += blah["tracks"].size();
+	}
+	return tmp;
+}
+
 t_size get_status_index(str8 str)
 {
 	for (t_size i = 0; i < PFC_TABSIZE(release_statuses); ++i)
@@ -219,20 +236,18 @@ void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids, t_size ty
 	}
 }
 
-void tagger(metadb_handle_list_cref handles, Release release, t_size disc_idx)
+void tagger(metadb_handle_list_cref handles, Release release, t_size current_disc)
 {
 	t_size count = handles.get_count();
 	pfc::list_t<file_info_impl> info;
 	info.set_size(count);
 
-	auto d = release.discs[disc_idx];
-
 	for (t_size i = 0; i < count; ++i)
 	{
-		auto track = d.tracks[i];
+		auto track = release.tracks[i + (current_disc * count)];
 		info[i] = handles[i]->get_info_ref()->info();
 
-		if (mb_preferences::write_albumartist || d.is_various)
+		if (mb_preferences::write_albumartist || release.is_various)
 		{
 			info[i].meta_set("ALBUM ARTIST", release.album_artist);
 			if (mb_preferences::write_ids && release.albumartistid.get_count() > 0) info[i].meta_set("MUSICBRAINZ_ALBUMARTISTID", release.albumartistid[0]);
@@ -241,16 +256,16 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size disc_idx)
 		info[i].meta_set("ALBUM", release.title);
 		info[i].meta_set("ARTIST", track.artist);
 		info[i].meta_set("TITLE", track.title);
-		info[i].meta_set("TRACKNUMBER", track.track);
-		info[i].meta_set("TOTALTRACKS", track.totaltracks);
+		info[i].meta_set("TRACKNUMBER", PFC_string_formatter() << track.tracknumber);
+		info[i].meta_set("TOTALTRACKS", PFC_string_formatter() << track.totaltracks);
 		info[i].meta_set("DATE", release.date);
 		if (release.first_release_date.get_length() && !release.date.equals(release.first_release_date)) info[i].meta_set("ORIGINAL RELEASE DATE", release.first_release_date);
 
-		if (!d.totaldiscs.equals("1"))
+		if (track.totaldiscs > 1)
 		{
-			info[i].meta_set("DISCNUMBER", d.disc);
-			info[i].meta_set("TOTALDISCS", d.totaldiscs);
-			info[i].meta_set("DISCSUBTITLE", d.subtitle);
+			info[i].meta_set("DISCNUMBER", PFC_string_formatter() << track.discnumber);
+			info[i].meta_set("TOTALDISCS", PFC_string_formatter() << track.totaldiscs);
+			if (track.subtitle.get_length()) info[i].meta_set("DISCSUBTITLE", track.subtitle);
 		}
 
 		if (mb_preferences::albumtype && get_type_index(release.primary_type) > 0)
@@ -290,9 +305,9 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size disc_idx)
 			info[i].meta_set("RELEASECOUNTRY", release.country);
 		}
 
-		if (mb_preferences::write_format && d.format.get_length())
+		if (mb_preferences::write_format && track.format.get_length())
 		{
-			info[i].meta_set("MEDIA", d.format);
+			info[i].meta_set("MEDIA", track.format);
 		}
 	}
 

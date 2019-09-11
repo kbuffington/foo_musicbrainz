@@ -27,8 +27,7 @@
 #define IDC_TYPE                        1028
 #define IDC_STATUS                      1029
 #define IDC_DISC                        1030
-#define IDC_SUBTITLE                    1031
-#define IDC_URL                         1032
+#define IDC_URL                         1031
 
 #define IDD_PREFERENCES                 1040
 #define IDC_SERVER                      1041

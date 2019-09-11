@@ -4,27 +4,22 @@ struct Track
 {
 	pfc::string_list_impl artistid;
 	str8 artist;
+	str8 format;
 	str8 releasetrackid;
+	str8 subtitle;
 	str8 title;
 	str8 trackid;
-	str8 track;
-	str8 totaltracks;
-};
-
-struct Disc
-{
-	bool is_various;
-	pfc::list_t<Track> tracks;
-	str8 disc;
-	str8 format;
-	str8 subtitle;
-	str8 totaldiscs;
+	t_size discnumber;
+	t_size tracknumber;
+	t_size totaldiscs;
+	t_size totaltracks;
 };
 
 struct Release
 {
+	bool is_various;
 	pfc::string_list_impl albumartistid;
-	pfc::list_t<Disc> discs;
+	pfc::list_t<Track> tracks;
 	str8 album_artist;
 	str8 albumid;
 	str8 barcode;
@@ -38,6 +33,8 @@ struct Release
 	str8 releasegroupid;
 	str8 status;
 	str8 title;
+	t_size disc_count; // not metadata - count of matching discs in partial multi-disc lookups
+	t_size totaltracks;
 };
 
 static const char* release_group_types[] = {
@@ -70,7 +67,8 @@ str8 get_type_str(t_size idx);
 str8 slasher(const str8& one, const str8& two);
 str8 to_str(json j);
 str8 url_encode(const char* in);
+t_size get_release_totaltracks(json j);
 t_size get_status_index(str8 str);
 t_size get_type_index(str8 str);
 void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids, t_size type);
-void tagger(metadb_handle_list_cref handles, Release release, t_size disc_idx);
+void tagger(metadb_handle_list_cref handles, Release release, t_size current_disc);
