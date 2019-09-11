@@ -42,7 +42,8 @@ public:
 		release_column,
 		date_column,
 		label_column,
-		format_column
+		format_column,
+		discs_column
 	};
 
 	BOOL OnInitDialog(CWindow, LPARAM)
@@ -71,11 +72,12 @@ public:
 		release_list.SetExtendedListViewStyle(styles, styles);
 
 		// Add release list columns
-		listview_helper::insert_column(release_list, artist_column, "Artist", 120);
-		listview_helper::insert_column(release_list, release_column, "Release", 120);
+		listview_helper::insert_column(release_list, artist_column, "Artist", 140);
+		listview_helper::insert_column(release_list, release_column, "Release", 140);
 		listview_helper::insert_column(release_list, date_column, "Date/Country", 80);
-		listview_helper::insert_column(release_list, label_column, "Label/Cat#", 140);
-		listview_helper::insert_column(release_list, format_column, "Format", 70);
+		listview_helper::insert_column(release_list, label_column, "Label/Cat#", 150);
+		listview_helper::insert_column(release_list, format_column, "Format", 60);
+		listview_helper::insert_column(release_list, discs_column, "Discs", 30);
 
 		// Add release list rows
 		for (t_size i = 0; i < m_release_list.get_count(); i++)
@@ -85,12 +87,14 @@ public:
 			listview_helper::set_item_text(release_list, i, date_column, slasher(m_release_list[i].date, m_release_list[i].country));
 			listview_helper::set_item_text(release_list, i, label_column, slasher(m_release_list[i].label, m_release_list[i].catalog));
 			listview_helper::set_item_text(release_list, i, format_column, m_release_list[i].tracks[0].format);
+			listview_helper::set_item_text(release_list, i, discs_column, PFC_string_formatter() << m_release_list[i].tracks[0].totaldiscs);
 		}
 
 		// Adding track list columns
 		auto DPI = track_list.GetDPI();
 		track_list.AddColumn("#", MulDiv(40, DPI.cx, 96), HDF_RIGHT);
-		track_list.AddColumn("Title", MulDiv(220, DPI.cx, 96));
+		track_list.AddColumn("Subtitle", MulDiv(100, DPI.cx, 96));
+		track_list.AddColumn("Title", MulDiv(200, DPI.cx, 96));
 
 		// Fixed combo boxes
 		for (const auto& i : release_group_types)
@@ -160,24 +164,27 @@ public:
 
 		if (m_release_list[current_release].is_various)
 		{
-			if (track_list.GetColumnCount() == 2)
+			if (track_list.GetColumnCount() == 3)
 			{
 				auto DPI = track_list.GetDPI();
-				track_list.AddColumn("Track Artist", MulDiv(170, DPI.cx, 96));
+				track_list.AddColumn("Track Artist", MulDiv(200, DPI.cx, 96));
 			}
 		}
-		else if (track_list.GetColumnCount() == 3)
+		else if (track_list.GetColumnCount() == 4)
 		{
-			track_list.DeleteColumn(2, false);
+			track_list.DeleteColumn(3, false);
 		}
 
 		current_disc = 0;
 		disc.ResetContent();
 
+		disc.ShowWindow(m_release_list[current_release].disc_count > 0 && m_release_list[current_release].tracks[0].totaldiscs > 1 ? SW_SHOW : SW_HIDE);
+
 		for (t_size i = 0; i < m_release_list[current_release].disc_count; ++i)
 		{
 			disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].tracks[i * handle_count].discnumber << " of " << m_release_list[current_release].tracks[i * handle_count].totaldiscs));
 		}
+
 		UpdateDisc();
 
 		str8 url_str = PFC_string_formatter() << "<a href=\"https://musicbrainz.org/release/" << m_release_list[current_release].albumid << "\">MusicBrainz release page</a>";
@@ -187,7 +194,6 @@ public:
 	void UpdateDisc()
 	{
 		disc.SetCurSel(current_disc);
-
 		track_list.ReloadData();
 	}
 
@@ -268,8 +274,14 @@ private:
 		case 0:
 			return PFC_string_formatter() << m_release_list[current_release].tracks[item].discnumber << "." << m_release_list[current_release].tracks[item].tracknumber;
 		case 1:
-			return m_release_list[current_release].tracks[item].title;
+			if (m_release_list[current_release].tracks[item].tracknumber == 1 && m_release_list[current_release].tracks[item].totaldiscs > 1)
+			{
+				return m_release_list[current_release].tracks[item].subtitle;
+			}
+			return "";
 		case 2:
+			return m_release_list[current_release].tracks[item].title;
+		case 3:
 			return m_release_list[current_release].tracks[item].artist;
 		default:
 			return "";
@@ -283,7 +295,8 @@ private:
 
 	void listSubItemClicked(ctx_t, t_size item, t_size sub_item) override
 	{
-		if (sub_item > 0)
+		item += (current_disc * handle_count);
+		if ((sub_item == 1 && m_release_list[current_release].tracks[item].tracknumber == 1 && m_release_list[current_release].tracks[item].totaldiscs > 1) || sub_item > 1)
 		{
 			track_list.TableEdit_Start(item, sub_item);
 		}
@@ -295,9 +308,12 @@ private:
 		switch (sub_item)
 		{
 		case 1:
-			m_release_list[current_release].tracks[item].title = value;
+			m_release_list[current_release].tracks[item].subtitle = value;
 			break;
 		case 2:
+			m_release_list[current_release].tracks[item].title = value;
+			break;
+		case 3:
 			m_release_list[current_release].tracks[item].artist = value;
 			break;
 		}

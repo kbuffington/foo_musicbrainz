@@ -211,10 +211,16 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size current_dis
 	pfc::list_t<file_info_impl> info;
 	info.set_size(count);
 
+	str8 subtitle;
+
 	for (t_size i = 0; i < count; ++i)
 	{
 		auto track = release.tracks[i + (current_disc * count)];
 		info[i] = handles[i]->get_info_ref()->info();
+
+		// since editing the discsubtitle only updates track #1, apply to all tracks here
+		if (track.tracknumber == 1) subtitle = track.subtitle;
+		else track.subtitle = subtitle;
 
 		if (mb_preferences::write_albumartist || release.is_various)
 		{

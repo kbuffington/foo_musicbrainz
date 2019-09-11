@@ -92,7 +92,6 @@ public:
 					dialog_tags dlg(artist, album);
 					if (dlg.DoModal(wnd) == IDOK)
 					{
-						auto query = new mb_query("release");
 						str8 search;
 						search << "artist:\"" << dlg.m_artist << "\"";
 						search << " AND release:\"" << dlg.m_album << "\"";
@@ -102,6 +101,7 @@ public:
 						str8 encoded_search;
 						pfc::urlEncode(encoded_search, search);
 
+						auto query = new mb_query("release");
 						query->add_param("query", encoded_search);
 						query->add_param("limit", "100");
 						auto cb = fb2k::service_new<mb_request_thread>(query, p_data);
