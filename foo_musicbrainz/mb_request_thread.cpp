@@ -38,11 +38,8 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 			for (auto& release : releases)
 			{
 				Release r = parser(release, handle_count);
-				if (r.tracks.get_count() > 0)
-				{
-					r.discid = discid;
-					m_release_list.add_item(r);
-				}
+				r.discid = discid;
+				m_release_list.add_item(r);
 			}
 		}
 	}
@@ -69,19 +66,13 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 				}
 
 				Release r = parser(j, handle_count);
-				if (r.tracks.get_count() > 0)
-				{
-					m_release_list.add_item(r);
-				}
+				m_release_list.add_item(r);
 			}
 		}
 	}
 	else // mbid lookup
 	{
 		Release r = parser(j, handle_count);
-		if (r.tracks.get_count() > 0)
-		{
-			m_release_list.add_item(r);
-		}
+		m_release_list.add_item(r);
 	}
 }
