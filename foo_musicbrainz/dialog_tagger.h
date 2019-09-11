@@ -93,8 +93,8 @@ public:
 		// Adding track list columns
 		auto DPI = track_list.GetDPI();
 		track_list.AddColumn("#", MulDiv(40, DPI.cx, 96), HDF_RIGHT);
-		track_list.AddColumn("Subtitle", MulDiv(100, DPI.cx, 96));
-		track_list.AddColumn("Title", MulDiv(200, DPI.cx, 96));
+		track_list.AddColumn("Disc Subtitle", MulDiv(100, DPI.cx, 96));
+		track_list.AddColumnAutoWidth("Title");
 
 		// Fixed combo boxes
 		for (const auto& i : release_group_types)
