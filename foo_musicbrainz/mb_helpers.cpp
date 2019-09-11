@@ -31,11 +31,6 @@ enum
 	artist_credit_track
 };
 
-char to_hex(char c)
-{
-	return c < 0xa ? '0' + c : 'a' - 0xa + c;
-}
-
 Release parser(json release, t_size handle_count)
 {
 	Release r;
@@ -159,32 +154,6 @@ str8 to_str(json j)
 		return tmp.get_ptr();
 	}
 	return s.c_str();
-}
-
-str8 url_encode(const char* in)
-{
-	str8 out;
-	out.prealloc(strlen(in) * 3 + 1);
-
-	for (const char* tmp = in; *tmp != '\0'; tmp++)
-	{
-		auto c = static_cast<unsigned char>(*tmp);
-		if (isalnum(c))
-		{
-			out.add_char(c);
-		}
-		else if (isspace(c))
-		{
-			out.add_char('+');
-		}
-		else
-		{
-			out.add_char('%');
-			out.add_char(to_hex(c >> 4));
-			out.add_char(to_hex(c % 16));
-		}
-	}
-	return out;
 }
 
 t_size get_release_totaltracks(json j)

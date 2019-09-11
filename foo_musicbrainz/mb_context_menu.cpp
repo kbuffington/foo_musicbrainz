@@ -98,7 +98,11 @@ public:
 						search << " AND release:\"" << dlg.m_album << "\"";
 						search << " AND (tracks:" << count;
 						search << " OR tracksmedium:" << count << ")";
-						query->add_param("query", url_encode(search));
+
+						str8 encoded_search;
+						pfc::urlEncode(encoded_search, search);
+
+						query->add_param("query", encoded_search);
 						query->add_param("limit", "100");
 						auto cb = fb2k::service_new<mb_request_thread>(query, p_data);
 						threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
