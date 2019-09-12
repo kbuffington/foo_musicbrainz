@@ -8,28 +8,104 @@
 class mb_context_menu : public contextmenu_item_simple
 {
 public:
-	t_size get_num_items()
+	GUID get_item_guid(unsigned p_index) override
+	{
+		static const GUID guid_foo_mb_menu[] = {
+			{ 0x3ca8395b, 0x694e, 0x4845, { 0xb5, 0xea, 0x56, 0x30, 0x5e, 0x7c, 0x24, 0x48 } },
+		{ 0x77f1f5cd, 0xf295, 0x4ef4, { 0xba, 0x7b, 0xc7, 0x70, 0xaa, 0xc6, 0xd0, 0x1e } },
+		{ 0xf453e537, 0x01e9, 0x4f2d, { 0x89, 0xdc, 0x42, 0x4d, 0x0e, 0xe5, 0x72, 0xfb } },
+		{ 0x4d5e632c, 0x34f3, 0x4fda, { 0x8f, 0x71, 0x35, 0xa4, 0xb2, 0x5b, 0xea, 0x94 } }
+		};
+		return guid_foo_mb_menu[p_index];
+	}
+
+	bool context_check_count(metadb_handle_list_cref p_data)
+	{
+		t_size count = p_data.get_count();
+		if (count > 99) return false;
+		return true;
+	}
+
+	bool context_check_lossless(metadb_handle_list_cref p_data)
+	{
+		t_size count = p_data.get_count();
+		for (t_size i = 0; i < count; i++)
+		{
+			if (p_data.get_item(i)->get_info_ref()->info().is_encoding_lossy()) return false;
+
+			t_int64 srate = p_data.get_item(i)->get_info_ref()->info().info_get_int("samplerate");
+			t_int64 samples = p_data.get_item(i)->get_info_ref()->info().info_get_length_samples();
+			if (srate != 44100 || samples % 588 != 0) return false;
+		}
+		return true;
+	}
+
+	bool context_check_samplerate(metadb_handle_list_cref p_data)
+	{
+		t_size count = p_data.get_count();
+		t_int64 srate = p_data.get_item(0)->get_info_ref()->info().info_get_int("samplerate");
+		for (t_size i = 0; i < count; i++)
+		{
+			t_int64 tmp = p_data.get_item(i)->get_info_ref()->info().info_get_int("samplerate");
+			t_int64 samples = p_data.get_item(i)->get_info_ref()->info().info_get_length_samples();
+			if (tmp != srate) return false;
+			switch (tmp)
+			{
+			case 44100:
+				if (samples % 588 != 0) return false;
+				break;
+			case 48000:
+				if (samples % 640 != 0) return false;
+				break;
+			default:
+				return false;
+			}
+		}
+		return true;
+	}
+
+	bool context_get_display(unsigned p_index, metadb_handle_list_cref p_data, pfc::string_base& p_out, unsigned& p_displayflags, const GUID& p_caller) override
+	{
+		PFC_ASSERT(p_index>=0 && p_index<get_num_items());
+		bool result = false;
+		switch (p_index)
+		{
+		case 0:
+			result = context_check_count(p_data) && context_check_samplerate(p_data);
+			break;
+		case 1:
+		case 2:
+			result = true;
+			break;
+		case 3:
+			result = context_check_count(p_data) && context_check_lossless(p_data);
+			break;
+		}
+		if (result)
+		{
+			get_item_name(p_index, p_out);
+		}
+		return result;
+	}
+
+	bool get_item_description(unsigned p_index, pfc::string_base& p_out) override
+	{
+		static const char* item_description[] = {
+			"Queries MusicBrainz server for tags for a complete CD using TOC.",
+			"Queries MusicBrainz server for tags for a complete CD using Artist/Album.",
+			"Queries MusicBrainz server for tags for a complete CD using MusicBrainz Album ID.",
+			"Opens MusicBrainz TOC lookup page."
+		};
+		p_out = item_description[p_index];
+		return true;
+	}
+
+	t_size get_num_items() override
 	{
 		return 4;
 	}
 
-	void get_item_name(t_size p_index, pfc::string_base & p_out)
-	{
-		static const char* item_name[] = {
-			"Get tags from MusicBrainz (by TOC)",
-			"Get tags from MusicBrainz (by artist & album)",
-			"Get tags from MusicBrainz (by MusicBrainz album ID)",
-			"Add TOC to MusicBrainz"
-		};
-		p_out = item_name[p_index];
-	}
-
-	void get_item_default_path(t_size p_index, pfc::string_base & p_out)
-	{
-		p_out = "Tagging";
-	}
-
-	void context_command(t_size p_index, metadb_handle_list_cref p_data, const GUID& p_caller)
+	void context_command(t_size p_index, metadb_handle_list_cref p_data, const GUID& p_caller) override
 	{
 		HWND wnd = core_api::get_main_window();
 		t_size count = p_data.get_count();
@@ -95,8 +171,6 @@ public:
 						str8 search;
 						search << "artist:\"" << dlg.m_artist << "\"";
 						search << " AND release:\"" << dlg.m_album << "\"";
-						search << " AND (tracks:" << count;
-						search << " OR tracksmedium:" << count << ")";
 
 						str8 encoded_search;
 						pfc::urlEncode(encoded_search, search);
@@ -170,96 +244,20 @@ public:
 		}
 	}
 
-	GUID get_item_guid(unsigned p_index)
+	void get_item_default_path(t_size p_index, pfc::string_base& p_out) override
 	{
-		static const GUID guid_foo_mb_menu[] = {
-			{ 0x3ca8395b, 0x694e, 0x4845, { 0xb5, 0xea, 0x56, 0x30, 0x5e, 0x7c, 0x24, 0x48 } },
-			{ 0x77f1f5cd, 0xf295, 0x4ef4, { 0xba, 0x7b, 0xc7, 0x70, 0xaa, 0xc6, 0xd0, 0x1e } },
-			{ 0xf453e537, 0x01e9, 0x4f2d, { 0x89, 0xdc, 0x42, 0x4d, 0x0e, 0xe5, 0x72, 0xfb } },
-			{ 0x4d5e632c, 0x34f3, 0x4fda, { 0x8f, 0x71, 0x35, 0xa4, 0xb2, 0x5b, 0xea, 0x94 } }
+		p_out = "Tagging";
+	}
+
+	void get_item_name(t_size p_index, pfc::string_base& p_out) override
+	{
+		static const char* item_name[] = {
+			"Get tags from MusicBrainz (by TOC)",
+			"Get tags from MusicBrainz (by artist & album)",
+			"Get tags from MusicBrainz (by MusicBrainz album ID)",
+			"Add TOC to MusicBrainz"
 		};
-		return guid_foo_mb_menu[p_index];
-	}
-
-	bool get_item_description(unsigned p_index, pfc::string_base & p_out)
-	{
-		static const char* item_description[] = {
-			"Queries MusicBrainz server for tags for a complete CD using TOC.",
-			"Queries MusicBrainz server for tags for a complete CD using Artist/Album.",
-			"Queries MusicBrainz server for tags for a complete CD using MusicBrainz Album ID.",
-			"Opens MusicBrainz TOC lookup page."
-		};
-		p_out = item_description[p_index];
-		return true;
-	}
-
-	bool context_check_count(metadb_handle_list_cref p_data)
-	{
-		t_size count = p_data.get_count();
-		if (count > 99) return false;
-		return true;
-	}
-
-	bool context_check_lossless(metadb_handle_list_cref p_data)
-	{
-		t_size count = p_data.get_count();
-		for (t_size i = 0; i < count; i++)
-		{
-			if (p_data.get_item(i)->get_info_ref()->info().is_encoding_lossy()) return false;
-
-			t_int64 srate = p_data.get_item(i)->get_info_ref()->info().info_get_int("samplerate");
-			t_int64 samples = p_data.get_item(i)->get_info_ref()->info().info_get_length_samples();
-			if (srate != 44100 || samples % 588 != 0) return false;
-		}
-		return true;
-	}
-
-	bool context_check_samplerate(metadb_handle_list_cref p_data)
-	{
-		t_size count = p_data.get_count();
-		t_int64 srate = p_data.get_item(0)->get_info_ref()->info().info_get_int("samplerate");
-		for (t_size i = 0; i < count; i++)
-		{
-			t_int64 tmp = p_data.get_item(i)->get_info_ref()->info().info_get_int("samplerate");
-			t_int64 samples = p_data.get_item(i)->get_info_ref()->info().info_get_length_samples();
-			if (tmp != srate) return false;
-			switch (tmp)
-			{
-			case 44100:
-				if (samples % 588 != 0) return false;
-				break;
-			case 48000:
-				if (samples % 640 != 0) return false;
-				break;
-			default:
-				return false;
-			}
-		}
-		return true;
-	}
-
-	bool context_get_display(unsigned p_index, metadb_handle_list_cref p_data, pfc::string_base & p_out, unsigned & p_displayflags, const GUID & p_caller)
-	{
-		PFC_ASSERT(p_index>=0 && p_index<get_num_items());
-		bool result = false;
-		switch (p_index)
-		{
-		case 0:
-			result = context_check_count(p_data) && context_check_samplerate(p_data);
-			break;
-		case 1:
-		case 2:
-			result = true;
-			break;
-		case 3:
-			result = context_check_count(p_data) && context_check_lossless(p_data);
-			break;
-		}
-		if (result)
-		{
-			get_item_name(p_index, p_out);
-		}
-		return result;
+		p_out = item_name[p_index];
 	}
 };
 
