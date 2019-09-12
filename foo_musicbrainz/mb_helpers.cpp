@@ -211,14 +211,6 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size current_dis
 		if (mb_preferences::write_albumartist || release.is_various)
 		{
 			info[i].meta_set("ALBUM ARTIST", release.album_artist);
-			if (mb_preferences::write_ids && release.albumartistid.get_count() > 0)
-			{
-				info[i].meta_remove_field("MUSICBRAINZ_ALBUMARTISTID");
-				for (t_size j = 0; j < release.albumartistid.get_count(); ++j)
-				{
-					info[i].meta_add("MUSICBRAINZ_ALBUMARTISTID", release.albumartistid[j]);
-				}
-			}
 		}
 
 		info[i].meta_set("ALBUM", release.title);
@@ -261,13 +253,16 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size current_dis
 			info[i].meta_set("MUSICBRAINZ_RELEASETRACKID", track.releasetrackid);
 			info[i].meta_set("MUSICBRAINZ_TRACKID", track.trackid);
 
-			if (track.artistid.get_count())
+			for (t_size j = 0; j < release.albumartistid.get_count(); ++j)
 			{
-				info[i].meta_remove_field("MUSICBRAINZ_ARTISTID");
-				for (t_size j = 0; j < track.artistid.get_count(); ++j)
-				{
-					info[i].meta_add("MUSICBRAINZ_ARTISTID", track.artistid[j]);
-				}
+				if (j == 0) info[i].meta_remove_field("MUSICBRAINZ_ALBUMARTISTID");
+				info[i].meta_add("MUSICBRAINZ_ALBUMARTISTID", release.albumartistid[j]);
+			}
+
+			for (t_size j = 0; j < track.artistid.get_count(); ++j)
+			{
+				if (j == 0) info[i].meta_remove_field("MUSICBRAINZ_ARTISTID");
+				info[i].meta_add("MUSICBRAINZ_ARTISTID", track.artistid[j]);
 			}
 		}
 
