@@ -55,6 +55,8 @@ public:
 		
 		type = GetDlgItem(IDC_TYPE);
 		status = GetDlgItem(IDC_STATUS);
+
+		disc_groupbox = GetDlgItem(IDC_DISC_GROUPBOX);
 		disc = GetDlgItem(IDC_DISC);
 
 		album_artist = GetDlgItem(IDC_ARTIST);
@@ -176,13 +178,22 @@ public:
 		}
 
 		current_disc = 0;
-		disc.ResetContent();
-
-		disc.ShowWindow(m_release_list[current_release].disc_count > 0 && m_release_list[current_release].tracks[0].totaldiscs > 1 ? SW_SHOW : SW_HIDE);
-
-		for (t_size i = 0; i < m_release_list[current_release].disc_count; ++i)
+		
+		if (m_release_list[current_release].disc_count > 0 && m_release_list[current_release].tracks[0].totaldiscs > 1)
 		{
-			disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].tracks[i * handle_count].discnumber << " of " << m_release_list[current_release].tracks[i * handle_count].totaldiscs));
+			disc_groupbox.ShowWindow(SW_SHOW);
+			disc.ShowWindow(SW_SHOW);
+			disc.ResetContent();
+
+			for (t_size i = 0; i < m_release_list[current_release].disc_count; ++i)
+			{
+				disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].tracks[i * handle_count].discnumber << " of " << m_release_list[current_release].tracks[i * handle_count].totaldiscs));
+			}
+		}
+		else
+		{
+			disc_groupbox.ShowWindow(SW_HIDE);
+			disc.ShowWindow(SW_HIDE);
 		}
 
 		UpdateDisc();
@@ -332,6 +343,7 @@ private:
 	CEdit catalog;
 	CListViewCtrl release_list;
 	CListControlOwnerData track_list;
+	CWindow disc_groupbox;
 	metadb_handle_list m_handles;
 	pfc::list_t<Release> m_release_list;
 	t_size current_release;
