@@ -178,6 +178,34 @@ t_size get_type_index(str8 str)
 	return 0;
 }
 
+void filter_releases(json releases , t_size count, pfc::string_list_impl& out)
+{
+	for (auto& release : releases) {
+		auto id = to_str(release["id"]);
+		auto track_count = release["track-count"];
+		if (track_count.is_number_unsigned() && track_count.get<t_size>() == count)
+		{
+			out.add_item(id);
+		}
+		else
+		{
+			auto medias = release["media"];
+			if (medias.is_array())
+			{
+				for (auto& media : medias)
+				{
+					auto track_count = media["track-count"];
+					if (track_count.is_number_unsigned() && track_count.get<t_size>() == count)
+					{
+						out.add_item(id);
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
 void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids)
 {
 	auto artist_credit = j["artist-credit"];

@@ -48,14 +48,17 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 		auto releases = j["releases"];
 		if (releases.is_array())
 		{
-			t_size count = releases.size();
+			pfc::string_list_impl ids;
+			filter_releases(releases, handle_count, ids);
+			t_size count = ids.get_count();
+
 			for (t_size i = 0; i < count; ++i)
 			{
 				p_status.set_progress(i + 1, count);
 				p_status.set_title(PFC_string_formatter() << "Fetching " << (i + 1) << " of " << count);
 				Sleep(1100);
 
-				auto query = new mb_query("release", to_str(releases[i]["id"]));
+				auto query = new mb_query("release", ids[i]);
 				query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits");
 
 				json j = query->lookup(p_abort);
