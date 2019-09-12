@@ -95,7 +95,7 @@ public:
 		// Adding track list columns
 		auto DPI = track_list.GetDPI();
 		track_list.AddColumn("#", MulDiv(40, DPI.cx, 96), HDF_RIGHT);
-		track_list.AddColumn("Disc Subtitle", MulDiv(100, DPI.cx, 96));
+		track_list.AddColumn("Disc Subtitle", MulDiv(120, DPI.cx, 96));
 		track_list.AddColumnAutoWidth("Title");
 
 		// Fixed combo boxes
@@ -169,7 +169,7 @@ public:
 			if (track_list.GetColumnCount() == 3)
 			{
 				auto DPI = track_list.GetDPI();
-				track_list.AddColumn("Track Artist", MulDiv(200, DPI.cx, 96));
+				track_list.AddColumn("Track Artist", MulDiv(210, DPI.cx, 96));
 			}
 		}
 		else if (track_list.GetColumnCount() == 4)
