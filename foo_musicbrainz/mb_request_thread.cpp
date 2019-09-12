@@ -2,7 +2,7 @@
 #include "dialog_tagger.h"
 #include "mb_request_thread.h"
 
-mb_request_thread::mb_request_thread(mb_query* p_query, metadb_handle_list_cref p_handles) : m_query(p_query), m_handles(p_handles), m_failed(false) {}
+mb_request_thread::mb_request_thread(t_size p_type, mb_query* p_query, metadb_handle_list_cref p_handles) : m_query(p_query), m_type(p_type), m_handles(p_handles), m_failed(false) {}
 
 void mb_request_thread::on_done(HWND p_wnd, bool p_was_aborted)
 {
@@ -29,7 +29,7 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 		return;
 	}
 	
-	if (j.find("sectors") != j.end()) // discid
+	if (m_type == discid)
 	{
 		str8 discid = to_str(j["id"]);
 		auto releases = j["releases"];
@@ -43,7 +43,7 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 			}
 		}
 	}
-	else if (j.find("releases") != j.end()) // artist/album lookup
+	else if (m_type == search)
 	{
 		auto releases = j["releases"];
 		if (releases.is_array())
@@ -73,9 +73,12 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 			}
 		}
 	}
-	else // mbid lookup
+	else if (m_type == albumid)
 	{
 		Release r = parser(j, handle_count);
-		m_release_list.add_item(r);
+		if (r.tracks.get_count())
+		{
+			m_release_list.add_item(r);
+		}
 	}
 }

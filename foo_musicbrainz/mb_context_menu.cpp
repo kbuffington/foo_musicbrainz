@@ -121,7 +121,7 @@ public:
 				auto query = new mb_query("discid", toc.get_discid());
 				query->add_param("cdstubs", "no");
 				query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits");
-				auto cb = fb2k::service_new<mb_request_thread>(query, p_data);
+				auto cb = fb2k::service_new<mb_request_thread>(mb_request_thread::discid, query, p_data);
 				threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 				break;
 			}
@@ -178,7 +178,7 @@ public:
 						auto query = new mb_query("release");
 						query->add_param("query", encoded_search);
 						query->add_param("limit", "100");
-						auto cb = fb2k::service_new<mb_request_thread>(query, p_data);
+						auto cb = fb2k::service_new<mb_request_thread>(mb_request_thread::search, query, p_data);
 						threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 					}
 				}
@@ -223,7 +223,7 @@ public:
 					{
 						auto query = new mb_query("release", dlg.m_album_id);
 						query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits");
-						auto cb = fb2k::service_new<mb_request_thread>(query, p_data);
+						auto cb = fb2k::service_new<mb_request_thread>(mb_request_thread::albumid, query, p_data);
 						threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 					}
 				}
