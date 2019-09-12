@@ -25,18 +25,12 @@ static const char* ascii_replacements[][2] = {
 
 static const t_size ascii_replacements_count = PFC_TABSIZE(ascii_replacements);
 
-enum
-{
-	artist_credit_release,
-	artist_credit_track
-};
-
 Release parser(json release, t_size handle_count)
 {
 	Release r;
 	r.is_various = false;
 
-	get_artist_credit(release, r.album_artist, r.albumartistid, artist_credit_release);
+	get_artist_credit(release, r.album_artist, r.albumartistid);
 
 	auto medias = release["media"];
 	if (medias.is_array())
@@ -56,7 +50,7 @@ Release parser(json release, t_size handle_count)
 				for (auto& track : tracks)
 				{
 					Track t;
-					get_artist_credit(track, t.artist, t.artistid, artist_credit_track);
+					get_artist_credit(track, t.artist, t.artistid);
 					t.discnumber = discnumber;
 					t.format = format;
 					t.subtitle = subtitle;
@@ -184,23 +178,15 @@ t_size get_type_index(str8 str)
 	return 0;
 }
 
-void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids, t_size type)
+void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids)
 {
 	auto artist_credit = j["artist-credit"];
 	if (artist_credit.is_array())
 	{
-		if (type == artist_credit_track)
+		for (auto& artist : artist_credit)
 		{
-			for (auto& artist : artist_credit)
-			{
-				name << to_str(artist["name"]) << to_str(artist["joinphrase"]);
-				ids.add_item(to_str(artist["artist"]["id"]));
-			}
-		}
-		else if (type == artist_credit_release)
-		{
-			name = to_str(artist_credit[0]["name"]);
-			ids.add_item(to_str(artist_credit[0]["artist"]["id"]));
+			name << to_str(artist["name"]) << to_str(artist["joinphrase"]);
+			ids.add_item(to_str(artist["artist"]["id"]));
 		}
 	}
 }
@@ -225,7 +211,14 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size current_dis
 		if (mb_preferences::write_albumartist || release.is_various)
 		{
 			info[i].meta_set("ALBUM ARTIST", release.album_artist);
-			if (mb_preferences::write_ids && release.albumartistid.get_count() > 0) info[i].meta_set("MUSICBRAINZ_ALBUMARTISTID", release.albumartistid[0]);
+			if (mb_preferences::write_ids && release.albumartistid.get_count() > 0)
+			{
+				info[i].meta_remove_field("MUSICBRAINZ_ALBUMARTISTID");
+				for (t_size j = 0; j < release.albumartistid.get_count(); ++j)
+				{
+					info[i].meta_add("MUSICBRAINZ_ALBUMARTISTID", release.albumartistid[j]);
+				}
+			}
 		}
 
 		info[i].meta_set("ALBUM", release.title);
@@ -268,10 +261,13 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size current_dis
 			info[i].meta_set("MUSICBRAINZ_RELEASETRACKID", track.releasetrackid);
 			info[i].meta_set("MUSICBRAINZ_TRACKID", track.trackid);
 
-			info[i].meta_remove_field("MUSICBRAINZ_ARTISTID");
-			for (t_size j = 0; j < track.artistid.get_count(); ++j)
+			if (track.artistid.get_count())
 			{
-				info[i].meta_add("MUSICBRAINZ_ARTISTID", track.artistid[j]);
+				info[i].meta_remove_field("MUSICBRAINZ_ARTISTID");
+				for (t_size j = 0; j < track.artistid.get_count(); ++j)
+				{
+					info[i].meta_add("MUSICBRAINZ_ARTISTID", track.artistid[j]);
+				}
 			}
 		}
 

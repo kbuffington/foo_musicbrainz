@@ -68,5 +68,5 @@ str8 to_str(json j);
 t_size get_release_totaltracks(json j);
 t_size get_status_index(str8 str);
 t_size get_type_index(str8 str);
-void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids, t_size type);
+void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids);
 void tagger(metadb_handle_list_cref handles, Release release, t_size current_disc);
