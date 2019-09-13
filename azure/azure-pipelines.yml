@@ -1,5 +1,5 @@
 variables:
-  solution: foo_musicbrainz/foo_musicbrainz.sln
+  solution: src/foo_musicbrainz.sln
 jobs:
 - template: job-build.yml
   parameters:
