@@ -158,11 +158,6 @@ public:
 
 		type.SetCurSel(get_type_index(m_release_list[current_release].primary_type));
 		status.SetCurSel(get_status_index(m_release_list[current_release].status));
-		
-		if (track_list.TableEdit_IsActive())
-		{
-			track_list.TableEdit_Abort(false);
-		}
 
 		if (m_release_list[current_release].is_various)
 		{
@@ -205,6 +200,12 @@ public:
 	void UpdateDisc()
 	{
 		disc.SetCurSel(current_disc);
+
+		if (track_list.TableEdit_IsActive())
+		{
+			track_list.TableEdit_Abort(false);
+		}
+
 		track_list.ReloadData();
 	}
 
