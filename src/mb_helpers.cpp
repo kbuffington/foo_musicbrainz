@@ -180,7 +180,8 @@ t_size get_type_index(str8 str)
 
 void filter_releases(json releases , t_size count, pfc::string_list_impl& out)
 {
-	for (auto& release : releases) {
+	for (auto& release : releases)
+	{
 		auto id = to_str(release["id"]);
 		auto track_count = release["track-count"];
 		if (track_count.is_number_unsigned() && track_count.get<t_size>() == count)

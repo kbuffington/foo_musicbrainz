@@ -6,9 +6,6 @@ namespace mb_preferences
 	const bool default_server = false;
 	cfg_bool server(guid_server, default_server);
 
-	const GUID guid_server_data = { 0x8732cde8, 0xe1ed, 0x4824,{ 0xae, 0xf6, 0x7d, 0x4b, 0x56, 0x99, 0x23, 0xac } };
-	cfg_string server_data(guid_server_data, "https://musicbrainz.org");
-
 	const GUID guid_short_date = { 0x18734618, 0x7920, 0x4d24,{ 0x84, 0xa1, 0xb9, 0xd6, 0x6e, 0xd8, 0x25, 0xbc } };
 	const bool default_short_date = false;
 	cfg_bool short_date(guid_short_date, default_short_date);
@@ -25,15 +22,9 @@ namespace mb_preferences
 	const bool default_albumtype = true;
 	cfg_bool albumtype(guid_albumtype, default_albumtype);
 
-	const GUID guid_albumtype_data = { 0x20968c09, 0xb0d4, 0x4059,{ 0xb8, 0x92, 0xda, 0x76, 0xf8, 0xe6, 0x51, 0x4e } };
-	cfg_string albumtype_data(guid_albumtype_data, "MUSICBRAINZ_ALBUMTYPE");
-
 	const GUID guid_albumstatus = { 0x57a8dddd, 0xdf24, 0x4fd3,{ 0xac, 0x95, 0x6f, 0x8, 0x3, 0x26, 0x41, 0x7c } };
 	const bool default_albumstatus = true;
 	cfg_bool albumstatus(guid_albumstatus, default_albumstatus);
-
-	const GUID guid_albumstatus_data = { 0x77182aac, 0x1caa, 0x4793,{ 0xb7, 0x15, 0xcc, 0xf8, 0x97, 0xba, 0x11, 0x1a } };
-	cfg_string albumstatus_data(guid_albumstatus_data, "MUSICBRAINZ_ALBUMSTATUS");
 
 	const GUID guid_write_label_info = { 0x9b3c94e3, 0x278, 0x4eb0,{ 0xa2, 0xed, 0x5, 0xad, 0xf8, 0xce, 0xa3, 0x9d } };
 	const bool default_write_label_info = true;
@@ -50,6 +41,15 @@ namespace mb_preferences
 	const GUID guid_write_albumartist = { 0x5cbeb3ba, 0xae9f, 0x4975, { 0xb9, 0x94, 0xd7, 0x50, 0xda, 0x2b, 0x22, 0x0 } };
 	const bool default_write_albumartist = false;
 	cfg_bool write_albumartist(guid_write_albumartist, default_write_albumartist);
+
+	const GUID guid_server_data = { 0x8732cde8, 0xe1ed, 0x4824,{ 0xae, 0xf6, 0x7d, 0x4b, 0x56, 0x99, 0x23, 0xac } };
+	cfg_string server_data(guid_server_data, "https://musicbrainz.org");
+
+	const GUID guid_albumtype_data = { 0x20968c09, 0xb0d4, 0x4059,{ 0xb8, 0x92, 0xda, 0x76, 0xf8, 0xe6, 0x51, 0x4e } };
+	cfg_string albumtype_data(guid_albumtype_data, "MUSICBRAINZ_ALBUMTYPE");
+
+	const GUID guid_albumstatus_data = { 0x77182aac, 0x1caa, 0x4793,{ 0xb7, 0x15, 0xcc, 0xf8, 0x97, 0xba, 0x11, 0x1a } };
+	cfg_string albumstatus_data(guid_albumstatus_data, "MUSICBRAINZ_ALBUMSTATUS");
 }
 
 class PreferencesPageInstance : public CDialogImpl<PreferencesPageInstance>, public preferences_page_instance
