@@ -3,9 +3,9 @@
 struct Track
 {
 	pfc::string_list_impl artistid;
+	pfc::string_list_impl isrc;
 	str8 artist;
 	str8 format;
-	str8 isrc;
 	str8 releasetrackid;
 	str8 subtitle;
 	str8 title;

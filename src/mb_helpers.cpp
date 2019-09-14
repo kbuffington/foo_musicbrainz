@@ -68,7 +68,10 @@ Release parser(json release, t_size handle_count)
 						auto isrcs = recording["isrcs"];
 						if (isrcs.is_array())
 						{
-							t.isrc = to_str(isrcs[0]);
+							for (auto& isrc : isrcs)
+							{
+								t.isrc.add_item(to_str(isrc));
+							}
 						}
 					}
 
@@ -317,9 +320,13 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size current_dis
 			info[i].meta_set("ASIN", release.asin);
 		}
 
-		if (mb_preferences::write_isrc && track.isrc.get_length())
+		if (mb_preferences::write_isrc)
 		{
-			info[i].meta_set("ISRC", track.isrc);
+			for (t_size j = 0; j < track.isrc.get_count(); ++j)
+			{
+				if (j == 0) info[i].meta_remove_field("ISRC");
+				info[i].meta_add("ISRC", track.isrc[j]);
+			}
 		}
 
 	}
