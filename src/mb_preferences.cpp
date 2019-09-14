@@ -219,9 +219,9 @@ private:
 	CCheckBox write_label_info_checkbox;
 	CCheckBox write_country_checkbox;
 	CCheckBox write_format_checkbox;
-	CCheckBox write_albumartist_checkbox;
 	CCheckBox write_asin_checkbox;
 	CCheckBox write_isrc_checkbox;
+	CCheckBox write_albumartist_checkbox;
 	CEdit server_data;
 	CEdit albumtype_data;
 	CEdit albumstatus_data;
