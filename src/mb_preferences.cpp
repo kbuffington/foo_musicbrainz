@@ -38,6 +38,14 @@ namespace mb_preferences
 	const bool default_write_format = true;
 	cfg_bool write_format(guid_write_format, default_write_format);
 
+	const GUID guid_write_asin = { 0x6677d957, 0xaa52, 0x4fef, { 0x95, 0x81, 0xb3, 0xe3, 0x20, 0x16, 0xaf, 0x4d } };
+	const bool default_write_asin = true;
+	cfg_bool write_asin(guid_write_asin, default_write_asin);
+
+	const GUID guid_write_isrc = { 0x8b129571, 0x1bf2, 0x41bd, { 0x86, 0xf1, 0xcd, 0xec, 0x6, 0xb9, 0xf3, 0xff } };
+	const bool default_write_isrc = true;
+	cfg_bool write_isrc(guid_write_isrc, default_write_isrc);
+
 	const GUID guid_write_albumartist = { 0x5cbeb3ba, 0xae9f, 0x4975, { 0xb9, 0x94, 0xd7, 0x50, 0xda, 0x2b, 0x22, 0x0 } };
 	const bool default_write_albumartist = false;
 	cfg_bool write_albumartist(guid_write_albumartist, default_write_albumartist);
@@ -76,6 +84,8 @@ public:
 		write_label_info_checkbox = GetDlgItem(IDC_WRITE_LABEL_INFO);
 		write_country_checkbox = GetDlgItem(IDC_WRITE_COUNTRY);
 		write_format_checkbox = GetDlgItem(IDC_WRITE_FORMAT);
+		write_asin_checkbox = GetDlgItem(IDC_WRITE_ASIN);
+		write_isrc_checkbox = GetDlgItem(IDC_WRITE_ISRC);
 		write_albumartist_checkbox = GetDlgItem(IDC_WRITE_ALBUMARTIST);
 
 		server_data = GetDlgItem(IDC_SERVER_DATA);
@@ -91,6 +101,8 @@ public:
 		write_label_info_checkbox.SetCheck(mb_preferences::write_label_info);
 		write_country_checkbox.SetCheck(mb_preferences::write_country);
 		write_format_checkbox.SetCheck(mb_preferences::write_format);
+		write_asin_checkbox.SetCheck(mb_preferences::write_asin);
+		write_isrc_checkbox.SetCheck(mb_preferences::write_isrc);
 		write_albumartist_checkbox.SetCheck(mb_preferences::write_albumartist);
 
 		server_data.EnableWindow(mb_preferences::server);
@@ -115,6 +127,8 @@ public:
 		if (write_label_info_checkbox.IsChecked() != mb_preferences::write_label_info) return true;
 		if (write_country_checkbox.IsChecked() != mb_preferences::write_country) return true;
 		if (write_format_checkbox.IsChecked() != mb_preferences::write_format) return true;
+		if (write_asin_checkbox.IsChecked() != mb_preferences::write_asin) return true;
+		if (write_isrc_checkbox.IsChecked() != mb_preferences::write_isrc) return true;
 		if (write_albumartist_checkbox.IsChecked() != mb_preferences::write_albumartist) return true;
 
 		str8 temp;
@@ -146,6 +160,8 @@ public:
 		mb_preferences::write_label_info = write_label_info_checkbox.IsChecked();
 		mb_preferences::write_country = write_country_checkbox.IsChecked();
 		mb_preferences::write_format = write_format_checkbox.IsChecked();
+		mb_preferences::write_asin = write_asin_checkbox.IsChecked();
+		mb_preferences::write_isrc = write_isrc_checkbox.IsChecked();
 		mb_preferences::write_albumartist = write_albumartist_checkbox.IsChecked();
 
 		uGetWindowText(server_data, mb_preferences::server_data);
@@ -169,6 +185,8 @@ public:
 		write_label_info_checkbox.SetCheck(mb_preferences::default_write_label_info);
 		write_country_checkbox.SetCheck(mb_preferences::default_write_country);
 		write_format_checkbox.SetCheck(mb_preferences::default_write_format);
+		write_asin_checkbox.SetCheck(mb_preferences::default_write_asin);
+		write_isrc_checkbox.SetCheck(mb_preferences::default_write_isrc);
 		write_albumartist_checkbox.SetCheck(mb_preferences::default_write_albumartist);
 
 		server_data.EnableWindow(mb_preferences::default_server);
@@ -202,6 +220,8 @@ private:
 	CCheckBox write_country_checkbox;
 	CCheckBox write_format_checkbox;
 	CCheckBox write_albumartist_checkbox;
+	CCheckBox write_asin_checkbox;
+	CCheckBox write_isrc_checkbox;
 	CEdit server_data;
 	CEdit albumtype_data;
 	CEdit albumstatus_data;

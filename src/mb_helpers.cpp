@@ -64,6 +64,12 @@ Release parser(json release, t_size handle_count)
 					if (recording.is_object())
 					{
 						t.trackid = to_str(recording["id"]);
+
+						auto isrcs = recording["isrcs"];
+						if (isrcs.is_array())
+						{
+							t.isrc = to_str(isrcs[0]);
+						}
 					}
 
 					if (!r.is_various && !r.album_artist.equals(t.artist)) r.is_various = true;
@@ -79,6 +85,7 @@ Release parser(json release, t_size handle_count)
 	}
 
 	r.albumid = to_str(release["id"]);
+	r.asin = to_str(release["asin"]);
 	r.barcode = to_str(release["barcode"]);
 	r.country = to_str(release["country"]);
 	r.date = to_str(release["date"]);
@@ -304,6 +311,17 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size current_dis
 		{
 			info[i].meta_set("MEDIA", track.format);
 		}
+
+		if (mb_preferences::write_asin && release.asin.get_length())
+		{
+			info[i].meta_set("ASIN", release.asin);
+		}
+
+		if (mb_preferences::write_isrc && track.isrc.get_length())
+		{
+			info[i].meta_set("ISRC", track.isrc);
+		}
+
 	}
 
 	metadb_io_v2::get()->update_info_async_simple(

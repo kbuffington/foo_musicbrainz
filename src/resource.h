@@ -26,10 +26,10 @@
 #define IDC_BARCODE                     1027
 #define IDC_TYPE                        1028
 #define IDC_STATUS                      1029
-#define IDC_URL                         1031
+#define IDC_URL                         1030
 
-#define IDC_DISC_GROUPBOX               1032
-#define IDC_DISC                        1033
+#define IDC_DISC_GROUPBOX               1031
+#define IDC_DISC                        1032
 
 #define IDD_PREFERENCES                 1040
 #define IDC_SERVER                      1041
@@ -41,19 +41,10 @@
 #define IDC_WRITE_LABEL_INFO            1047
 #define IDC_WRITE_COUNTRY               1048
 #define IDC_WRITE_FORMAT                1049
-#define IDC_WRITE_ALBUMARTIST           1050
-#define IDC_SERVER_DATA                 1051
-#define IDC_ALBUMTYPE_DATA              1052
-#define IDC_ALBUMSTATUS_DATA            1053
+#define IDC_WRITE_ASIN                  1050
+#define IDC_WRITE_ISRC                  1051
+#define IDC_WRITE_ALBUMARTIST           1052
 
-// Next default values for new objects
-//
-#ifdef APSTUDIO_INVOKED
-#ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        106
-#define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1060
-#define _APS_NEXT_SYMED_VALUE           101
-#endif
-#endif
+#define IDC_SERVER_DATA                 1060
+#define IDC_ALBUMTYPE_DATA              1061
+#define IDC_ALBUMSTATUS_DATA            1062

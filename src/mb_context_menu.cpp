@@ -120,7 +120,7 @@ public:
 				mb_toc toc(p_data);
 				auto query = new mb_query("discid", toc.get_discid());
 				query->add_param("cdstubs", "no");
-				query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits");
+				query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
 				auto cb = fb2k::service_new<mb_request_thread>(mb_request_thread::discid, query, p_data);
 				threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 				break;
@@ -222,7 +222,7 @@ public:
 					if (dlg.DoModal(wnd) == IDOK)
 					{
 						auto query = new mb_query("release", dlg.m_album_id);
-						query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits");
+						query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
 						auto cb = fb2k::service_new<mb_request_thread>(mb_request_thread::albumid, query, p_data);
 						threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 					}

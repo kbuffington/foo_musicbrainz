@@ -5,6 +5,7 @@ struct Track
 	pfc::string_list_impl artistid;
 	str8 artist;
 	str8 format;
+	str8 isrc;
 	str8 releasetrackid;
 	str8 subtitle;
 	str8 title;
@@ -22,6 +23,7 @@ struct Release
 	pfc::list_t<Track> tracks;
 	str8 album_artist;
 	str8 albumid;
+	str8 asin;
 	str8 barcode;
 	str8 catalog;
 	str8 country;

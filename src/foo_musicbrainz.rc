@@ -65,7 +65,9 @@ BEGIN
     CONTROL         "Write label, catalog number and barcode", IDC_WRITE_LABEL_INFO, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 99, 146, 10
     CONTROL         "Write release country", IDC_WRITE_COUNTRY, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 115, 146, 10
     CONTROL         "Write release format", IDC_WRITE_FORMAT, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 131, 146, 10
-    CONTROL         "Always write 'Album Artist'", IDC_WRITE_ALBUMARTIST, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 147, 146, 10
+    CONTROL         "Write ASIN", IDC_WRITE_ASIN, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 147, 146, 10
+    CONTROL         "Write ISRC", IDC_WRITE_ISRC, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 163, 146, 10
+    CONTROL         "Always write 'Album Artist'", IDC_WRITE_ALBUMARTIST, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 7, 179, 146, 10
 END
 
 IDD_CUSTOM_QUERY_TAGS DIALOGEX 0, 0, 185, 65

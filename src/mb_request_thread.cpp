@@ -62,7 +62,7 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 				Sleep(1100);
 
 				auto query = new mb_query("release", ids[i]);
-				query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits");
+				query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
 
 				json j = query->lookup(p_abort);
 				if (j.size() == 0)

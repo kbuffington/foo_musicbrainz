@@ -38,6 +38,14 @@ namespace mb_preferences
 	extern const bool default_write_format;
 	extern cfg_bool write_format;
 
+	extern const GUID guid_write_asin;
+	extern const bool default_write_asin;
+	extern cfg_bool write_asin;
+
+	extern const GUID guid_write_isrc;
+	extern const bool default_write_isrc;
+	extern cfg_bool write_isrc;
+
 	extern const GUID guid_write_albumartist;
 	extern const bool default_write_albumartist;
 	extern cfg_bool write_albumartist;
