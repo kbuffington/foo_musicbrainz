@@ -159,11 +159,13 @@ public:
 		type.SetCurSel(get_type_index(m_release_list[current_release].primary_type));
 		status.SetCurSel(get_status_index(m_release_list[current_release].status));
 
+		auto DPI = track_list.GetDPI();
+		track_list.ResizeColumn(1, m_release_list[current_release].tracks[0].totaldiscs > 1 ? MulDiv(120, DPI.cx, 96) : 0);
+
 		if (m_release_list[current_release].is_various)
 		{
 			if (track_list.GetColumnCount() == 3)
 			{
-				auto DPI = track_list.GetDPI();
 				track_list.AddColumn("Track Artist", MulDiv(210, DPI.cx, 96));
 			}
 		}
