@@ -4,7 +4,7 @@
 
 #define COMPONENT_TITLE "MusicBrainz Tagger"
 #define COMPONENT_DLL_NAME "foo_musicbrainz.dll"
-#define COMPONENT_VERSION "0.4.0-Beta.5"
+#define COMPONENT_VERSION "0.4.0-Beta.6"
 
 #include <regex>
 using std::regex;
