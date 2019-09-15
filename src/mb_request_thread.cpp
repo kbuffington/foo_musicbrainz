@@ -6,6 +6,7 @@ mb_request_thread::mb_request_thread(t_size p_type, mb_query* p_query, metadb_ha
 
 void mb_request_thread::on_done(HWND p_wnd, bool p_was_aborted)
 {
+	delete m_query;
 	if (p_was_aborted || m_failed) return;
 
 	if (m_release_list.get_count() > 0)
@@ -61,10 +62,10 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 				p_status.set_title(PFC_string_formatter() << "Fetching " << (i + 1) << " of " << count);
 				Sleep(1100);
 
-				auto query = new mb_query("release", ids[i]);
-				query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
+				mb_query query("release", ids[i]);
+				query.add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
 
-				json j = query->lookup(p_abort);
+				json j = query.lookup(p_abort);
 				if (j.size() == 0)
 				{
 					m_failed = true;
