@@ -195,7 +195,7 @@ public:
 
 		UpdateDisc();
 
-		str8 url_str = PFC_string_formatter() << "<a href=\"https://musicbrainz.org/release/" << m_release_list[current_release].albumid << "\">MusicBrainz release page</a>";
+		str8 url_str = PFC_string_formatter() << "<a href=\"" << get_server() << "/release/" << m_release_list[current_release].albumid << "\">MusicBrainz release page</a>";
 		uSetWindowText(url, url_str);
 	}
 

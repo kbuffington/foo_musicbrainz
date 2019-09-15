@@ -3,7 +3,7 @@
 
 mb_query::mb_query(const char* entity, const char* id)
 {
-	url << (mb_preferences::server ? mb_preferences::server_data : "https://musicbrainz.org") << "/ws/2/" << entity;
+	url << get_server() << "/ws/2/" << entity;
 	if (id != nullptr) url << "/" << id;
 	url << "?fmt=json";
 }

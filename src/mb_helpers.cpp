@@ -123,6 +123,11 @@ Release parser(json release, t_size handle_count)
 	return r;
 }
 
+str8 get_server()
+{
+	return mb_preferences::server ? mb_preferences::server_data : "https://musicbrainz.org";
+}
+
 str8 get_status_str(t_size idx)
 {
 	return release_statuses[idx];
