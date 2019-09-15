@@ -282,21 +282,21 @@ private:
 
 	str8 listGetSubItemText(ctx_t, t_size item, t_size sub_item) override
 	{
-		t_size list_item = item + (current_disc * handle_count);
+		t_size track_idx = item + (current_disc * handle_count);
 		switch (sub_item)
 		{
 		case 0:
-			return PFC_string_formatter() << m_release_list[current_release].tracks[list_item].discnumber << "." << m_release_list[current_release].tracks[list_item].tracknumber;
+			return PFC_string_formatter() << m_release_list[current_release].tracks[track_idx].discnumber << "." << m_release_list[current_release].tracks[track_idx].tracknumber;
 		case 1:
-			if (m_release_list[current_release].tracks[list_item].tracknumber == 1 && m_release_list[current_release].tracks[list_item].totaldiscs > 1)
+			if (m_release_list[current_release].tracks[track_idx].tracknumber == 1 && m_release_list[current_release].tracks[track_idx].totaldiscs > 1)
 			{
-				return m_release_list[current_release].tracks[list_item].subtitle;
+				return m_release_list[current_release].tracks[track_idx].subtitle;
 			}
 			return "";
 		case 2:
-			return m_release_list[current_release].tracks[list_item].title;
+			return m_release_list[current_release].tracks[track_idx].title;
 		case 3:
-			return m_release_list[current_release].tracks[list_item].artist;
+			return m_release_list[current_release].tracks[track_idx].artist;
 		default:
 			return "";
 		}
@@ -309,8 +309,8 @@ private:
 
 	void listSubItemClicked(ctx_t, t_size item, t_size sub_item) override
 	{
-		t_size list_item = item + (current_disc * handle_count);
-		if ((sub_item == 1 && m_release_list[current_release].tracks[list_item].tracknumber == 1 && m_release_list[current_release].tracks[list_item].totaldiscs > 1) || sub_item > 1)
+		t_size track_idx = item + (current_disc * handle_count);
+		if ((sub_item == 1 && m_release_list[current_release].tracks[track_idx].tracknumber == 1 && m_release_list[current_release].tracks[track_idx].totaldiscs > 1) || sub_item > 1)
 		{
 			track_list.TableEdit_Start(item, sub_item);
 		}
@@ -318,17 +318,17 @@ private:
 
 	void listSetEditField(ctx_t, t_size item, t_size sub_item, const char* value) override
 	{
-		t_size list_item = item + (current_disc * handle_count);
+		t_size track_idx = item + (current_disc * handle_count);
 		switch (sub_item)
 		{
 		case 1:
-			m_release_list[current_release].tracks[list_item].subtitle = value;
+			m_release_list[current_release].tracks[track_idx].subtitle = value;
 			break;
 		case 2:
-			m_release_list[current_release].tracks[list_item].title = value;
+			m_release_list[current_release].tracks[track_idx].title = value;
 			break;
 		case 3:
-			m_release_list[current_release].tracks[list_item].artist = value;
+			m_release_list[current_release].tracks[track_idx].artist = value;
 			break;
 		}
 	}
