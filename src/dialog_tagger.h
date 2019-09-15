@@ -176,7 +176,7 @@ public:
 
 		current_disc = 0;
 		
-		if (m_release_list[current_release].disc_count > 0 && m_release_list[current_release].tracks[0].totaldiscs > 1)
+		if (m_release_list[current_release].disc_count > 1)
 		{
 			disc_groupbox.ShowWindow(SW_SHOW);
 			disc.ShowWindow(SW_SHOW);
