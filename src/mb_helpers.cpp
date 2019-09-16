@@ -78,7 +78,7 @@ Release parser(json release, t_size handle_count)
 					}
 
 					if (!r.is_various && !r.album_artist.equals(t.artist)) r.is_various = true;
-					r.tracks.add_item(t);
+					r.tracks.emplace_back(t);
 				}
 
 				if (release_totaltracks != handle_count)

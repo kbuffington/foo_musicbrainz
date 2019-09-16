@@ -3,7 +3,7 @@
 class dialog_tagger : public CDialogImpl<dialog_tagger>, private IListControlOwnerDataSource
 {
 public:
-	dialog_tagger(const pfc::list_t<Release>& p_release_list, metadb_handle_list_cref p_handles) :
+	dialog_tagger(const std::vector<Release>& p_release_list, metadb_handle_list_cref p_handles) :
 		m_release_list(p_release_list),
 		m_handles(p_handles),
 		track_list(this),
@@ -82,7 +82,7 @@ public:
 		listview_helper::insert_column(release_list, discs_column, "Discs", 30);
 
 		// Add release list rows
-		for (t_size i = 0; i < m_release_list.get_count(); i++)
+		for (t_size i = 0; i < m_release_list.size(); i++)
 		{
 			listview_helper::insert_item(release_list, i, m_release_list[i].album_artist, NULL);
 			listview_helper::set_item_text(release_list, i, release_column, m_release_list[i].title);
@@ -348,7 +348,7 @@ private:
 	CListControlOwnerData track_list;
 	CWindow disc_groupbox;
 	metadb_handle_list m_handles;
-	pfc::list_t<Release> m_release_list;
+	std::vector<Release> m_release_list;
 	t_size current_release;
 	t_size current_disc;
 	t_size handle_count;

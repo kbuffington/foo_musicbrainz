@@ -20,7 +20,7 @@ struct Release
 {
 	bool is_various;
 	pfc::string_list_impl albumartistid;
-	pfc::list_t<Track> tracks;
+	std::vector<Track> tracks;
 	str8 album_artist;
 	str8 albumid;
 	str8 asin;

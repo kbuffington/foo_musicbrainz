@@ -9,7 +9,7 @@ void mb_request_thread::on_done(HWND p_wnd, bool p_was_aborted)
 	delete m_query;
 	if (p_was_aborted || m_failed) return;
 
-	if (m_release_list.get_count() > 0)
+	if (m_release_list.size())
 	{
 		fb2k::newDialog<dialog_tagger>(m_release_list, m_handles);
 	}
@@ -40,9 +40,9 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 			{
 				Release r = parser(release, handle_count);
 				r.discid = discid;
-				if (r.tracks.get_count())
+				if (r.tracks.size())
 				{
-					m_release_list.add_item(r);
+					m_release_list.emplace_back(r);
 				}
 			}
 		}
@@ -73,9 +73,9 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 				}
 
 				Release r = parser(j, handle_count);
-				if (r.tracks.get_count())
+				if (r.tracks.size())
 				{
-					m_release_list.add_item(r);
+					m_release_list.emplace_back(r);
 				}
 			}
 		}
@@ -83,9 +83,9 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 	else if (m_type == albumid)
 	{
 		Release r = parser(j, handle_count);
-		if (r.tracks.get_count())
+		if (r.tracks.size())
 		{
-			m_release_list.add_item(r);
+			m_release_list.emplace_back(r);
 		}
 	}
 }
