@@ -35,17 +35,19 @@ Release parser(json release, t_size handle_count)
 	auto medias = release["media"];
 	if (medias.is_array())
 	{
-		r.totaltracks = get_release_totaltracks(medias);
+		t_size release_totaltracks = get_release_totaltracks(medias);
+		t_size totaldiscs = medias.size();
 		r.disc_count = 0;
 
 		for (auto& media : medias)
 		{
 			auto tracks = media["tracks"];
-			if (tracks.is_array() && (r.totaltracks == handle_count || tracks.size() == handle_count))
+			if (tracks.is_array() && (release_totaltracks == handle_count || tracks.size() == handle_count))
 			{
 				str8 format = to_str(media["format"]);
 				str8 subtitle = to_str(media["title"]);
 				t_size discnumber = media["position"].get<t_size>();
+				t_size totaltracks = tracks.size();
 
 				for (auto& track : tracks)
 				{
@@ -57,8 +59,8 @@ Release parser(json release, t_size handle_count)
 					t.title = to_str(track["title"]);
 					t.releasetrackid = to_str(track["id"]);
 					t.tracknumber = track["position"].get<t_size>();
-					t.totaldiscs = medias.size();
-					t.totaltracks = tracks.size();
+					t.totaldiscs = totaldiscs;
+					t.totaltracks = totaltracks;
 
 					auto recording = track["recording"];
 					if (recording.is_object())
@@ -79,7 +81,7 @@ Release parser(json release, t_size handle_count)
 					r.tracks.add_item(t);
 				}
 
-				if (r.totaltracks != handle_count)
+				if (release_totaltracks != handle_count)
 				{
 					r.disc_count++;
 				}

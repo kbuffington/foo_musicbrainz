@@ -36,7 +36,6 @@ struct Release
 	str8 status;
 	str8 title;
 	t_size disc_count; // not metadata - count of matching discs in partial multi-disc lookups
-	t_size totaltracks;
 };
 
 static const char* release_group_types[] = {
