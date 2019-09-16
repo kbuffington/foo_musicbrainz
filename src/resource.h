@@ -9,10 +9,10 @@
 
 #define IDI_SCROLL                      100
 
-#define IDD_CUSTOM_QUERY_MBID           1001
+#define IDD_ALBUMID                     1001
 #define IDC_MBID                        1002
 
-#define IDD_CUSTOM_QUERY_TAGS           1010
+#define IDD_SEARCH                      1010
 #define IDC_ARTIST                      1011
 #define IDC_ALBUM                       1012
 

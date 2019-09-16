@@ -11,7 +11,7 @@ public:
 		COMMAND_CODE_HANDLER_EX(EN_UPDATE, OnUpdate)
 	END_MSG_MAP()
 
-	enum { IDD = IDD_CUSTOM_QUERY_TAGS };
+	enum { IDD = IDD_SEARCH };
 
 	BOOL OnInitDialog(CWindow, LPARAM)
 	{

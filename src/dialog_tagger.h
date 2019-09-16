@@ -113,6 +113,12 @@ public:
 		return TRUE;
 	}
 
+	LRESULT OnLink(LPNMHDR pnmh)
+	{
+		ShellExecute(NULL, L"open", ((PNMLINK)pnmh)->item.szUrl, NULL, NULL, SW_SHOW);
+		return 0;
+	}
+
 	LRESULT OnReleaseListChange(LPNMHDR pnmh)
 	{
 		int new_index = ((LPNMLISTVIEW)pnmh)->iItem;
@@ -124,14 +130,43 @@ public:
 		return 0;
 	}
 
-	void OnTypeChange(UINT, int, CWindow)
+	void OnAlbumUpdate(UINT, int, CWindow)
 	{
-		m_release_list[current_release].primary_type = get_type_str(type.GetCurSel());
+		uGetWindowText(album, m_release_list[current_release].title);
+		listview_helper::set_item_text(release_list, current_release, release_column, m_release_list[current_release].title);
 	}
 
-	void OnStatusChange(UINT, int, CWindow)
+	void OnArtistUpdate(UINT, int, CWindow)
 	{
-		m_release_list[current_release].status = get_status_str(status.GetCurSel());
+		uGetWindowText(album_artist, m_release_list[current_release].album_artist);
+		listview_helper::set_item_text(release_list, current_release, artist_column, m_release_list[current_release].album_artist);
+	}
+
+	void OnBarcodeUpdate(UINT, int, CWindow)
+	{
+		uGetWindowText(barcode, m_release_list[current_release].barcode);
+	}
+
+	void OnCancel(UINT, int, CWindow)
+	{
+		DestroyWindow();
+	}
+
+	void OnCatalogUpdate(UINT, int, CWindow)
+	{
+		uGetWindowText(catalog, m_release_list[current_release].catalog);
+		listview_helper::set_item_text(release_list, current_release, label_column, slasher(m_release_list[current_release].label, m_release_list[current_release].catalog));
+	}
+
+	void OnClose()
+	{
+		DestroyWindow();
+	}
+
+	void OnDateUpdate(UINT, int, CWindow)
+	{
+		uGetWindowText(date, m_release_list[current_release].date);
+		listview_helper::set_item_text(release_list, current_release, date_column, slasher(m_release_list[current_release].date, m_release_list[current_release].country));
 	}
 
 	void OnDiscChange(UINT, int, CWindow)
@@ -140,10 +175,43 @@ public:
 		UpdateDisc();
 	}
 
-	LRESULT OnLink(LPNMHDR pnmh)
+	void OnFirstDateUpdate(UINT, int, CWindow)
 	{
-		ShellExecute(NULL, L"open", ((PNMLINK)pnmh)->item.szUrl, NULL, NULL, SW_SHOW);
-		return 0;
+		uGetWindowText(first_release_date, m_release_list[current_release].first_release_date);
+	}
+
+	void OnLabelUpdate(UINT, int, CWindow)
+	{
+		uGetWindowText(label, m_release_list[current_release].label);
+		listview_helper::set_item_text(release_list, current_release, label_column, slasher(m_release_list[current_release].label, m_release_list[current_release].catalog));
+	}
+
+	void OnOk(UINT, int, CWindow)
+	{
+		tagger(m_handles, m_release_list[current_release], current_disc);
+		DestroyWindow();
+	}
+
+	void OnStatusChange(UINT, int, CWindow)
+	{
+		m_release_list[current_release].status = get_status_str(status.GetCurSel());
+	}
+
+	void OnTypeChange(UINT, int, CWindow)
+	{
+		m_release_list[current_release].primary_type = get_type_str(type.GetCurSel());
+	}
+
+	void UpdateDisc()
+	{
+		disc.SetCurSel(current_disc);
+
+		if (track_list.TableEdit_IsActive())
+		{
+			track_list.TableEdit_Abort(false);
+		}
+
+		track_list.ReloadData();
 	}
 
 	void UpdateRelease()
@@ -199,74 +267,6 @@ public:
 		uSetWindowText(url, url_str);
 	}
 
-	void UpdateDisc()
-	{
-		disc.SetCurSel(current_disc);
-
-		if (track_list.TableEdit_IsActive())
-		{
-			track_list.TableEdit_Abort(false);
-		}
-
-		track_list.ReloadData();
-	}
-
-	void OnClose()
-	{
-		DestroyWindow();
-	}
-
-	void OnCancel(UINT, int, CWindow)
-	{
-		DestroyWindow();
-	}
-
-	void OnOk(UINT, int, CWindow)
-	{
-		tagger(m_handles, m_release_list[current_release], current_disc);
-		DestroyWindow();
-	}
-
-	void OnArtistUpdate(UINT, int, CWindow)
-	{
-		uGetWindowText(album_artist, m_release_list[current_release].album_artist);
-		listview_helper::set_item_text(release_list, current_release, artist_column, m_release_list[current_release].album_artist);
-	}
-
-	void OnAlbumUpdate(UINT, int, CWindow)
-	{
-		uGetWindowText(album, m_release_list[current_release].title);
-		listview_helper::set_item_text(release_list, current_release, release_column, m_release_list[current_release].title);
-	}
-
-	void OnDateUpdate(UINT, int, CWindow)
-	{
-		uGetWindowText(date, m_release_list[current_release].date);
-		listview_helper::set_item_text(release_list, current_release, date_column, slasher(m_release_list[current_release].date, m_release_list[current_release].country));
-	}
-
-	void OnFirstDateUpdate(UINT, int, CWindow)
-	{
-		uGetWindowText(first_release_date, m_release_list[current_release].first_release_date);
-	}
-
-	void OnLabelUpdate(UINT, int, CWindow)
-	{
-		uGetWindowText(label, m_release_list[current_release].label);
-		listview_helper::set_item_text(release_list, current_release, label_column, slasher(m_release_list[current_release].label, m_release_list[current_release].catalog));
-	}
-
-	void OnCatalogUpdate(UINT, int, CWindow)
-	{
-		uGetWindowText(catalog, m_release_list[current_release].catalog);
-		listview_helper::set_item_text(release_list, current_release, label_column, slasher(m_release_list[current_release].label, m_release_list[current_release].catalog));
-	}
-
-	void OnBarcodeUpdate(UINT, int, CWindow)
-	{
-		uGetWindowText(barcode, m_release_list[current_release].barcode);
-	}
-
 private:
 	// IListControlOwnerDataSource methods
 
@@ -307,15 +307,6 @@ private:
 		return handle_count;
 	}
 
-	void listSubItemClicked(ctx_t, t_size item, t_size sub_item) override
-	{
-		t_size track_idx = item + (current_disc * handle_count);
-		if ((sub_item == 1 && m_release_list[current_release].tracks[track_idx].tracknumber == 1 && m_release_list[current_release].tracks[track_idx].totaldiscs > 1) || sub_item > 1)
-		{
-			track_list.TableEdit_Start(item, sub_item);
-		}
-	}
-
 	void listSetEditField(ctx_t, t_size item, t_size sub_item, const char* value) override
 	{
 		t_size track_idx = item + (current_disc * handle_count);
@@ -330,6 +321,15 @@ private:
 		case 3:
 			m_release_list[current_release].tracks[track_idx].artist = value;
 			break;
+		}
+	}
+
+	void listSubItemClicked(ctx_t, t_size item, t_size sub_item) override
+	{
+		t_size track_idx = item + (current_disc * handle_count);
+		if ((sub_item == 1 && m_release_list[current_release].tracks[track_idx].tracknumber == 1 && m_release_list[current_release].tracks[track_idx].totaldiscs > 1) || sub_item > 1)
+		{
+			track_list.TableEdit_Start(item, sub_item);
 		}
 	}
 
