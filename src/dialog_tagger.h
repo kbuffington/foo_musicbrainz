@@ -1,11 +1,20 @@
 #pragma once
 
+static const CDialogResizeHelper::Param resize_data[] = {
+	{ IDOK, 1, 1, 1, 1 },
+	{ IDCANCEL, 1, 1, 1, 1 },
+	{ IDC_URL, 0, 1, 1, 1 }
+};
+
+static const CRect resize_min_max(660, 425, 0, 0);
+
 class dialog_tagger : public CDialogImpl<dialog_tagger>, private IListControlOwnerDataSource
 {
 public:
 	dialog_tagger(const std::vector<Release>& p_release_list, metadb_handle_list_cref p_handles) :
 		m_release_list(p_release_list),
 		m_handles(p_handles),
+		m_resizer(resize_data, resize_min_max),
 		track_list(this),
 		current_release(0),
 		current_disc(0),
@@ -13,6 +22,7 @@ public:
 	{}
 
 	BEGIN_MSG_MAP(dialog_tagger)
+		CHAIN_MSG_MAP_MEMBER(m_resizer)
 		MSG_WM_INITDIALOG(OnInitDialog)
 		MSG_WM_CLOSE(OnClose)
 		COMMAND_ID_HANDLER_EX(IDOK, OnOk)
@@ -110,6 +120,8 @@ public:
 		}
 
 		UpdateRelease();
+
+		ShowWindow(SW_SHOW);
 		return TRUE;
 	}
 
@@ -336,6 +348,7 @@ private:
 	CComboBox disc;
 	CComboBox type;
 	CComboBox status;
+	CDialogResizeHelper m_resizer;
 	CEdit album_artist;
 	CEdit album;
 	CEdit date;

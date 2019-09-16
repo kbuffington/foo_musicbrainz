@@ -15,6 +15,7 @@ using json = nlohmann::json;
 #include "resource.h"
 #include <foobar2000/helpers/foobar2000+atl.h>
 #include <foobar2000/helpers/atl-misc.h>
+#include <libPPUI/CDialogResizeHelper.h>
 #include <libPPUI/CListControlOwnerData.h>
 #include <libPPUI/listview_helper.h>
 
