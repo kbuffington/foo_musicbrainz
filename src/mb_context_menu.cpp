@@ -169,8 +169,8 @@ public:
 					if (dlg.DoModal(wnd) == IDOK)
 					{
 						str8 search;
-						search << "artist:\"" << dlg.m_artist << "\"";
-						search << " AND release:\"" << dlg.m_album << "\"";
+						search << "artist:\"" << dlg.m_artist_str << "\"";
+						search << " AND release:\"" << dlg.m_album_str << "\"";
 
 						str8 encoded_search;
 						pfc::urlEncode(encoded_search, search);
@@ -221,7 +221,7 @@ public:
 					dialog_mbid dlg(album_id);
 					if (dlg.DoModal(wnd) == IDOK)
 					{
-						auto query = new mb_query("release", dlg.m_album_id);
+						auto query = new mb_query("release", dlg.m_albumid_str);
 						query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
 						auto cb = fb2k::service_new<mb_request_thread>(mb_request_thread::albumid, query, p_data);
 						threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");

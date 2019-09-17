@@ -3,7 +3,7 @@
 class dialog_mbid : public CDialogImpl<dialog_mbid>
 {
 public:
-	dialog_mbid(const str8& p_album_id) : m_album_id(p_album_id) {}
+	dialog_mbid(const str8& p_albumid_str) : m_albumid_str(p_albumid_str) {}
 
 	BEGIN_MSG_MAP(dialog_mbid)
 		MSG_WM_INITDIALOG(OnInitDialog)
@@ -16,33 +16,37 @@ public:
 	BOOL OnInitDialog(CWindow, LPARAM)
 	{
 		m_ok = GetDlgItem(IDOK);
-		uSetDlgItemText(m_hWnd, IDC_MBID, m_album_id);
+		m_albumid = GetDlgItem(IDC_MBID_EDIT);
+
+		uSetWindowText(m_albumid, m_albumid_str);
 		CenterWindow();
 		return TRUE;
 	}
 
 	void OnCloseCmd(UINT, int nID, CWindow)
 	{
-		uGetDlgItemText(m_hWnd, IDC_MBID, m_album_id);
+		uGetWindowText(m_albumid, m_albumid_str);
 		EndDialog(nID);
 	}
 	
 	void OnUpdate(UINT, int, CWindow)
 	{
-		str8 t = string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr();
+		str8 t;
+		uGetWindowText(m_albumid, t);
 		str8 u = "https://musicbrainz.org/release/";
 		t_size l = u.get_length();
 		if (strncmp(t, u, l) == 0)
 		{
 			t.replace_string(u, "");
-			uSetDlgItemText(m_hWnd, IDC_MBID, t);
+			uSetDlgItemText(m_hWnd, IDC_MBID_EDIT, t);
 			return;
 		}
 
 		regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
-		m_ok.EnableWindow(regex_search(string_utf8_from_window(m_hWnd, IDC_MBID).get_ptr(), rx));
+		m_ok.EnableWindow(regex_search(t.get_ptr(), rx));
 	}
 
 	CButton m_ok;
-	str8 m_album_id;
+	CEdit m_albumid;
+	str8 m_albumid_str;
 };

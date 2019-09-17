@@ -3,7 +3,7 @@
 class dialog_tags : public CDialogImpl<dialog_tags>
 {
 public:
-	dialog_tags(const str8& p_artist, const str8& p_album) : m_artist(p_artist), m_album(p_album) {}
+	dialog_tags(const str8& p_artist_str, const str8& p_album_str) : m_artist_str(p_artist_str), m_album_str(p_album_str) {}
 
 	BEGIN_MSG_MAP(dialog_tags)
 		MSG_WM_INITDIALOG(OnInitDialog)
@@ -16,25 +16,33 @@ public:
 	BOOL OnInitDialog(CWindow, LPARAM)
 	{
 		m_ok = GetDlgItem(IDOK);
-		uSetDlgItemText(m_hWnd, IDC_ARTIST, m_artist);
-		uSetDlgItemText(m_hWnd, IDC_ALBUM, m_album);
+		m_artist = GetDlgItem(IDC_ARTIST_EDIT);
+		m_album = GetDlgItem(IDC_ALBUM_EDIT);
+
+		uSetWindowText(m_artist, m_artist_str);
+		uSetWindowText(m_album, m_album_str);
 		CenterWindow();
 		return TRUE;
 	}
 
 	void OnCloseCmd(UINT, int nID, CWindow)
 	{
-		uGetDlgItemText(m_hWnd, IDC_ARTIST, m_artist);
-		uGetDlgItemText(m_hWnd, IDC_ALBUM, m_album);
+		uGetWindowText(m_artist, m_artist_str);
+		uGetWindowText(m_album, m_album_str);
 		EndDialog(nID);
 	}
 	
 	void OnUpdate(UINT, int, CWindow)
 	{
-		m_ok.EnableWindow(string_utf8_from_window(m_hWnd, IDC_ARTIST).length() && string_utf8_from_window(m_hWnd, IDC_ALBUM).length());
+		str8 ar, al;
+		uGetWindowText(m_artist, ar);
+		uGetWindowText(m_album, al);
+		m_ok.EnableWindow(ar.get_length() && al.get_length());
 	}
 
 	CButton m_ok;
-	str8 m_artist;
-	str8 m_album;
+	CEdit m_artist;
+	CEdit m_album;
+	str8 m_artist_str;
+	str8 m_album_str;
 };

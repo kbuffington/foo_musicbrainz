@@ -3,7 +3,30 @@
 static const CDialogResizeHelper::Param resize_data[] = {
 	{ IDOK, 1, 1, 1, 1 },
 	{ IDCANCEL, 1, 1, 1, 1 },
-	{ IDC_URL, 0, 1, 1, 1 }
+	{ IDC_URL, 0, 1, 1, 1 },
+	{ IDC_RELEASE_GROUPBOX, 0, 0, 1, 0},
+	{ IDC_RELEASE_LIST, 0, 0, 1, 0},
+	{ IDC_TRACK_GROUPBOX, 0, 0, 1, 1},
+	{ IDC_TRACK_LIST, 0, 0, 1, 1},
+	{ IDC_RELEASE_INFO_GROUPBOX, 1, 0, 1, 0},
+	{ IDC_ARTIST_LABEL, 1, 0, 1, 0 },
+	{ IDC_ARTIST_EDIT, 1, 0, 1, 0 },
+	{ IDC_ALBUM_LABEL, 1, 0, 1, 0 },
+	{ IDC_ALBUM_EDIT, 1, 0, 1, 0 },
+	{ IDC_DATE_LABEL, 1, 0, 1, 0 },
+	{ IDC_DATE_EDIT, 1, 0, 1, 0 },
+	{ IDC_FIRST_RELEASE_DATE_LABEL, 1, 0, 1, 0 },
+	{ IDC_FIRST_RELEASE_DATE_EDIT, 1, 0, 1, 0 },
+	{ IDC_LABEL_LABEL, 1, 0, 1, 0 },
+	{ IDC_LABEL_EDIT, 1, 0, 1, 0 },
+	{ IDC_CATALOG_LABEL, 1, 0, 1, 0 },
+	{ IDC_CATALOG_EDIT, 1, 0, 1, 0 },
+	{ IDC_BARCODE_LABEL, 1, 0, 1, 0 },
+	{ IDC_BARCODE_EDIT, 1, 0, 1, 0 },
+	{ IDC_TYPE_LABEL, 1, 0, 1, 0 },
+	{ IDC_TYPE_COMBO, 1, 0, 1, 0 },
+	{ IDC_STATUS_LABEL, 1, 0, 1, 0 },
+	{ IDC_STATUS_COMBO, 1, 0, 1, 0 },
 };
 
 static const CRect resize_min_max(660, 425, 0, 0);
@@ -31,17 +54,17 @@ public:
 		NOTIFY_HANDLER_EX(IDC_URL, NM_CLICK, OnLink)
 		NOTIFY_HANDLER_EX(IDC_URL, NM_RETURN, OnLink)
 
-		COMMAND_HANDLER_EX(IDC_TYPE, CBN_SELENDOK, OnTypeChange)
-		COMMAND_HANDLER_EX(IDC_STATUS, CBN_SELENDOK, OnStatusChange)
-		COMMAND_HANDLER_EX(IDC_DISC, CBN_SELENDOK, OnDiscChange)
+		COMMAND_HANDLER_EX(IDC_TYPE_COMBO, CBN_SELENDOK, OnTypeChange)
+		COMMAND_HANDLER_EX(IDC_STATUS_COMBO, CBN_SELENDOK, OnStatusChange)
+		COMMAND_HANDLER_EX(IDC_DISC_COMBO, CBN_SELENDOK, OnDiscChange)
 
-		COMMAND_HANDLER_EX(IDC_ARTIST, EN_UPDATE, OnArtistUpdate)
-		COMMAND_HANDLER_EX(IDC_ALBUM, EN_UPDATE, OnAlbumUpdate)
-		COMMAND_HANDLER_EX(IDC_DATE, EN_UPDATE, OnDateUpdate)
-		COMMAND_HANDLER_EX(IDC_FIRST_RELEASE_DATE, EN_UPDATE, OnFirstDateUpdate)
-		COMMAND_HANDLER_EX(IDC_LABEL, EN_UPDATE, OnLabelUpdate)
-		COMMAND_HANDLER_EX(IDC_CATALOG, EN_UPDATE, OnCatalogUpdate)
-		COMMAND_HANDLER_EX(IDC_BARCODE, EN_UPDATE, OnBarcodeUpdate)
+		COMMAND_HANDLER_EX(IDC_ARTIST_EDIT, EN_UPDATE, OnArtistUpdate)
+		COMMAND_HANDLER_EX(IDC_ALBUM_EDIT, EN_UPDATE, OnAlbumUpdate)
+		COMMAND_HANDLER_EX(IDC_DATE_EDIT, EN_UPDATE, OnDateUpdate)
+		COMMAND_HANDLER_EX(IDC_FIRST_RELEASE_DATE_EDIT, EN_UPDATE, OnFirstDateUpdate)
+		COMMAND_HANDLER_EX(IDC_LABEL_EDIT, EN_UPDATE, OnLabelUpdate)
+		COMMAND_HANDLER_EX(IDC_CATALOG_EDIT, EN_UPDATE, OnCatalogUpdate)
+		COMMAND_HANDLER_EX(IDC_BARCODE_EDIT, EN_UPDATE, OnBarcodeUpdate)
 	END_MSG_MAP()
 
 	enum { IDD = IDD_TAGGER };
@@ -63,19 +86,19 @@ public:
 		release_list = GetDlgItem(IDC_RELEASE_LIST);
 		track_list.CreateInDialog(*this, IDC_TRACK_LIST);
 		
-		type = GetDlgItem(IDC_TYPE);
-		status = GetDlgItem(IDC_STATUS);
+		type = GetDlgItem(IDC_TYPE_COMBO);
+		status = GetDlgItem(IDC_STATUS_COMBO);
 
 		disc_groupbox = GetDlgItem(IDC_DISC_GROUPBOX);
-		disc = GetDlgItem(IDC_DISC);
+		disc = GetDlgItem(IDC_DISC_COMBO);
 
-		album_artist = GetDlgItem(IDC_ARTIST);
-		album = GetDlgItem(IDC_ALBUM);
-		date = GetDlgItem(IDC_DATE);
-		first_release_date = GetDlgItem(IDC_FIRST_RELEASE_DATE);
-		barcode = GetDlgItem(IDC_BARCODE);
-		label = GetDlgItem(IDC_LABEL);
-		catalog = GetDlgItem(IDC_CATALOG);
+		album_artist = GetDlgItem(IDC_ARTIST_EDIT);
+		album = GetDlgItem(IDC_ALBUM_EDIT);
+		date = GetDlgItem(IDC_DATE_EDIT);
+		first_release_date = GetDlgItem(IDC_FIRST_RELEASE_DATE_EDIT);
+		label = GetDlgItem(IDC_LABEL_EDIT);
+		catalog = GetDlgItem(IDC_CATALOG_EDIT);
+		barcode = GetDlgItem(IDC_BARCODE_EDIT);
 
 		url = GetDlgItem(IDC_URL);
 		
