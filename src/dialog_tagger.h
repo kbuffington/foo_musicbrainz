@@ -48,6 +48,7 @@ public:
 		CHAIN_MSG_MAP_MEMBER(m_resizer)
 		MSG_WM_INITDIALOG(OnInitDialog)
 		MSG_WM_CLOSE(OnClose)
+		MSG_WM_SIZE(OnSize)
 		COMMAND_ID_HANDLER_EX(IDOK, OnOk)
 		COMMAND_ID_HANDLER_EX(IDCANCEL, OnCancel)
 		NOTIFY_HANDLER_EX(IDC_RELEASE_LIST, LVN_ITEMCHANGED, OnReleaseListChange)
@@ -107,9 +108,9 @@ public:
 		// Add release list columns
 		listview_helper::insert_column(release_list, artist_column, "Artist", 80);
 		listview_helper::insert_column(release_list, release_column, "Release", 80);
-		listview_helper::insert_column(release_list, date_column, "Date/Country", 80);
+		listview_helper::insert_column(release_list, date_column, "Date/Country", 70);
 		listview_helper::insert_column(release_list, label_column, "Label/Cat#", 80);
-		listview_helper::insert_column(release_list, format_column, "Format", 60);
+		listview_helper::insert_column(release_list, format_column, "Format", 50);
 		listview_helper::insert_column(release_list, discs_column, "Discs", 30);
 
 		// Add release list rows
@@ -125,7 +126,7 @@ public:
 
 		// Adding track list columns
 		auto DPI = track_list.GetDPI();
-		track_list.AddColumn("Filename", MulDiv(210, DPI.cx, 96));
+		track_list.AddColumn("Filename", MulDiv(230, DPI.cx, 96));
 		track_list.AddColumn("#", MulDiv(40, DPI.cx, 96), HDF_RIGHT);
 		track_list.AddColumn("Disc Subtitle", MulDiv(120, DPI.cx, 96));
 		track_list.AddColumnAutoWidth("Title");
@@ -224,6 +225,15 @@ public:
 	{
 		tagger(m_handles, m_release_list[current_release], current_disc);
 		DestroyWindow();
+	}
+
+	void OnSize(UINT nType, CSize size) {
+		CRect r;
+		release_list.GetClientRect(r);
+		t_size w = int((r.right - r.left) * 0.2);
+		release_list.SetColumnWidth(artist_column, w);
+		release_list.SetColumnWidth(release_column, w);
+		release_list.SetColumnWidth(label_column, w);
 	}
 
 	void OnStatusChange(UINT, int, CWindow)
