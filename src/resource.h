@@ -21,8 +21,7 @@
 #define IDD_TAGGER                      1020
 #define IDC_RELEASE_GROUPBOX            1021
 #define IDC_RELEASE_INFO_GROUPBOX       1022
-#define IDC_DISC_GROUPBOX               1023
-#define IDC_TRACK_GROUPBOX              1024
+#define IDC_TRACK_GROUPBOX              1023
 
 #define IDC_RELEASE_LIST                1025
 #define IDC_TRACK_LIST                  1026

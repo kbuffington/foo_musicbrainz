@@ -88,8 +88,6 @@ public:
 		
 		type = GetDlgItem(IDC_TYPE_COMBO);
 		status = GetDlgItem(IDC_STATUS_COMBO);
-
-		disc_groupbox = GetDlgItem(IDC_DISC_GROUPBOX);
 		disc = GetDlgItem(IDC_DISC_COMBO);
 
 		album_artist = GetDlgItem(IDC_ARTIST_EDIT);
@@ -107,10 +105,10 @@ public:
 		release_list.SetExtendedListViewStyle(styles, styles);
 
 		// Add release list columns
-		listview_helper::insert_column(release_list, artist_column, "Artist", 140);
-		listview_helper::insert_column(release_list, release_column, "Release", 140);
+		listview_helper::insert_column(release_list, artist_column, "Artist", 80);
+		listview_helper::insert_column(release_list, release_column, "Release", 80);
 		listview_helper::insert_column(release_list, date_column, "Date/Country", 80);
-		listview_helper::insert_column(release_list, label_column, "Label/Cat#", 150);
+		listview_helper::insert_column(release_list, label_column, "Label/Cat#", 80);
 		listview_helper::insert_column(release_list, format_column, "Format", 60);
 		listview_helper::insert_column(release_list, discs_column, "Discs", 30);
 
@@ -127,6 +125,7 @@ public:
 
 		// Adding track list columns
 		auto DPI = track_list.GetDPI();
+		track_list.AddColumn("Filename", MulDiv(210, DPI.cx, 96));
 		track_list.AddColumn("#", MulDiv(40, DPI.cx, 96), HDF_RIGHT);
 		track_list.AddColumn("Disc Subtitle", MulDiv(120, DPI.cx, 96));
 		track_list.AddColumnAutoWidth("Title");
@@ -263,37 +262,33 @@ public:
 		status.SetCurSel(get_status_index(m_release_list[current_release].status));
 
 		auto DPI = track_list.GetDPI();
-		track_list.ResizeColumn(1, m_release_list[current_release].tracks[0].totaldiscs > 1 ? MulDiv(120, DPI.cx, 96) : 0);
+		track_list.ResizeColumn(2, m_release_list[current_release].tracks[0].totaldiscs > 1 ? MulDiv(120, DPI.cx, 96) : 0);
 
 		if (m_release_list[current_release].is_various)
 		{
-			if (track_list.GetColumnCount() == 3)
+			if (track_list.GetColumnCount() == 4)
 			{
 				track_list.AddColumn("Track Artist", MulDiv(210, DPI.cx, 96));
 			}
 		}
-		else if (track_list.GetColumnCount() == 4)
+		else if (track_list.GetColumnCount() == 5)
 		{
-			track_list.DeleteColumn(3, false);
+			track_list.DeleteColumn(4, false);
 		}
 
 		current_disc = 0;
 		
-		if (m_release_list[current_release].disc_count > 1)
-		{
-			disc_groupbox.ShowWindow(SW_SHOW);
-			disc.ShowWindow(SW_SHOW);
-			disc.ResetContent();
+		disc.ResetContent();
 
-			for (t_size i = 0; i < m_release_list[current_release].disc_count; ++i)
-			{
-				disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].tracks[i * handle_count].discnumber << " of " << m_release_list[current_release].tracks[i * handle_count].totaldiscs));
-			}
-		}
-		else
+		t_size disc_count = m_release_list[current_release].disc_count;
+		for (t_size i = 0; i < disc_count; ++i)
 		{
-			disc_groupbox.ShowWindow(SW_HIDE);
-			disc.ShowWindow(SW_HIDE);
+			disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].tracks[i * handle_count].discnumber << " of " << m_release_list[current_release].tracks[i * handle_count].totaldiscs));
+		}
+		
+		if (disc_count == 0)
+		{
+			disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Showing all " << m_release_list[current_release].tracks[0].totaldiscs << " disc(s)"));
 		}
 
 		UpdateDisc();
@@ -312,7 +307,7 @@ private:
 
 	bool listIsColumnEditable(ctx_t, t_size sub_item) override
 	{
-		return sub_item > 0;
+		return sub_item > 1;
 	}
 
 	str8 listGetSubItemText(ctx_t, t_size item, t_size sub_item) override
@@ -321,16 +316,18 @@ private:
 		switch (sub_item)
 		{
 		case 0:
-			return PFC_string_formatter() << m_release_list[current_release].tracks[track_idx].discnumber << "." << m_release_list[current_release].tracks[track_idx].tracknumber;
+			return pfc::string_filename_ext(m_handles[item]->get_path());
 		case 1:
+			return PFC_string_formatter() << m_release_list[current_release].tracks[track_idx].discnumber << "." << m_release_list[current_release].tracks[track_idx].tracknumber;
+		case 2:
 			if (m_release_list[current_release].tracks[track_idx].tracknumber == 1 && m_release_list[current_release].tracks[track_idx].totaldiscs > 1)
 			{
 				return m_release_list[current_release].tracks[track_idx].subtitle;
 			}
 			return "";
-		case 2:
-			return m_release_list[current_release].tracks[track_idx].title;
 		case 3:
+			return m_release_list[current_release].tracks[track_idx].title;
+		case 4:
 			return m_release_list[current_release].tracks[track_idx].artist;
 		default:
 			return "";
@@ -347,13 +344,13 @@ private:
 		t_size track_idx = item + (current_disc * handle_count);
 		switch (sub_item)
 		{
-		case 1:
+		case 2:
 			m_release_list[current_release].tracks[track_idx].subtitle = value;
 			break;
-		case 2:
+		case 3:
 			m_release_list[current_release].tracks[track_idx].title = value;
 			break;
-		case 3:
+		case 4:
 			m_release_list[current_release].tracks[track_idx].artist = value;
 			break;
 		}
@@ -362,7 +359,7 @@ private:
 	void listSubItemClicked(ctx_t, t_size item, t_size sub_item) override
 	{
 		t_size track_idx = item + (current_disc * handle_count);
-		if ((sub_item == 1 && m_release_list[current_release].tracks[track_idx].tracknumber == 1 && m_release_list[current_release].tracks[track_idx].totaldiscs > 1) || sub_item > 1)
+		if ((sub_item == 2 && m_release_list[current_release].tracks[track_idx].tracknumber == 1 && m_release_list[current_release].tracks[track_idx].totaldiscs > 1) || sub_item > 2)
 		{
 			track_list.TableEdit_Start(item, sub_item);
 		}
