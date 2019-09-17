@@ -229,8 +229,8 @@ public:
 
 	void OnSize(UINT nType, CSize size) {
 		CRect r;
-		release_list.GetClientRect(r);
-		t_size w = int((r.right - r.left) * 0.2);
+		if (!release_list.GetClientRect(r)) return;
+		int w = int((r.right - r.left) * 0.2);
 		release_list.SetColumnWidth(artist_column, w);
 		release_list.SetColumnWidth(release_column, w);
 		release_list.SetColumnWidth(label_column, w);
@@ -278,7 +278,7 @@ public:
 		{
 			if (track_list.GetColumnCount() == 4)
 			{
-				track_list.AddColumn("Track Artist", MulDiv(210, DPI.cx, 96));
+				track_list.AddColumn("Track Artist", MulDiv(250, DPI.cx, 96));
 			}
 		}
 		else if (track_list.GetColumnCount() == 5)
