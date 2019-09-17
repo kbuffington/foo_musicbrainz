@@ -298,7 +298,15 @@ public:
 		
 		if (disc_count == 0)
 		{
-			disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Showing all " << m_release_list[current_release].tracks[0].totaldiscs << " disc(s)"));
+			t_size totaldiscs = m_release_list[current_release].tracks[0].totaldiscs;
+			if (totaldiscs == 1)
+			{
+				disc.AddString(L"Showing the only disc");
+			}
+			else
+			{
+				disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Showing all " << totaldiscs << " discs"));
+			}
 		}
 
 		UpdateDisc();
@@ -383,13 +391,12 @@ private:
 	CEdit album;
 	CEdit date;
 	CEdit first_release_date;
-	CEdit barcode;
-	CEdit url;
 	CEdit label;
 	CEdit catalog;
+	CEdit barcode;
 	CListViewCtrl release_list;
 	CListControlOwnerData track_list;
-	CWindow disc_groupbox;
+	CWindow url;
 	metadb_handle_list m_handles;
 	std::vector<Release> m_release_list;
 	t_size current_release;
