@@ -2,69 +2,84 @@
 
 You can view the original readme [here](ORIGINAL%20README.md).
 
-My changes:
-
 ```
-v0.4.0 has been rewritten almost from the ground up to use the JSON
-webservice instead of XML like the previous versions used. Although
-this doesn't make any difference to the end user, it means I can
-easily make changes that I wasn't able to do before. I may consider
-reasonable feature requests!
+0.4.0
+CHG: The minimum requirement is now foobar2000 v1.4.
+CHG: Rewrite component almost from the ground up to make use of the
+     JSON webservice instead of XML. This makes it easier to maintain
+     and add new features.
+CHG: Track titles are now generated from the release and not recording
+     titles like they were previously.
+CHG: There have been major tweaks to the main dialog but I'm hoping
+     everything should work as before. If not, please use the issues
+     section to report any problems.
+FIX: (Beta2) Fixed a bug where discnumber/totaldiscs wasn't always
+     written as expected for multiple disc releases. It has never been
+     written for single disc releases so that isn't a bug!
+FIX: (Beta3) Restore support for multi-disc lookups. You can preview
+     all tracks at once. Note that editing the disc subtitle in the
+     track list only works when you select track #1 from each disc.
+     Updates are applied to all tracks when tagging.
+FIX: (Beta4) "Album artist" tags should be constructed from all artist
+     credits, not just the first one.
+FIX: (Beta5) Improve Artist/Album search results. It should be more
+     noticeable with multi-disc lookups.
+NEW: (Beta6) Add support for writing ASIN and ISRC tags. Check the
+     Preferences if you wish to turn this off.
+CHG: (Beta6) Hide the "Disc Subtitle" column for single disc releases.
+FIX: (Beta7) Properly support multi-value ISRC tags.
+FIX: (Beta7) Fix a tagger dialog bug which caused a component crash!
+NEW: (Beta8) The tagger dialog is now resizeable. Thanks to @smoralis
+     for the inspiration.
 
-We now obey the rate limit rules with a delay inbetween each request
-so any lookup with more than several releases should complete.
+0.3.11
+NEW: Add Preference to always write 'Album Artist' even for single artist
+     albums.
 
-You can now paste full release URLs like
+0.3.10
+CHG: Update repository with latest foobar2000 SDK and ensure all projects
+     compile with Visual Studio 2019. No functional changes from previous
+     version.
 
-https://musicbrainz.org/release/76a601d9-a1a6-4112-aad5-d63bc85db9b6
+0.3.9
+FIX: Repsect MusicBrainz rate limits so releases that require several
+     lookups should complete.
+CHG: You can now paste full release URLs like
 
-in to the MBID query dialog and it will automatically strip the URL so
-you're left with just the MBID like "76a601d9-a1a6-4112-aad5-d63bc85db9b6".
-This is useful if a given artist/album has many releases and you find it
-easier to find the correct one on the musicbrainz.org website. This will
-only work with "release" URLs and not "release-group" and the track count
-must always match the selection.
+     https://musicbrainz.org/release/76a601d9-a1a6-4112-aad5-d63bc85db9b6
 
-Using the artist/album lookup dialog will populate the album field
-with the "TITLE" if there is no album tag present and the track
-count is one. There are some releases with just one track on
-Musicbrainz so this should make them easier to find.
+     into the AlbumID dialog and the URL will be stripped to leave
+     just the MBID.
 
-Add preferences to write release country (RELEASECOUNTRY) and release
-format (MEDIA). They're both enabled by default so check
-File>Preferences>Tools>Tagging>MusicBrainz Tagger if you wish to
-turn them off.
+0.3.8
+NEW: Add Preferences for writing release county (RELEASECOUNTRY) and
+     format (MEDIA) tags.
 
-Add a preference to always write "Album Artist" even for single artist
-albums. It's off by default so check the Preferences.
+0.3.7
+CHG: Remove 99 track limit for Artist/Album and AlbumID lookups.
 
-Rework tagger dialog layout so release country and format are shown.
+0.3.6
+CHG: Allow TOC lookups from files with a sample rate of 48000 Hz such
+     as Opus.
+CHG: Enfore stricter checks on TOC submissions so only lossless files are
+     supported.
 
-Remove 99 track limit for artist/album and MBID lookups.
+0.3.5
+CHG: Default to https
+CHG: Display a more helpful message when errors occur.
 
-Allow TOC lookups from files with a sample rate of 48000 Hz such as
-Opus. Track sample count must still match CD frame boundaries.
+0.3.4
+FIX: Restore support for Windows XP
 
-Ensure sample rate of all tracks are identical for TOC lookups.
+0.3.3 
+NEW: Add support for setting a custom server in the Preferences
 
-Enforce stricter checks for TOC submissions so only lossless files
-with a sample rate of 44100 Hz are supported. This affects
-MusicBrainz editors only.
+0.3.2
+CHG: foobar2000 v1.3 is the new minimum requirement.
+CHG: Update repository with all pre-requisites meaning it should compile
+     as-is with latest versions of foobar2000 SDK and Visual Studio.
+CHG: Dialog tweaks
 
-Prevent background lookups if above TOC checks fail.
-
-"Preferences" has a new "Custom server" option.
-
-Defaults to https.
-
-Display a more helpful message when errors occur.
-
-Fix bug where "Reset page" button in the "Preferences" didn't
-work on all fields.
-
-Repository has been updated with all pre-requisites meaning
-it should compile as-is with Visual Studio 2019.
-
-Remove deprecated metadb lock/unlock methods and use get_info_ref()
-from the current SDK. Now requires foobar2000 v1.3 or above.
+0.3.1
+Last release by original developer
 ```
