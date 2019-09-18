@@ -37,7 +37,7 @@ Release parser(json release, t_size handle_count)
 	{
 		t_size release_totaltracks = get_release_totaltracks(medias);
 		t_size totaldiscs = medias.size();
-		r.disc_count = 0;
+		r.partial_lookup_matches = 0;
 
 		for (auto& media : medias)
 		{
@@ -83,7 +83,7 @@ Release parser(json release, t_size handle_count)
 
 				if (release_totaltracks != handle_count)
 				{
-					r.disc_count++;
+					r.partial_lookup_matches++;
 				}
 			}
 		}

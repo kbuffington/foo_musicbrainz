@@ -290,13 +290,15 @@ public:
 		
 		disc.ResetContent();
 
-		t_size disc_count = m_release_list[current_release].disc_count;
-		for (t_size i = 0; i < disc_count; ++i)
+		t_size partial_lookup_matches = m_release_list[current_release].partial_lookup_matches;
+		if (partial_lookup_matches > 0)
 		{
-			disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].tracks[i * handle_count].discnumber << " of " << m_release_list[current_release].tracks[i * handle_count].totaldiscs));
+			for (t_size i = 0; i < partial_lookup_matches; ++i)
+			{
+				disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].tracks[i * handle_count].discnumber << " of " << m_release_list[current_release].tracks[i * handle_count].totaldiscs));
+			}
 		}
-		
-		if (disc_count == 0)
+		else
 		{
 			t_size totaldiscs = m_release_list[current_release].tracks[0].totaldiscs;
 			if (totaldiscs == 1)
