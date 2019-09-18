@@ -42,8 +42,8 @@ CHG: Update repository with latest foobar2000 SDK and ensure all projects
      version.
 
 0.3.9
-FIX: Repsect MusicBrainz rate limits so releases that require several
-     lookups should complete.
+FIX: Repsect MusicBrainz rate limits so searches that fetch several
+     releases should complete.
 CHG: You can now paste full release URLs like
 
      https://musicbrainz.org/release/76a601d9-a1a6-4112-aad5-d63bc85db9b6
@@ -65,21 +65,21 @@ CHG: Enfore stricter checks on TOC submissions so only lossless files are
      supported.
 
 0.3.5
-CHG: Default to https
+CHG: Default to https.
 CHG: Display a more helpful message when errors occur.
 
 0.3.4
-FIX: Restore support for Windows XP
+FIX: Restore support for Windows XP.
 
 0.3.3 
-NEW: Add support for setting a custom server in the Preferences
+NEW: Add support for setting a custom server in the Preferences.
 
 0.3.2
 CHG: foobar2000 v1.3 is the new minimum requirement.
 CHG: Update repository with all pre-requisites meaning it should compile
      as-is with latest versions of foobar2000 SDK and Visual Studio.
-CHG: Dialog tweaks
+CHG: Dialog tweaks.
 
 0.3.1
-Last release by original developer
+Last release by original developer.
 ```
