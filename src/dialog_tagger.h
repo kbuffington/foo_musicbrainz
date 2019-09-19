@@ -156,10 +156,10 @@ public:
 
 	LRESULT OnReleaseListChange(LPNMHDR pnmh)
 	{
-		int new_index = ((LPNMLISTVIEW)pnmh)->iItem;
-		if (new_index != -1 && ((LPNMLISTVIEW)pnmh)->uChanged & LVIS_DROPHILITED && ((LPNMLISTVIEW)pnmh)->uNewState & LVIS_SELECTED && current_release != new_index)
+		int idx = ListView_GetSingleSelection(release_list);
+		if (idx > -1 && idx != current_release)
 		{
-			current_release = new_index;
+			current_release = idx;
 			UpdateRelease();
 		}
 		return 0;
