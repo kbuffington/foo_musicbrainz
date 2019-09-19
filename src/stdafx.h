@@ -17,7 +17,7 @@ using json = nlohmann::json;
 #include <foobar2000/helpers/atl-misc.h>
 #include <libPPUI/CDialogResizeHelper.h>
 #include <libPPUI/CListControlOwnerData.h>
-#include <libPPUI/listview_helper.h>
+#include <libPPUI/CListControlSimple.h>
 
 using namespace pfc::stringcvt;
 using str8 = pfc::string8;
