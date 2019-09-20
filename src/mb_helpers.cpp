@@ -125,6 +125,21 @@ Release parser(json release, t_size handle_count)
 	return r;
 }
 
+str8 format_thingy(const std::vector<Track>& tracks)
+{
+	str8 format;
+	std::set<str8> set;
+	for (const auto& track : tracks)
+	{
+		str8 tmp = track.format;
+		if (set.count(tmp)) continue;
+		set.insert(tmp);
+		if (format.get_length()) format << ", ";
+		format << tmp;
+	}
+	return format;
+}
+
 str8 get_server()
 {
 	return mb_preferences::server ? mb_preferences::server_data : "https://musicbrainz.org";

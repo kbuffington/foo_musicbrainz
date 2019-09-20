@@ -118,7 +118,7 @@ public:
 		release_list.AddColumnAutoWidth("Release");
 		release_list.AddColumn("Date/Country", MulDiv(100, DPI.cx, 96));
 		release_list.AddColumnAutoWidth("Label/Cat#");
-		release_list.AddColumn("Format", MulDiv(100, DPI.cx, 96));
+		release_list.AddColumn("Format", MulDiv(120, DPI.cx, 96));
 		release_list.AddColumn("Discs", MulDiv(40, DPI.cx, 96));
 
 		// Add release list rows
@@ -129,7 +129,7 @@ public:
 			release_list.SetItemText(i, release_column, m_release_list[i].title);
 			release_list.SetItemText(i, date_column, slasher(m_release_list[i].date, m_release_list[i].country));
 			release_list.SetItemText(i, label_column, slasher(m_release_list[i].label, m_release_list[i].catalog));
-			release_list.SetItemText(i, format_column, m_release_list[i].tracks[0].format);
+			release_list.SetItemText(i, format_column, format_thingy(m_release_list[i].tracks));
 			release_list.SetItemText(i, discs_column, PFC_string_formatter() << m_release_list[i].tracks[0].totaldiscs);
 		}
 
@@ -236,13 +236,10 @@ public:
 
 	void UpdateDisc()
 	{
-		disc.SetCurSel(current_disc);
-
 		if (track_list.TableEdit_IsActive())
 		{
 			track_list.TableEdit_Abort(false);
 		}
-
 		track_list.ReloadData();
 	}
 
@@ -274,7 +271,6 @@ public:
 			track_list.DeleteColumn(4, false);
 		}
 
-		current_disc = 0;
 		
 		disc.ResetContent();
 
@@ -299,6 +295,8 @@ public:
 			}
 		}
 
+		current_disc = 0;
+		disc.SetCurSel(current_disc);
 		UpdateDisc();
 
 		str8 url_str = PFC_string_formatter() << "<a href=\"" << get_server() << "/release/" << m_release_list[current_release].albumid << "\">MusicBrainz release page</a>";
