@@ -1,6 +1,6 @@
 #pragma once
 
-#define _WIN32_WINNT 0x0501
+#define _WIN32_WINNT _WIN32_WINNT_WINXP
 
 #define COMPONENT_TITLE "MusicBrainz Tagger"
 #define COMPONENT_DLL_NAME "foo_musicbrainz.dll"

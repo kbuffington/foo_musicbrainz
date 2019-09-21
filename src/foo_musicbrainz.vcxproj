@@ -64,6 +64,7 @@
       </AdditionalIncludeDirectories>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(SolutionDir)..\foobar2000-SDK\foobar2000\shared\shared.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -91,6 +92,7 @@ copy /Y "$(TargetPath)" "%component_path%\"</Command>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <Culture>0x0409</Culture>
