@@ -3,6 +3,11 @@
 You can view the original readme [here](ORIGINAL%20README.md).
 
 ```
+0.4.1
+FIX: Fix regression from 0.4.0 where releases weren't sorted by date.
+CHG: Show multiple formats in release list if present.
+CHG: Other cosmetic tweaks.
+
 0.4.0
 CHG: The minimum requirement is now foobar2000 v1.4.
 CHG: Rewrite component almost from the ground up to make use of the
