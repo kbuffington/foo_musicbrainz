@@ -11,6 +11,10 @@ void mb_request_thread::on_done(HWND p_wnd, bool p_was_aborted)
 
 	if (m_release_list.size())
 	{
+		std::sort(m_release_list.begin(), m_release_list.end(), [](const Release& one, const Release& two) -> bool
+		{
+			return strcmp(one.date, two.date) < 0;
+		});
 		fb2k::newDialog<dialog_tagger>(m_release_list, m_handles);
 	}
 	else
