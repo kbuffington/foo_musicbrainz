@@ -2,7 +2,11 @@
 #include "dialog_tagger.h"
 #include "mb_request_thread.h"
 
-mb_request_thread::mb_request_thread(t_size p_type, mb_query* p_query, metadb_handle_list_cref p_handles) : m_type(p_type), m_query(p_query), m_handles(p_handles), m_failed(false) {}
+mb_request_thread::mb_request_thread(t_size p_type, mb_query* p_query, metadb_handle_list_cref p_handles)
+	: m_type(p_type)
+	, m_query(p_query)
+	, m_handles(p_handles)
+	, m_failed(false) {}
 
 void mb_request_thread::on_done(HWND p_wnd, bool p_was_aborted)
 {
