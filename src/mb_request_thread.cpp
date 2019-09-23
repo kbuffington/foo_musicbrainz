@@ -28,7 +28,7 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 	t_size handle_count = m_handles.get_count();
 
 	json j = m_query->lookup(p_abort);
-	if (j.size() == 0)
+	if (!j.is_object())
 	{
 		m_failed = true;
 		return;
@@ -70,7 +70,7 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 				query.add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
 
 				json j = query.lookup(p_abort);
-				if (j.size() == 0)
+				if (!j.is_object())
 				{
 					m_failed = true;
 					return;

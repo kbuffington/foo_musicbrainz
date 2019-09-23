@@ -27,7 +27,7 @@ json mb_query::lookup(abort_callback& p_abort)
 	catch (const std::exception& e)
 	{
 		popup_message::g_show(e.what(), COMPONENT_TITLE);
-		return json::array();
+		return json();
 	}
 }
 
