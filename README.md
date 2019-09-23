@@ -2,8 +2,6 @@
 
 This is my modification of the the original [foo_musicbrainz](https://github.com/Dremora/foo_musicbrainz) component by [Dremora](https://github.com/Dremora).
 
-You can view the original readme [here](ORIGINAL%20README.md).
-
-You can view the changelog [here](https://github.com/marc2k3/foo_musicbrainz/blob/master/CHANGELOG.md) and you can grab the latest release [here](https://github.com/marc2k3/foo_musicbrainz/releases).
+You can view the original readme [here](ORIGINAL%20README.md), check the changelog [here](https://github.com/marc2k3/foo_musicbrainz/blob/master/CHANGELOG.md) and grab the latest release [here](https://github.com/marc2k3/foo_musicbrainz/releases).
 
 A new requirement is that it requires [foobar2000](https://foobar2000.org) v1.4 or later to run. 
