@@ -14,7 +14,7 @@ CHG: Track titles are now generated from the release and not recording
 CHG: There have been major tweaks to the main dialog but I'm hoping
      everything should work as before. If not, please use the issues
      section to report any problems.
-FIX: (Beta2) Fixed a bug where discnumber/totaldiscs wasn't always
+FIX: (Beta2) Fixed a bug where discnumber/totaldiscs weren't always
      written as expected for multiple disc releases. It has never been
      written for single disc releases so that isn't a bug!
 FIX: (Beta3) Restore support for multi-disc lookups. You can preview
@@ -53,7 +53,7 @@ CHG: You can now paste full release URLs like
      just the MBID.
 
 0.3.8
-NEW: Add Preferences for writing release county (RELEASECOUNTRY) and
+NEW: Add Preferences for writing release country (RELEASECOUNTRY) and
      format (MEDIA) tags.
 
 0.3.7
