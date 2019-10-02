@@ -72,9 +72,8 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>set component_path=$(SolutionDir)..\app\user-components\$(ProjectName)
-mkdir "%component_path%"
-copy /Y "$(TargetPath)" "%component_path%\"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -105,9 +104,8 @@ copy /Y "$(TargetPath)" "%component_path%\"</Command>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>set component_path=$(SolutionDir)..\app\user-components\$(ProjectName)
-mkdir "%component_path%"
-copy /Y "$(TargetPath)" "%component_path%\"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
