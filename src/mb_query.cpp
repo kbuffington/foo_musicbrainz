@@ -22,7 +22,20 @@ json mb_query::lookup(abort_callback& p_abort)
 		str8 buffer;
 		response->read_string_raw(buffer, p_abort);
 
-		return json::parse(buffer.get_ptr());
+		json j = json::parse(buffer.get_ptr(), nullptr, false);
+		if (j.is_object())
+		{
+			return j;
+		}
+
+		http_reply::ptr ptr;
+		if (response->cast(ptr))
+		{
+			ptr->get_status(buffer);
+		}
+
+		popup_message::g_show(buffer, COMPONENT_TITLE);
+		return json();
 	}
 	catch (const std::exception& e)
 	{
