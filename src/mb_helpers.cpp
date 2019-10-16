@@ -167,7 +167,7 @@ str8 slasher(const str8& one, const str8& two)
 str8 to_str(json j)
 {
 	if (j.is_null()) return "";
-	std::string s = j.type() == json::value_t::string ? j.get<std::string>() : j.dump();
+	std::string s = j.is_string() ? j.get<std::string>() : j.dump();
 	if (mb_preferences::ascii_punctuation)
 	{
 		pfc::string tmp(s.c_str());
