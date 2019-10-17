@@ -68,7 +68,6 @@ str8 get_status_str(t_size idx);
 str8 get_type_str(t_size idx);
 str8 slasher(const str8& one, const str8& two);
 str8 to_str(json j);
-t_size get_release_totaltracks(json j);
 t_size get_status_index(str8 str);
 t_size get_type_index(str8 str);
 void filter_releases(json releases, t_size count, pfc::string_list_impl& out);

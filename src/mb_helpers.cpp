@@ -35,7 +35,7 @@ Release parser(json release, t_size handle_count)
 	auto medias = release["media"];
 	if (medias.is_array())
 	{
-		t_size release_totaltracks = get_release_totaltracks(medias);
+		t_size release_totaltracks = std::accumulate(medias.begin(), medias.end(), 0, [](t_size t, json& j) { return t + j["tracks"].size(); });
 		t_size totaldiscs = medias.size();
 		r.partial_lookup_matches = 0;
 
@@ -180,16 +180,6 @@ str8 to_str(json j)
 		return tmp.get_ptr();
 	}
 	return s.c_str();
-}
-
-t_size get_release_totaltracks(json j)
-{
-	t_size tmp = 0;
-	for (auto& blah : j)
-	{
-		tmp += blah["tracks"].size();
-	}
-	return tmp;
 }
 
 t_size get_status_index(str8 str)
