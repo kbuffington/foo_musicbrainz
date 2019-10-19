@@ -245,8 +245,7 @@ void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids)
 void tagger(metadb_handle_list_cref handles, Release release, t_size current_disc)
 {
 	t_size count = handles.get_count();
-	pfc::list_t<file_info_impl> info;
-	info.set_size(count);
+	std::vector<file_info_impl> info(count);
 
 	str8 subtitle;
 
@@ -345,7 +344,7 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size current_dis
 
 	metadb_io_v2::get()->update_info_async_simple(
 		handles,
-		pfc::ptr_list_const_array_t<const file_info, file_info_impl*>(info.get_ptr(), info.get_count()),
+		pfc::ptr_list_const_array_t<const file_info, file_info_impl*>(info.data(), info.size()),
 		core_api::get_main_window(),
 		metadb_io_v2::op_flag_delay_ui,
 		nullptr
