@@ -16,29 +16,29 @@ public:
 	BOOL OnInitDialog(CWindow, LPARAM)
 	{
 		m_ok = GetDlgItem(IDOK);
-		m_albumid = GetDlgItem(IDC_EDIT_MBID);
+		m_albumid_edit = GetDlgItem(IDC_EDIT_MBID);
 
-		uSetWindowText(m_albumid, m_albumid_str);
+		uSetWindowText(m_albumid_edit, m_albumid_str);
 		CenterWindow();
 		return TRUE;
 	}
 
 	void OnCloseCmd(UINT, int nID, CWindow)
 	{
-		uGetWindowText(m_albumid, m_albumid_str);
+		uGetWindowText(m_albumid_edit, m_albumid_str);
 		EndDialog(nID);
 	}
 	
 	void OnUpdate(UINT, int, CWindow)
 	{
 		str8 t;
-		uGetWindowText(m_albumid, t);
+		uGetWindowText(m_albumid_edit, t);
 		str8 u = "https://musicbrainz.org/release/";
 		t_size l = u.get_length();
 		if (strncmp(t, u, l) == 0)
 		{
 			t.replace_string(u, "");
-			uSetWindowText(m_albumid, t);
+			uSetWindowText(m_albumid_edit, t);
 			return;
 		}
 
@@ -47,6 +47,6 @@ public:
 	}
 
 	CButton m_ok;
-	CEdit m_albumid;
+	CEdit m_albumid_edit;
 	str8 m_albumid_str;
 };

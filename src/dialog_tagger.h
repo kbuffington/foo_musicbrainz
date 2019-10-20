@@ -97,17 +97,17 @@ public:
 
 		track_list.CreateInDialog(*this, IDC_LIST_TRACK);
 		
-		type = GetDlgItem(IDC_COMBO_TYPE);
-		status = GetDlgItem(IDC_COMBO_STATUS);
-		disc = GetDlgItem(IDC_COMBO_DISC);
+		type_combo = GetDlgItem(IDC_COMBO_TYPE);
+		status_combo = GetDlgItem(IDC_COMBO_STATUS);
+		disc_combo = GetDlgItem(IDC_COMBO_DISC);
 
-		album_artist = GetDlgItem(IDC_EDIT_ARTIST);
-		album = GetDlgItem(IDC_EDIT_ALBUM);
-		date = GetDlgItem(IDC_EDIT_DATE);
-		first_release_date = GetDlgItem(IDC_EDIT_FIRST_RELEASE_DATE);
-		label = GetDlgItem(IDC_EDIT_LABEL);
-		catalog = GetDlgItem(IDC_EDIT_CATALOG);
-		barcode = GetDlgItem(IDC_EDIT_BARCODE);
+		album_artist_edit = GetDlgItem(IDC_EDIT_ARTIST);
+		album_edit = GetDlgItem(IDC_EDIT_ALBUM);
+		date_edit = GetDlgItem(IDC_EDIT_DATE);
+		first_release_date_edit = GetDlgItem(IDC_EDIT_FIRST_RELEASE_DATE);
+		label_edit = GetDlgItem(IDC_EDIT_LABEL);
+		catalog_edit = GetDlgItem(IDC_EDIT_CATALOG);
+		barcode_edit = GetDlgItem(IDC_EDIT_BARCODE);
 
 		url = GetDlgItem(IDC_LINK_URL);
 
@@ -142,12 +142,12 @@ public:
 		// Fixed combo boxes
 		for (const auto& i : release_group_types)
 		{
-			type.AddString(string_wide_from_utf8_fast(i));
+			type_combo.AddString(string_wide_from_utf8_fast(i));
 		}
 
 		for (const auto& i : release_statuses)
 		{
-			status.AddString(string_wide_from_utf8_fast(i));
+			status_combo.AddString(string_wide_from_utf8_fast(i));
 		}
 
 		UpdateRelease();
@@ -164,19 +164,19 @@ public:
 
 	void OnAlbumUpdate(UINT, int, CWindow)
 	{
-		uGetWindowText(album, m_release_list[current_release].title);
+		uGetWindowText(album_edit, m_release_list[current_release].title);
 		release_list.SetItemText(current_release, release_column, m_release_list[current_release].title);
 	}
 
 	void OnArtistUpdate(UINT, int, CWindow)
 	{
-		uGetWindowText(album_artist, m_release_list[current_release].album_artist);
+		uGetWindowText(album_artist_edit, m_release_list[current_release].album_artist);
 		release_list.SetItemText(current_release, artist_column, m_release_list[current_release].album_artist);
 	}
 
 	void OnBarcodeUpdate(UINT, int, CWindow)
 	{
-		uGetWindowText(barcode, m_release_list[current_release].barcode);
+		uGetWindowText(barcode_edit, m_release_list[current_release].barcode);
 	}
 
 	void OnCancel(UINT, int, CWindow)
@@ -186,7 +186,7 @@ public:
 
 	void OnCatalogUpdate(UINT, int, CWindow)
 	{
-		uGetWindowText(catalog, m_release_list[current_release].catalog);
+		uGetWindowText(catalog_edit, m_release_list[current_release].catalog);
 		release_list.SetItemText(current_release, label_column, slasher(m_release_list[current_release].label, m_release_list[current_release].catalog));
 	}
 
@@ -197,24 +197,24 @@ public:
 
 	void OnDateUpdate(UINT, int, CWindow)
 	{
-		uGetWindowText(date, m_release_list[current_release].date);
+		uGetWindowText(date_edit, m_release_list[current_release].date);
 		release_list.SetItemText(current_release, date_column, slasher(m_release_list[current_release].date, m_release_list[current_release].country));
 	}
 
 	void OnDiscChange(UINT, int, CWindow)
 	{
-		current_disc = disc.GetCurSel();
+		current_disc = disc_combo.GetCurSel();
 		UpdateDisc();
 	}
 
 	void OnFirstDateUpdate(UINT, int, CWindow)
 	{
-		uGetWindowText(first_release_date, m_release_list[current_release].first_release_date);
+		uGetWindowText(first_release_date_edit, m_release_list[current_release].first_release_date);
 	}
 
 	void OnLabelUpdate(UINT, int, CWindow)
 	{
-		uGetWindowText(label, m_release_list[current_release].label);
+		uGetWindowText(label_edit, m_release_list[current_release].label);
 		release_list.SetItemText(current_release, label_column, slasher(m_release_list[current_release].label, m_release_list[current_release].catalog));
 	}
 
@@ -226,12 +226,12 @@ public:
 
 	void OnStatusChange(UINT, int, CWindow)
 	{
-		m_release_list[current_release].status = get_status_str(status.GetCurSel());
+		m_release_list[current_release].status = get_status_str(status_combo.GetCurSel());
 	}
 
 	void OnTypeChange(UINT, int, CWindow)
 	{
-		m_release_list[current_release].primary_type = get_type_str(type.GetCurSel());
+		m_release_list[current_release].primary_type = get_type_str(type_combo.GetCurSel());
 	}
 
 	void UpdateDisc()
@@ -245,16 +245,16 @@ public:
 
 	void UpdateRelease()
 	{
-		uSetWindowText(album_artist, m_release_list[current_release].album_artist);
-		uSetWindowText(album, m_release_list[current_release].title);
-		uSetWindowText(date, m_release_list[current_release].date);
-		uSetWindowText(first_release_date, m_release_list[current_release].first_release_date);
-		uSetWindowText(label, m_release_list[current_release].label);
-		uSetWindowText(catalog, m_release_list[current_release].catalog);
-		uSetWindowText(barcode, m_release_list[current_release].barcode);
+		uSetWindowText(album_artist_edit, m_release_list[current_release].album_artist);
+		uSetWindowText(album_edit, m_release_list[current_release].title);
+		uSetWindowText(date_edit, m_release_list[current_release].date);
+		uSetWindowText(first_release_date_edit, m_release_list[current_release].first_release_date);
+		uSetWindowText(label_edit, m_release_list[current_release].label);
+		uSetWindowText(catalog_edit, m_release_list[current_release].catalog);
+		uSetWindowText(barcode_edit, m_release_list[current_release].barcode);
 
-		type.SetCurSel(get_type_index(m_release_list[current_release].primary_type));
-		status.SetCurSel(get_status_index(m_release_list[current_release].status));
+		type_combo.SetCurSel(get_type_index(m_release_list[current_release].primary_type));
+		status_combo.SetCurSel(get_status_index(m_release_list[current_release].status));
 
 		auto DPI = track_list.GetDPI();
 		track_list.ResizeColumn(2, m_release_list[current_release].tracks[0].totaldiscs > 1 ? MulDiv(120, DPI.cx, 96) : 0);
@@ -272,14 +272,14 @@ public:
 		}
 
 		
-		disc.ResetContent();
+		disc_combo.ResetContent();
 
 		t_size partial_lookup_matches = m_release_list[current_release].partial_lookup_matches;
 		if (partial_lookup_matches > 0)
 		{
 			for (t_size i = 0; i < partial_lookup_matches; ++i)
 			{
-				disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].tracks[i * handle_count].discnumber << " of " << m_release_list[current_release].tracks[i * handle_count].totaldiscs));
+				disc_combo.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].tracks[i * handle_count].discnumber << " of " << m_release_list[current_release].tracks[i * handle_count].totaldiscs));
 			}
 		}
 		else
@@ -287,16 +287,16 @@ public:
 			t_size totaldiscs = m_release_list[current_release].tracks[0].totaldiscs;
 			if (totaldiscs == 1)
 			{
-				disc.AddString(L"Showing the only disc");
+				disc_combo.AddString(L"Showing the only disc");
 			}
 			else
 			{
-				disc.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Showing all " << totaldiscs << " discs"));
+				disc_combo.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Showing all " << totaldiscs << " discs"));
 			}
 		}
 
 		current_disc = 0;
-		disc.SetCurSel(current_disc);
+		disc_combo.SetCurSel(current_disc);
 		UpdateDisc();
 
 		str8 url_str = PFC_string_formatter() << "<a href=\"" << get_server() << "/release/" << m_release_list[current_release].albumid << "\">MusicBrainz release page</a>";
@@ -369,17 +369,17 @@ private:
 		}
 	}
 
-	CComboBox disc;
-	CComboBox type;
-	CComboBox status;
+	CComboBox disc_combo;
+	CComboBox type_combo;
+	CComboBox status_combo;
 	CDialogResizeHelper m_resizer;
-	CEdit album_artist;
-	CEdit album;
-	CEdit date;
-	CEdit first_release_date;
-	CEdit label;
-	CEdit catalog;
-	CEdit barcode;
+	CEdit album_artist_edit;
+	CEdit album_edit;
+	CEdit date_edit;
+	CEdit first_release_date_edit;
+	CEdit label_edit;
+	CEdit catalog_edit;
+	CEdit barcode_edit;
 	CListControlSimple release_list;
 	CListControlOwnerData track_list;
 	CWindow url;

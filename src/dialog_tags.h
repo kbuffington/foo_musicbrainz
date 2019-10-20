@@ -16,33 +16,33 @@ public:
 	BOOL OnInitDialog(CWindow, LPARAM)
 	{
 		m_ok = GetDlgItem(IDOK);
-		m_artist = GetDlgItem(IDC_EDIT_ARTIST);
-		m_album = GetDlgItem(IDC_EDIT_ALBUM);
+		m_artist_edit = GetDlgItem(IDC_EDIT_ARTIST);
+		m_album_edit = GetDlgItem(IDC_EDIT_ALBUM);
 
-		uSetWindowText(m_artist, m_artist_str);
-		uSetWindowText(m_album, m_album_str);
+		uSetWindowText(m_artist_edit, m_artist_str);
+		uSetWindowText(m_album_edit, m_album_str);
 		CenterWindow();
 		return TRUE;
 	}
 
 	void OnCloseCmd(UINT, int nID, CWindow)
 	{
-		uGetWindowText(m_artist, m_artist_str);
-		uGetWindowText(m_album, m_album_str);
+		uGetWindowText(m_artist_edit, m_artist_str);
+		uGetWindowText(m_album_edit, m_album_str);
 		EndDialog(nID);
 	}
 	
 	void OnUpdate(UINT, int, CWindow)
 	{
 		str8 ar, al;
-		uGetWindowText(m_artist, ar);
-		uGetWindowText(m_album, al);
+		uGetWindowText(m_artist_edit, ar);
+		uGetWindowText(m_album_edit, al);
 		m_ok.EnableWindow(ar.get_length() && al.get_length());
 	}
 
 	CButton m_ok;
-	CEdit m_artist;
-	CEdit m_album;
+	CEdit m_artist_edit;
+	CEdit m_album_edit;
 	str8 m_artist_str;
 	str8 m_album_str;
 };
