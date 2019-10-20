@@ -16,7 +16,7 @@ public:
 	BOOL OnInitDialog(CWindow, LPARAM)
 	{
 		m_ok = GetDlgItem(IDOK);
-		m_albumid = GetDlgItem(IDC_MBID_EDIT);
+		m_albumid = GetDlgItem(IDC_EDIT_MBID);
 
 		uSetWindowText(m_albumid, m_albumid_str);
 		CenterWindow();
@@ -38,7 +38,7 @@ public:
 		if (strncmp(t, u, l) == 0)
 		{
 			t.replace_string(u, "");
-			uSetDlgItemText(m_hWnd, IDC_MBID_EDIT, t);
+			uSetWindowText(m_albumid, t);
 			return;
 		}
 

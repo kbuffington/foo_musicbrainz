@@ -16,8 +16,8 @@ public:
 	BOOL OnInitDialog(CWindow, LPARAM)
 	{
 		m_ok = GetDlgItem(IDOK);
-		m_artist = GetDlgItem(IDC_ARTIST_EDIT);
-		m_album = GetDlgItem(IDC_ALBUM_EDIT);
+		m_artist = GetDlgItem(IDC_EDIT_ARTIST);
+		m_album = GetDlgItem(IDC_EDIT_ALBUM);
 
 		uSetWindowText(m_artist, m_artist_str);
 		uSetWindowText(m_album, m_album_str);
