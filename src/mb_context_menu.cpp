@@ -21,9 +21,7 @@ public:
 
 	bool context_check_count(metadb_handle_list_cref p_data)
 	{
-		t_size count = p_data.get_count();
-		if (count > 99) return false;
-		return true;
+		return p_data.get_count() <= 99;
 	}
 
 	bool context_check_lossless(metadb_handle_list_cref p_data)
