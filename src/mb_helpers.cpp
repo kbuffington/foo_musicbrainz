@@ -266,15 +266,15 @@ void tagger(metadb_handle_list_cref handles, Release release, t_size current_dis
 		info[i].meta_set("ALBUM", release.title);
 		info[i].meta_set("ARTIST", track.artist);
 		info[i].meta_set("TITLE", track.title);
-		info[i].meta_set("TRACKNUMBER", PFC_string_formatter() << track.tracknumber);
-		info[i].meta_set("TOTALTRACKS", PFC_string_formatter() << track.totaltracks);
+		info[i].meta_set("TRACKNUMBER", std::to_string(track.tracknumber).c_str());
+		info[i].meta_set("TOTALTRACKS", std::to_string(track.totaltracks).c_str());
 		info[i].meta_set("DATE", release.date);
 		if (release.first_release_date.get_length() && !release.date.equals(release.first_release_date)) info[i].meta_set("ORIGINAL RELEASE DATE", release.first_release_date);
 
 		if (track.totaldiscs > 1)
 		{
-			info[i].meta_set("DISCNUMBER", PFC_string_formatter() << track.discnumber);
-			info[i].meta_set("TOTALDISCS", PFC_string_formatter() << track.totaldiscs);
+			info[i].meta_set("DISCNUMBER", std::to_string(track.discnumber).c_str());
+			info[i].meta_set("TOTALDISCS", std::to_string(track.totaldiscs).c_str());
 			if (track.subtitle.get_length()) info[i].meta_set("DISCSUBTITLE", track.subtitle);
 		}
 

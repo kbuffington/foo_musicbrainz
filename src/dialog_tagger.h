@@ -130,7 +130,7 @@ public:
 			release_list.SetItemText(i, date_column, slasher(m_release_list[i].date, m_release_list[i].country));
 			release_list.SetItemText(i, label_column, slasher(m_release_list[i].label, m_release_list[i].catalog));
 			release_list.SetItemText(i, format_column, format_thingy(m_release_list[i].tracks));
-			release_list.SetItemText(i, discs_column, PFC_string_formatter() << m_release_list[i].tracks[0].totaldiscs);
+			release_list.SetItemText(i, discs_column, std::to_string(m_release_list[i].tracks[0].totaldiscs).c_str());
 		}
 
 		// Adding track list columns
