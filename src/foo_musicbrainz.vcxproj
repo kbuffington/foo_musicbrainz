@@ -59,7 +59,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalOptions>/Zc:threadSafeInit-</AdditionalOptions>
+      <AdditionalOptions>/Zc:threadSafeInit- /Zc:__cplusplus</AdditionalOptions>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
@@ -85,7 +85,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalOptions>/Zc:threadSafeInit-</AdditionalOptions>
+      <AdditionalOptions>/Zc:threadSafeInit- /Zc:__cplusplus</AdditionalOptions>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
