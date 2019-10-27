@@ -240,11 +240,6 @@ private:
 class PreferencesPage : public preferences_page_impl<PreferencesPageInstance>
 {
 public:
-	const char* get_name() override
-	{
-		return COMPONENT_TITLE;
-	}
-
 	GUID get_guid() override
 	{
 		static constexpr GUID guid = { 0x79179a37, 0x5942, 0x4fdf,{ 0xbb, 0xb7, 0x93, 0xfd, 0x35, 0xfc, 0xfe, 0x97 } };
@@ -254,6 +249,16 @@ public:
 	GUID get_parent_guid() override
 	{
 		return preferences_page::guid_tagging;
+	}
+
+	bool get_help_url(pfc::string_base& p_out) override
+	{
+		p_out = "https://github.com/marc2k3/foo_musicbrainz";
+		return true;
+	}
+	const char* get_name() override
+	{
+		return COMPONENT_TITLE;
 	}
 };
 
