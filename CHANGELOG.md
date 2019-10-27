@@ -13,10 +13,10 @@
 - The tagger dialog is now resizeable. Thanks to @smoralis for the inspiration.
 
 ## 0.3.11
--Add Preference to always write `Album Artist` even for single artist albums.
+- Add Preference to always write `Album Artist` even for single artist albums.
 
 ## 0.3.10
--Update repository with latest `foobar2000` `SDK` and ensure all projects compile with `Visual Studio 2019`. No functional changes from previous version.
+- Update repository with latest `foobar2000` `SDK` and ensure all projects compile with `Visual Studio 2019`. No functional changes from previous version.
 
 ## 0.3.9
 - Repsect `MusicBrainz` rate limits so searches that fetch several releases should complete.
