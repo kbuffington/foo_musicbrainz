@@ -19,6 +19,11 @@ public:
 		return guid_foo_mb_menu[p_index];
 	}
 
+	GUID get_parent() override
+	{
+		return contextmenu_groups::tagging;
+	}
+
 	bool context_check_count(metadb_handle_list_cref p_data)
 	{
 		return p_data.get_count() <= 99;
@@ -240,11 +245,6 @@ public:
 				break;
 			}
 		}
-	}
-
-	void get_item_default_path(t_size p_index, pfc::string_base& p_out) override
-	{
-		p_out = "Tagging";
 	}
 
 	void get_item_name(t_size p_index, pfc::string_base& p_out) override
