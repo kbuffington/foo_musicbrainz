@@ -253,9 +253,10 @@ public:
 
 	bool get_help_url(pfc::string_base& p_out) override
 	{
-		p_out = "https://github.com/marc2k3/foo_musicbrainz";
+		p_out = "https://marc2k3.github.io/foo_musicbrainz.html";
 		return true;
 	}
+
 	const char* get_name() override
 	{
 		return COMPONENT_TITLE;
