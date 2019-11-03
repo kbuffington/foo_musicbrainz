@@ -100,7 +100,7 @@ public:
 		server_edit = GetDlgItem(IDC_EDIT_SERVER);
 		albumtype_edit = GetDlgItem(IDC_EDIT_ALBUMTYPE);
 		albumstatus_edit = GetDlgItem(IDC_EDIT_ALBUMSTATUS);
-		
+
 		server_checkbox.SetCheck(mb_preferences::bool_::server.get_value());
 		short_date_checkbox.SetCheck(mb_preferences::bool_::short_date.get_value());
 		ascii_punctuation_checkbox.SetCheck(mb_preferences::bool_::ascii_punctuation.get_value());

@@ -28,7 +28,7 @@ public:
 		uGetWindowText(m_albumid_edit, m_albumid_str);
 		EndDialog(nID);
 	}
-	
+
 	void OnUpdate(UINT, int, CWindow)
 	{
 		str8 t;

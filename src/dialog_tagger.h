@@ -96,7 +96,7 @@ public:
 		};
 
 		track_list.CreateInDialog(*this, IDC_LIST_TRACK);
-		
+
 		type_combo = GetDlgItem(IDC_COMBO_TYPE);
 		status_combo = GetDlgItem(IDC_COMBO_STATUS);
 		disc_combo = GetDlgItem(IDC_COMBO_DISC);
@@ -271,7 +271,6 @@ public:
 			track_list.DeleteColumn(4, false);
 		}
 
-		
 		disc_combo.ResetContent();
 
 		t_size partial_lookup_matches = m_release_list[current_release].partial_lookup_matches;

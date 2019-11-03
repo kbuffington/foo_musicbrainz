@@ -37,7 +37,7 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 		m_failed = true;
 		return;
 	}
-	
+
 	if (m_type == discid)
 	{
 		str8 discid = to_str(j["id"]);
