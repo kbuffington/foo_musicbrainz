@@ -9,7 +9,7 @@
 #include <regex>
 using std::regex;
 
-#include "json.hpp"
+#include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
 #include "resource.h"
