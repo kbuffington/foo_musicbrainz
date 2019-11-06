@@ -69,15 +69,15 @@ char* mb_toc::get_discid()
 		unsigned char digest[20];
 		unsigned long discid_length;
 
-		sprintf(tmp, "%02X", 1);
+		sprintf_s(tmp, "%02X", 1);
 		SHA1Input(&sha, (unsigned char*)tmp, 2);
 
-		sprintf(tmp, "%02X", num_tracks);
+		sprintf_s(tmp, "%02X", num_tracks);
 		SHA1Input(&sha, (unsigned char*)tmp, 2);
 
 		for (int i = 0; i < 100; i++)
 		{
-			sprintf(tmp, "%08X", tracks[i]);
+			sprintf_s(tmp, "%08X", tracks[i]);
 			SHA1Input(&sha, (unsigned char*)tmp, 8);
 		}
 
@@ -95,11 +95,11 @@ const char* mb_toc::get_toc()
 	{
 		char tmp[9];
 		toc << "1";
-		sprintf(tmp, " %d", num_tracks);
+		sprintf_s(tmp, " %d", num_tracks);
 		toc << tmp;
 		for (t_size i = 0; i <= num_tracks; i++)
 		{
-			sprintf(tmp, " %d", tracks[i]);
+			sprintf_s(tmp, " %d", tracks[i]);
 			toc << tmp;
 		}
 	}
