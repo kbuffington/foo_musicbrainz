@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "mb_query.h"
+#include "query.h"
 
 mb_query::mb_query(const char* entity, const char* id)
 {

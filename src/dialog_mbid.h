@@ -33,8 +33,8 @@ public:
 	{
 		str8 t;
 		uGetWindowText(m_albumid_edit, t);
-		str8 u = "https://musicbrainz.org/release/";
-		t_size l = u.get_length();
+		const str8 u = "https://musicbrainz.org/release/";
+		const t_size l = u.get_length();
 		if (strncmp(t, u, l) == 0)
 		{
 			t.replace_string(u, "");

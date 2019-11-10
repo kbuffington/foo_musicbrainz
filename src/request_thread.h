@@ -1,5 +1,5 @@
 #pragma once
-#include "mb_query.h"
+#include "query.h"
 
 class mb_request_thread : public threaded_process_callback
 {

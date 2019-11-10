@@ -1,7 +1,8 @@
 #include "stdafx.h"
-#include "mb_helpers.h"
+#include "helpers.h"
 
-static const char* ascii_replacements[][2] = {
+static const char* ascii_replacements[][2] =
+{
 	{ "…", "..." },
 	{ "‘", "'" },
 	{ "’", "'" },
@@ -23,7 +24,7 @@ static const char* ascii_replacements[][2] = {
 	{ "―", "-" }
 };
 
-static const t_size ascii_replacements_count = PFC_TABSIZE(ascii_replacements);
+static constexpr t_size ascii_replacements_count = PFC_TABSIZE(ascii_replacements);
 
 Release parser(json release, t_size handle_count)
 {
@@ -35,8 +36,8 @@ Release parser(json release, t_size handle_count)
 	auto medias = release["media"];
 	if (medias.is_array())
 	{
-		t_size release_totaltracks = std::accumulate(medias.begin(), medias.end(), 0, [](t_size t, json& j) { return t + j["tracks"].size(); });
-		t_size totaldiscs = medias.size();
+		const t_size release_totaltracks = std::accumulate(medias.begin(), medias.end(), 0, [](t_size t, json& j) { return t + j["tracks"].size(); });
+		const t_size totaldiscs = medias.size();
 		r.partial_lookup_matches = 0;
 
 		for (auto& media : medias)
@@ -46,8 +47,8 @@ Release parser(json release, t_size handle_count)
 			{
 				str8 format = to_str(media["format"]);
 				str8 subtitle = to_str(media["title"]);
-				t_size discnumber = media["position"].get<t_size>();
-				t_size totaltracks = tracks.size();
+				const t_size discnumber = media["position"].get<t_size>();
+				const t_size totaltracks = tracks.size();
 
 				for (auto& track : tracks)
 				{
@@ -184,19 +185,21 @@ str8 to_str(json j)
 
 t_size get_status_index(str8 str)
 {
-	for (t_size i = 0; i < PFC_TABSIZE(release_statuses); ++i)
+	auto it = std::find_if(release_statuses.begin(), release_statuses.end(), [str](const str8& elem)
 	{
-		if (_stricmp(str.get_ptr(), release_statuses[i]) == 0) return i;
-	}
+		return _stricmp(elem, str) == 0;
+	});
+	if (it != release_statuses.end()) return std::distance(release_statuses.begin(), it);
 	return 0;
 }
 
 t_size get_type_index(str8 str)
 {
-	for (t_size i = 0; i < PFC_TABSIZE(release_group_types); ++i)
+	auto it = std::find_if(release_group_types.begin(), release_group_types.end(), [str](const str8& elem)
 	{
-		if (_stricmp(str.get_ptr(), release_group_types[i]) == 0) return i;
-	}
+		return _stricmp(elem, str) == 0;
+	});
+	if (it != release_group_types.end()) return std::distance(release_group_types.begin(), it);
 	return 0;
 }
 

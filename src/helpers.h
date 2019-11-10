@@ -38,7 +38,8 @@ struct Release
 	t_size partial_lookup_matches;
 };
 
-static const char* release_group_types[] = {
+static constexpr std::array<const char*, 12> release_group_types =
+{
 	"(None)",
 	"Album",
 	"Single",
@@ -53,7 +54,8 @@ static const char* release_group_types[] = {
 	"Other"
 };
 
-static const char* release_statuses[] = {
+static constexpr std::array<const char*, 5> release_statuses =
+{
 	"(None)",
 	"Official",
 	"Promotion",

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "mb_toc.h"
+#include "toc.h"
 #include "sha1.h"
 
 mb_toc::mb_toc(metadb_handle_list_cref p_data)

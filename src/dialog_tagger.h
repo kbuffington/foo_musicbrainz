@@ -1,6 +1,7 @@
 #pragma once
 
-static const CDialogResizeHelper::Param resize_data[] = {
+static const CDialogResizeHelper::Param resize_data[] =
+{
 	{ IDOK, 1, 1, 1, 1 },
 	{ IDCANCEL, 1, 1, 1, 1 },
 	{ IDC_LINK_URL, 0, 1, 1, 1 },
@@ -158,7 +159,7 @@ public:
 
 	LRESULT OnLink(LPNMHDR pnmh)
 	{
-		ShellExecute(NULL, L"open", ((PNMLINK)pnmh)->item.szUrl, NULL, NULL, SW_SHOW);
+		ShellExecute(nullptr, L"open", ((PNMLINK)pnmh)->item.szUrl, nullptr, nullptr, SW_SHOW);
 		return 0;
 	}
 

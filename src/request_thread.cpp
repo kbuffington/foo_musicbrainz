@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "dialog_tagger.h"
-#include "mb_request_thread.h"
+#include "request_thread.h"
 
 mb_request_thread::mb_request_thread(t_size p_type, mb_query* p_query, metadb_handle_list_cref p_handles)
 	: m_type(p_type)
@@ -29,7 +29,7 @@ void mb_request_thread::on_done(HWND p_wnd, bool p_was_aborted)
 
 void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p_abort)
 {
-	t_size handle_count = m_handles.get_count();
+	const t_size handle_count = m_handles.get_count();
 
 	json j = m_query->lookup(p_abort);
 	if (!j.is_object())
@@ -44,7 +44,7 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 		auto releases = j["releases"];
 		if (releases.is_array())
 		{
-			for (auto& release : releases)
+			for (const auto& release : releases)
 			{
 				Release r = parser(release, handle_count);
 				r.discid = discid;
@@ -62,7 +62,7 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 		{
 			pfc::string_list_impl ids;
 			filter_releases(releases, handle_count, ids);
-			t_size count = ids.get_count();
+			const t_size count = ids.get_count();
 
 			for (t_size i = 0; i < count; ++i)
 			{
@@ -73,14 +73,14 @@ void mb_request_thread::run(threaded_process_status& p_status, abort_callback& p
 				mb_query query("release", ids[i]);
 				query.add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
 
-				json j = query.lookup(p_abort);
-				if (!j.is_object())
+				json j2 = query.lookup(p_abort);
+				if (!j2.is_object())
 				{
 					m_failed = true;
 					return;
 				}
 
-				Release r = parser(j, handle_count);
+				Release r = parser(j2, handle_count);
 				if (r.tracks.size())
 				{
 					m_release_list.emplace_back(r);
