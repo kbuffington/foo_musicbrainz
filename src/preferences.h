@@ -1,6 +1,6 @@
 #pragma once
 
-namespace mb_preferences
+namespace prefs
 {
 	namespace bool_
 	{

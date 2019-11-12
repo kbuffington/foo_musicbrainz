@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-namespace mb_preferences
+namespace prefs
 {
 	namespace bool_
 	{
@@ -69,198 +69,201 @@ namespace mb_preferences
 	}
 }
 
-class PreferencesPageInstance : public CDialogImpl<PreferencesPageInstance>, public preferences_page_instance
+namespace mb
 {
-public:
-	PreferencesPageInstance(preferences_page_callback::ptr p_callback) : m_callback(p_callback) {}
-
-	enum { IDD = IDD_PREFERENCES };
-
-	BEGIN_MSG_MAP(PreferencesPageInstance)
-		MSG_WM_INITDIALOG(OnInitDialog)
-		COMMAND_CODE_HANDLER_EX(EN_UPDATE, OnChanged)
-		COMMAND_RANGE_HANDLER_EX(IDC_CHECK_SERVER, IDC_CHECK_WRITE_ALBUMARTIST, OnChanged)
-	END_MSG_MAP()
-
-	BOOL OnInitDialog(CWindow, LPARAM)
+	class PreferencesPageInstance : public CDialogImpl<PreferencesPageInstance>, public preferences_page_instance
 	{
-		server_checkbox = GetDlgItem(IDC_CHECK_SERVER);
-		short_date_checkbox = GetDlgItem(IDC_CHECK_SHORT_DATE);
-		ascii_punctuation_checkbox = GetDlgItem(IDC_CHECK_ASCII_PUNCTUATION);
-		write_ids_checkbox = GetDlgItem(IDC_CHECK_WRITE_IDS);
-		write_albumtype_checkbox = GetDlgItem(IDC_CHECK_ALBUMTYPE);
-		write_albumstatus_checkbox = GetDlgItem(IDC_CHECK_ALBUMSTATUS);
-		write_label_info_checkbox = GetDlgItem(IDC_CHECK_WRITE_LABEL_INFO);
-		write_country_checkbox = GetDlgItem(IDC_CHECK_WRITE_COUNTRY);
-		write_format_checkbox = GetDlgItem(IDC_CHECK_WRITE_FORMAT);
-		write_asin_checkbox = GetDlgItem(IDC_CHECK_WRITE_ASIN);
-		write_isrc_checkbox = GetDlgItem(IDC_CHECK_WRITE_ISRC);
-		write_albumartist_checkbox = GetDlgItem(IDC_CHECK_WRITE_ALBUMARTIST);
+	public:
+		PreferencesPageInstance(preferences_page_callback::ptr p_callback) : m_callback(p_callback) {}
 
-		server_edit = GetDlgItem(IDC_EDIT_SERVER);
-		albumtype_edit = GetDlgItem(IDC_EDIT_ALBUMTYPE);
-		albumstatus_edit = GetDlgItem(IDC_EDIT_ALBUMSTATUS);
+		enum { IDD = IDD_PREFERENCES };
 
-		server_checkbox.SetCheck(mb_preferences::bool_::server.get_value());
-		short_date_checkbox.SetCheck(mb_preferences::bool_::short_date.get_value());
-		ascii_punctuation_checkbox.SetCheck(mb_preferences::bool_::ascii_punctuation.get_value());
-		write_ids_checkbox.SetCheck(mb_preferences::bool_::write_ids.get_value());
-		write_albumtype_checkbox.SetCheck(mb_preferences::bool_::albumtype.get_value());
-		write_albumstatus_checkbox.SetCheck(mb_preferences::bool_::albumstatus.get_value());
-		write_label_info_checkbox.SetCheck(mb_preferences::bool_::write_label_info.get_value());
-		write_country_checkbox.SetCheck(mb_preferences::bool_::write_country.get_value());
-		write_format_checkbox.SetCheck(mb_preferences::bool_::write_format.get_value());
-		write_asin_checkbox.SetCheck(mb_preferences::bool_::write_asin.get_value());
-		write_isrc_checkbox.SetCheck(mb_preferences::bool_::write_isrc.get_value());
-		write_albumartist_checkbox.SetCheck(mb_preferences::bool_::write_albumartist.get_value());
+		BEGIN_MSG_MAP(PreferencesPageInstance)
+			MSG_WM_INITDIALOG(OnInitDialog)
+			COMMAND_CODE_HANDLER_EX(EN_UPDATE, OnChanged)
+			COMMAND_RANGE_HANDLER_EX(IDC_CHECK_SERVER, IDC_CHECK_WRITE_ALBUMARTIST, OnChanged)
+		END_MSG_MAP()
 
-		server_edit.EnableWindow(mb_preferences::bool_::server.get_value());
-		albumtype_edit.EnableWindow(mb_preferences::bool_::albumtype.get_value());
-		albumstatus_edit.EnableWindow(mb_preferences::bool_::albumstatus.get_value());
+		BOOL OnInitDialog(CWindow, LPARAM)
+		{
+			server_checkbox = GetDlgItem(IDC_CHECK_SERVER);
+			short_date_checkbox = GetDlgItem(IDC_CHECK_SHORT_DATE);
+			ascii_punctuation_checkbox = GetDlgItem(IDC_CHECK_ASCII_PUNCTUATION);
+			write_ids_checkbox = GetDlgItem(IDC_CHECK_WRITE_IDS);
+			write_albumtype_checkbox = GetDlgItem(IDC_CHECK_ALBUMTYPE);
+			write_albumstatus_checkbox = GetDlgItem(IDC_CHECK_ALBUMSTATUS);
+			write_label_info_checkbox = GetDlgItem(IDC_CHECK_WRITE_LABEL_INFO);
+			write_country_checkbox = GetDlgItem(IDC_CHECK_WRITE_COUNTRY);
+			write_format_checkbox = GetDlgItem(IDC_CHECK_WRITE_FORMAT);
+			write_asin_checkbox = GetDlgItem(IDC_CHECK_WRITE_ASIN);
+			write_isrc_checkbox = GetDlgItem(IDC_CHECK_WRITE_ISRC);
+			write_albumartist_checkbox = GetDlgItem(IDC_CHECK_WRITE_ALBUMARTIST);
 
-		uSetWindowText(server_edit, mb_preferences::str_::server);
-		uSetWindowText(albumtype_edit, mb_preferences::str_::albumtype);
-		uSetWindowText(albumstatus_edit, mb_preferences::str_::albumstatus);
+			server_edit = GetDlgItem(IDC_EDIT_SERVER);
+			albumtype_edit = GetDlgItem(IDC_EDIT_ALBUMTYPE);
+			albumstatus_edit = GetDlgItem(IDC_EDIT_ALBUMSTATUS);
 
-		return FALSE;
-	}
+			server_checkbox.SetCheck(prefs::bool_::server.get_value());
+			short_date_checkbox.SetCheck(prefs::bool_::short_date.get_value());
+			ascii_punctuation_checkbox.SetCheck(prefs::bool_::ascii_punctuation.get_value());
+			write_ids_checkbox.SetCheck(prefs::bool_::write_ids.get_value());
+			write_albumtype_checkbox.SetCheck(prefs::bool_::albumtype.get_value());
+			write_albumstatus_checkbox.SetCheck(prefs::bool_::albumstatus.get_value());
+			write_label_info_checkbox.SetCheck(prefs::bool_::write_label_info.get_value());
+			write_country_checkbox.SetCheck(prefs::bool_::write_country.get_value());
+			write_format_checkbox.SetCheck(prefs::bool_::write_format.get_value());
+			write_asin_checkbox.SetCheck(prefs::bool_::write_asin.get_value());
+			write_isrc_checkbox.SetCheck(prefs::bool_::write_isrc.get_value());
+			write_albumartist_checkbox.SetCheck(prefs::bool_::write_albumartist.get_value());
 
-	bool has_changed()
+			server_edit.EnableWindow(prefs::bool_::server.get_value());
+			albumtype_edit.EnableWindow(prefs::bool_::albumtype.get_value());
+			albumstatus_edit.EnableWindow(prefs::bool_::albumstatus.get_value());
+
+			uSetWindowText(server_edit, prefs::str_::server);
+			uSetWindowText(albumtype_edit, prefs::str_::albumtype);
+			uSetWindowText(albumstatus_edit, prefs::str_::albumstatus);
+
+			return FALSE;
+		}
+
+		bool has_changed()
+		{
+			if (server_checkbox.IsChecked() != prefs::bool_::server.get_value()) return true;
+			if (short_date_checkbox.IsChecked() != prefs::bool_::short_date.get_value()) return true;
+			if (ascii_punctuation_checkbox.IsChecked() != prefs::bool_::ascii_punctuation.get_value()) return true;
+			if (write_ids_checkbox.IsChecked() != prefs::bool_::write_ids.get_value()) return true;
+			if (write_albumtype_checkbox.IsChecked() != prefs::bool_::albumtype.get_value()) return true;
+			if (write_albumstatus_checkbox.IsChecked() != prefs::bool_::albumstatus.get_value()) return true;
+			if (write_label_info_checkbox.IsChecked() != prefs::bool_::write_label_info.get_value()) return true;
+			if (write_country_checkbox.IsChecked() != prefs::bool_::write_country.get_value()) return true;
+			if (write_format_checkbox.IsChecked() != prefs::bool_::write_format.get_value()) return true;
+			if (write_asin_checkbox.IsChecked() != prefs::bool_::write_asin.get_value()) return true;
+			if (write_isrc_checkbox.IsChecked() != prefs::bool_::write_isrc.get_value()) return true;
+			if (write_albumartist_checkbox.IsChecked() != prefs::bool_::write_albumartist.get_value()) return true;
+
+			str8 temp;
+			uGetWindowText(server_edit, temp);
+			if (prefs::str_::server != temp) return true;
+			uGetWindowText(albumtype_edit, temp);
+			if (prefs::str_::albumtype != temp) return true;
+			uGetWindowText(albumstatus_edit, temp);
+			if (prefs::str_::albumstatus != temp) return true;
+
+			return false;
+		}
+
+		t_uint32 get_state() override
+		{
+			t_uint32 state = preferences_state::resettable;
+			if (has_changed()) state |= preferences_state::changed;
+			return state;
+		}
+
+		void apply() override
+		{
+			prefs::bool_::server = server_checkbox.IsChecked();
+			prefs::bool_::short_date = short_date_checkbox.IsChecked();
+			prefs::bool_::ascii_punctuation = ascii_punctuation_checkbox.IsChecked();
+			prefs::bool_::write_ids = write_ids_checkbox.IsChecked();
+			prefs::bool_::albumtype = write_albumtype_checkbox.IsChecked();
+			prefs::bool_::albumstatus = write_albumstatus_checkbox.IsChecked();
+			prefs::bool_::write_label_info = write_label_info_checkbox.IsChecked();
+			prefs::bool_::write_country = write_country_checkbox.IsChecked();
+			prefs::bool_::write_format = write_format_checkbox.IsChecked();
+			prefs::bool_::write_asin = write_asin_checkbox.IsChecked();
+			prefs::bool_::write_isrc = write_isrc_checkbox.IsChecked();
+			prefs::bool_::write_albumartist = write_albumartist_checkbox.IsChecked();
+
+			uGetWindowText(server_edit, prefs::str_::server);
+			uGetWindowText(albumtype_edit, prefs::str_::albumtype);
+			uGetWindowText(albumstatus_edit, prefs::str_::albumstatus);
+		}
+
+		void on_change()
+		{
+			server_edit.EnableWindow(server_checkbox.IsChecked());
+			albumtype_edit.EnableWindow(write_albumtype_checkbox.IsChecked());
+			albumstatus_edit.EnableWindow(write_albumstatus_checkbox.IsChecked());
+
+			m_callback->on_state_changed();
+		}
+
+		void reset() override
+		{
+			server_checkbox.SetCheck(prefs::bool_::default_server);
+			short_date_checkbox.SetCheck(prefs::bool_::default_short_date);
+			ascii_punctuation_checkbox.SetCheck(prefs::bool_::default_ascii_punctuation);
+			write_ids_checkbox.SetCheck(prefs::bool_::default_write_ids);
+			write_albumtype_checkbox.SetCheck(prefs::bool_::default_albumtype);
+			write_albumstatus_checkbox.SetCheck(prefs::bool_::default_albumstatus);
+			write_label_info_checkbox.SetCheck(prefs::bool_::default_write_label_info);
+			write_country_checkbox.SetCheck(prefs::bool_::default_write_country);
+			write_format_checkbox.SetCheck(prefs::bool_::default_write_format);
+			write_asin_checkbox.SetCheck(prefs::bool_::default_write_asin);
+			write_isrc_checkbox.SetCheck(prefs::bool_::default_write_isrc);
+			write_albumartist_checkbox.SetCheck(prefs::bool_::default_write_albumartist);
+
+			server_edit.EnableWindow(prefs::bool_::default_server);
+			albumtype_edit.EnableWindow(prefs::bool_::default_albumtype);
+			albumstatus_edit.EnableWindow(prefs::bool_::default_albumstatus);
+
+			uSetWindowText(server_edit, prefs::str_::default_server);
+			uSetWindowText(albumtype_edit, prefs::str_::default_albumtype);
+			uSetWindowText(albumstatus_edit, prefs::str_::default_albumstatus);
+
+			on_change();
+		}
+
+		void OnChanged(UINT, int, CWindow)
+		{
+			on_change();
+		}
+
+	private:
+		CCheckBox server_checkbox;
+		CCheckBox short_date_checkbox;
+		CCheckBox ascii_punctuation_checkbox;
+		CCheckBox write_ids_checkbox;
+		CCheckBox write_albumtype_checkbox;
+		CCheckBox write_albumstatus_checkbox;
+		CCheckBox write_label_info_checkbox;
+		CCheckBox write_country_checkbox;
+		CCheckBox write_format_checkbox;
+		CCheckBox write_asin_checkbox;
+		CCheckBox write_isrc_checkbox;
+		CCheckBox write_albumartist_checkbox;
+		CEdit server_edit;
+		CEdit albumtype_edit;
+		CEdit albumstatus_edit;
+		preferences_page_callback::ptr m_callback;
+	};
+
+	class PreferencesPage : public preferences_page_impl<PreferencesPageInstance>
 	{
-		if (server_checkbox.IsChecked() != mb_preferences::bool_::server.get_value()) return true;
-		if (short_date_checkbox.IsChecked() != mb_preferences::bool_::short_date.get_value()) return true;
-		if (ascii_punctuation_checkbox.IsChecked() != mb_preferences::bool_::ascii_punctuation.get_value()) return true;
-		if (write_ids_checkbox.IsChecked() != mb_preferences::bool_::write_ids.get_value()) return true;
-		if (write_albumtype_checkbox.IsChecked() != mb_preferences::bool_::albumtype.get_value()) return true;
-		if (write_albumstatus_checkbox.IsChecked() != mb_preferences::bool_::albumstatus.get_value()) return true;
-		if (write_label_info_checkbox.IsChecked() != mb_preferences::bool_::write_label_info.get_value()) return true;
-		if (write_country_checkbox.IsChecked() != mb_preferences::bool_::write_country.get_value()) return true;
-		if (write_format_checkbox.IsChecked() != mb_preferences::bool_::write_format.get_value()) return true;
-		if (write_asin_checkbox.IsChecked() != mb_preferences::bool_::write_asin.get_value()) return true;
-		if (write_isrc_checkbox.IsChecked() != mb_preferences::bool_::write_isrc.get_value()) return true;
-		if (write_albumartist_checkbox.IsChecked() != mb_preferences::bool_::write_albumartist.get_value()) return true;
+	public:
+		GUID get_guid() override
+		{
+			static constexpr GUID guid = { 0x79179a37, 0x5942, 0x4fdf,{ 0xbb, 0xb7, 0x93, 0xfd, 0x35, 0xfc, 0xfe, 0x97 } };
+			return guid;
+		}
 
-		str8 temp;
-		uGetWindowText(server_edit, temp);
-		if (mb_preferences::str_::server != temp) return true;
-		uGetWindowText(albumtype_edit, temp);
-		if (mb_preferences::str_::albumtype != temp) return true;
-		uGetWindowText(albumstatus_edit, temp);
-		if (mb_preferences::str_::albumstatus != temp) return true;
+		GUID get_parent_guid() override
+		{
+			return preferences_page::guid_tagging;
+		}
 
-		return false;
-	}
+		bool get_help_url(pfc::string_base& p_out) override
+		{
+			p_out = "https://marc2k3.github.io/foo_musicbrainz.html";
+			return true;
+		}
 
-	t_uint32 get_state() override
-	{
-		t_uint32 state = preferences_state::resettable;
-		if (has_changed()) state |= preferences_state::changed;
-		return state;
-	}
+		const char* get_name() override
+		{
+			return COMPONENT_TITLE;
+		}
+	};
 
-	void apply() override
-	{
-		mb_preferences::bool_::server = server_checkbox.IsChecked();
-		mb_preferences::bool_::short_date = short_date_checkbox.IsChecked();
-		mb_preferences::bool_::ascii_punctuation = ascii_punctuation_checkbox.IsChecked();
-		mb_preferences::bool_::write_ids = write_ids_checkbox.IsChecked();
-		mb_preferences::bool_::albumtype = write_albumtype_checkbox.IsChecked();
-		mb_preferences::bool_::albumstatus = write_albumstatus_checkbox.IsChecked();
-		mb_preferences::bool_::write_label_info = write_label_info_checkbox.IsChecked();
-		mb_preferences::bool_::write_country = write_country_checkbox.IsChecked();
-		mb_preferences::bool_::write_format = write_format_checkbox.IsChecked();
-		mb_preferences::bool_::write_asin = write_asin_checkbox.IsChecked();
-		mb_preferences::bool_::write_isrc = write_isrc_checkbox.IsChecked();
-		mb_preferences::bool_::write_albumartist = write_albumartist_checkbox.IsChecked();
-
-		uGetWindowText(server_edit, mb_preferences::str_::server);
-		uGetWindowText(albumtype_edit, mb_preferences::str_::albumtype);
-		uGetWindowText(albumstatus_edit, mb_preferences::str_::albumstatus);
-	}
-
-	void on_change()
-	{
-		server_edit.EnableWindow(server_checkbox.IsChecked());
-		albumtype_edit.EnableWindow(write_albumtype_checkbox.IsChecked());
-		albumstatus_edit.EnableWindow(write_albumstatus_checkbox.IsChecked());
-
-		m_callback->on_state_changed();
-	}
-
-	void reset() override
-	{
-		server_checkbox.SetCheck(mb_preferences::bool_::default_server);
-		short_date_checkbox.SetCheck(mb_preferences::bool_::default_short_date);
-		ascii_punctuation_checkbox.SetCheck(mb_preferences::bool_::default_ascii_punctuation);
-		write_ids_checkbox.SetCheck(mb_preferences::bool_::default_write_ids);
-		write_albumtype_checkbox.SetCheck(mb_preferences::bool_::default_albumtype);
-		write_albumstatus_checkbox.SetCheck(mb_preferences::bool_::default_albumstatus);
-		write_label_info_checkbox.SetCheck(mb_preferences::bool_::default_write_label_info);
-		write_country_checkbox.SetCheck(mb_preferences::bool_::default_write_country);
-		write_format_checkbox.SetCheck(mb_preferences::bool_::default_write_format);
-		write_asin_checkbox.SetCheck(mb_preferences::bool_::default_write_asin);
-		write_isrc_checkbox.SetCheck(mb_preferences::bool_::default_write_isrc);
-		write_albumartist_checkbox.SetCheck(mb_preferences::bool_::default_write_albumartist);
-
-		server_edit.EnableWindow(mb_preferences::bool_::default_server);
-		albumtype_edit.EnableWindow(mb_preferences::bool_::default_albumtype);
-		albumstatus_edit.EnableWindow(mb_preferences::bool_::default_albumstatus);
-
-		uSetWindowText(server_edit, mb_preferences::str_::default_server);
-		uSetWindowText(albumtype_edit, mb_preferences::str_::default_albumtype);
-		uSetWindowText(albumstatus_edit, mb_preferences::str_::default_albumstatus);
-
-		on_change();
-	}
-
-	void OnChanged(UINT, int, CWindow)
-	{
-		on_change();
-	}
-
-private:
-	CCheckBox server_checkbox;
-	CCheckBox short_date_checkbox;
-	CCheckBox ascii_punctuation_checkbox;
-	CCheckBox write_ids_checkbox;
-	CCheckBox write_albumtype_checkbox;
-	CCheckBox write_albumstatus_checkbox;
-	CCheckBox write_label_info_checkbox;
-	CCheckBox write_country_checkbox;
-	CCheckBox write_format_checkbox;
-	CCheckBox write_asin_checkbox;
-	CCheckBox write_isrc_checkbox;
-	CCheckBox write_albumartist_checkbox;
-	CEdit server_edit;
-	CEdit albumtype_edit;
-	CEdit albumstatus_edit;
-	preferences_page_callback::ptr m_callback;
-};
-
-class PreferencesPage : public preferences_page_impl<PreferencesPageInstance>
-{
-public:
-	GUID get_guid() override
-	{
-		static constexpr GUID guid = { 0x79179a37, 0x5942, 0x4fdf,{ 0xbb, 0xb7, 0x93, 0xfd, 0x35, 0xfc, 0xfe, 0x97 } };
-		return guid;
-	}
-
-	GUID get_parent_guid() override
-	{
-		return preferences_page::guid_tagging;
-	}
-
-	bool get_help_url(pfc::string_base& p_out) override
-	{
-		p_out = "https://marc2k3.github.io/foo_musicbrainz.html";
-		return true;
-	}
-
-	const char* get_name() override
-	{
-		return COMPONENT_TITLE;
-	}
-};
-
-preferences_page_factory_t<PreferencesPage> _;
+	preferences_page_factory_t<PreferencesPage> _;
+}

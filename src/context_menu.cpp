@@ -7,7 +7,7 @@
 
 namespace mb
 {
-	static constexpr std::array<GUID, 4> menu_guids =
+	static constexpr std::array<GUID, 4> context_guids =
 	{
 		0x3ca8395b, 0x694e, 0x4845, { 0xb5, 0xea, 0x56, 0x30, 0x5e, 0x7c, 0x24, 0x48 },
 		0x77f1f5cd, 0xf295, 0x4ef4, { 0xba, 0x7b, 0xc7, 0x70, 0xaa, 0xc6, 0xd0, 0x1e },
@@ -15,7 +15,7 @@ namespace mb
 		0x4d5e632c, 0x34f3, 0x4fda, { 0x8f, 0x71, 0x35, 0xa4, 0xb2, 0x5b, 0xea, 0x94 }
 	};
 
-	static const std::vector<std::pair<str8, str8>> menu_names =
+	static const std::vector<std::pair<str8, str8>> context_names =
 	{
 		{ "Get tags from MusicBrainz (by TOC)", "Queries MusicBrainz server for tags for a complete CD using TOC." },
 		{ "Get tags from MusicBrainz (by artist & album)","Queries MusicBrainz server for tags for a complete CD using Artist/Album." },
@@ -28,7 +28,7 @@ namespace mb
 	public:
 		GUID get_item_guid(unsigned p_index) override
 		{
-			return menu_guids[p_index];
+			return context_guids[p_index];
 		}
 
 		GUID get_parent() override
@@ -105,13 +105,13 @@ namespace mb
 
 		bool get_item_description(unsigned p_index, pfc::string_base& p_out) override
 		{
-			p_out = menu_names[p_index].second;
+			p_out = context_names[p_index].second;
 			return true;
 		}
 
 		t_size get_num_items() override
 		{
-			return menu_names.size();
+			return context_names.size();
 		}
 
 		void context_command(t_size p_index, metadb_handle_list_cref p_data, const GUID& p_caller) override
@@ -126,11 +126,11 @@ namespace mb
 					if (!context_check_count(p_data)) return popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
 					if (!context_check_samplerate(p_data)) return popup_message::g_show("The sample rate of each track must match and be either 44100 Hz or 48000 Hz. Also, the number of samples must match CD frame boundaries.", COMPONENT_TITLE, popup_message::icon_error);
 
-					mb_toc toc(p_data);
-					auto query = new mb_query("discid", toc.get_discid());
-					query->add_param("cdstubs", "no");
-					query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
-					auto cb = fb2k::service_new<mb_request_thread>(mb_request_thread::discid, query, p_data);
+					toc t(p_data);
+					auto q = new query("discid", t.get_discid());
+					q->add_param("cdstubs", "no");
+					q->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
+					auto cb = fb2k::service_new<request_thread>(request_thread::discid, q, p_data);
 					threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 				}
 				break;
@@ -184,10 +184,10 @@ namespace mb
 							str8 encoded_search;
 							pfc::urlEncode(encoded_search, search);
 
-							auto query = new mb_query("release");
-							query->add_param("query", encoded_search);
-							query->add_param("limit", "100");
-							auto cb = fb2k::service_new<mb_request_thread>(mb_request_thread::search, query, p_data);
+							auto q = new query("release");
+							q->add_param("query", encoded_search);
+							q->add_param("limit", "100");
+							auto cb = fb2k::service_new<request_thread>(request_thread::search, q, p_data);
 							threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 						}
 					}
@@ -230,9 +230,9 @@ namespace mb
 						dialog_mbid dlg(album_id);
 						if (dlg.DoModal(wnd) == IDOK)
 						{
-							auto query = new mb_query("release", dlg.m_albumid_str);
-							query->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
-							auto cb = fb2k::service_new<mb_request_thread>(mb_request_thread::albumid, query, p_data);
+							auto q = new query("release", dlg.m_albumid_str);
+							q->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
+							auto cb = fb2k::service_new<request_thread>(request_thread::albumid, q, p_data);
 							threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 						}
 					}
@@ -243,10 +243,10 @@ namespace mb
 					if (!context_check_count(p_data)) return popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
 					if (!context_check_lossless(p_data)) return popup_message::g_show("Only lossless files with a sample rate of 44100Hz may be used for TOC submissions. Also, the number of samples must match CD frame boundaries.", COMPONENT_TITLE, popup_message::icon_error);
 
-					mb_toc toc(p_data);
+					toc t(p_data);
 
 					str8 url = "https://musicbrainz.org/cdtoc/attach?toc=";
-					url << toc.get_toc();
+					url << t.get_toc();
 					ShellExecute(nullptr, _T("open"), string_wide_from_utf8_fast(url), nullptr, nullptr, SW_SHOW);
 				}
 				break;
@@ -255,7 +255,7 @@ namespace mb
 
 		void get_item_name(t_size p_index, pfc::string_base& p_out) override
 		{
-			p_out = menu_names[p_index].first;
+			p_out = context_names[p_index].first;
 		}
 	};
 
