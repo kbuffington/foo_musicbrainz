@@ -1,9 +1,8 @@
 #include "stdafx.h"
-#include "helpers.h"
 
 namespace mb
 {
-	static const char* ascii_replacements[][2] =
+	static const std::vector<std::pair<const char*, const char*>> ascii_replacements =
 	{
 		{ "…", "..." },
 		{ "‘", "'" },
@@ -25,8 +24,6 @@ namespace mb
 		{ "—", "-" },
 		{ "―", "-" }
 	};
-
-	static constexpr t_size ascii_replacements_count = PFC_TABSIZE(ascii_replacements);
 
 	Release parser(json release, t_size handle_count)
 	{
@@ -174,10 +171,8 @@ namespace mb
 		if (prefs::bool_::ascii_punctuation)
 		{
 			pfc::string tmp(s.c_str());
-			for (t_size i = 0; i < ascii_replacements_count; ++i)
+			for (const auto& [what, with] : ascii_replacements)
 			{
-				auto what = ascii_replacements[i][0];
-				auto with = ascii_replacements[i][1];
 				tmp = tmp.replace(what, with);
 			}
 			return tmp.get_ptr();
