@@ -71,14 +71,14 @@ namespace prefs
 
 namespace mb
 {
-	class PreferencesPageInstance : public CDialogImpl<PreferencesPageInstance>, public preferences_page_instance
+	class my_preferences_page_instance : public CDialogImpl<my_preferences_page_instance>, public preferences_page_instance
 	{
 	public:
-		PreferencesPageInstance(preferences_page_callback::ptr p_callback) : m_callback(p_callback) {}
+		my_preferences_page_instance(preferences_page_callback::ptr p_callback) : m_callback(p_callback) {}
 
 		enum { IDD = IDD_PREFERENCES };
 
-		BEGIN_MSG_MAP(PreferencesPageInstance)
+		BEGIN_MSG_MAP(my_preferences_page_instance)
 			MSG_WM_INITDIALOG(OnInitDialog)
 			COMMAND_CODE_HANDLER_EX(EN_UPDATE, OnChanged)
 			COMMAND_RANGE_HANDLER_EX(IDC_CHECK_SERVER, IDC_CHECK_WRITE_ALBUMARTIST, OnChanged)
@@ -239,7 +239,7 @@ namespace mb
 		preferences_page_callback::ptr m_callback;
 	};
 
-	class PreferencesPage : public preferences_page_impl<PreferencesPageInstance>
+	class my_preferences_page_impl : public preferences_page_impl<my_preferences_page_instance>
 	{
 	public:
 		GUID get_guid() override
@@ -265,5 +265,5 @@ namespace mb
 		}
 	};
 
-	preferences_page_factory_t<PreferencesPage> _;
+	preferences_page_factory_t<my_preferences_page_impl> g_my_preferences_page_impl;
 }
