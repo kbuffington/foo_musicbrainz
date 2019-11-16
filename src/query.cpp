@@ -39,7 +39,7 @@ namespace mb
 			popup_message::g_show(buffer, COMPONENT_TITLE);
 			return json();
 		}
-		catch (const std::exception & e)
+		catch (const std::exception& e)
 		{
 			popup_message::g_show(e.what(), COMPONENT_TITLE);
 			return json();
