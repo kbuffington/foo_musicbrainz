@@ -48,6 +48,9 @@
     <ClInclude Include="toc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="foo_musicbrainz.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="foo_musicbrainz.rc">

@@ -99,6 +99,7 @@
     <ClInclude Include="dialog_mbid.h" />
     <ClInclude Include="dialog_tagger.h" />
     <ClInclude Include="dialog_tags.h" />
+    <ClInclude Include="foo_musicbrainz.h" />
     <ClInclude Include="helpers.h" />
     <ClInclude Include="preferences.h" />
     <ClInclude Include="query.h" />

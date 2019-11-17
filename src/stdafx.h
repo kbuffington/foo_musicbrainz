@@ -2,10 +2,6 @@
 
 #define _WIN32_WINNT _WIN32_WINNT_WINXP
 
-#define COMPONENT_TITLE "MusicBrainz Tagger"
-#define COMPONENT_DLL_NAME "foo_musicbrainz.dll"
-#define COMPONENT_VERSION "0.4.1"
-
 #include <regex>
 using std::regex;
 
@@ -22,5 +18,6 @@ using json = nlohmann::json;
 using namespace pfc::stringcvt;
 using str8 = pfc::string8;
 
+#include "foo_musicbrainz.h"
 #include "helpers.h"
 #include "preferences.h"
