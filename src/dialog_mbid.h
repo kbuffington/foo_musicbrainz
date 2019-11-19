@@ -35,7 +35,8 @@ namespace mb
 		{
 			str8 t;
 			uGetWindowText(m_albumid_edit, t);
-			const str8 u = "https://musicbrainz.org/release/";
+			str8 u = get_server();
+			u << "/release/";
 			const t_size l = u.get_length();
 			if (strncmp(t, u, l) == 0)
 			{

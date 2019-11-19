@@ -142,7 +142,7 @@ namespace mb
 
 	str8 get_server()
 	{
-		return prefs::check::server ? prefs::str::server : "https://musicbrainz.org";
+		return prefs::check::server ? prefs::str::server.get_ptr() : prefs::defaults::str_server;
 	}
 
 	str8 get_status_str(t_size idx)

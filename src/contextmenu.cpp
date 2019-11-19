@@ -245,8 +245,8 @@ namespace mb
 
 					toc t(p_data);
 
-					str8 url = "https://musicbrainz.org/cdtoc/attach?toc=";
-					url << t.get_toc();
+					str8 url = get_server();
+					url << "/cdtoc/attach?toc=" << t.get_toc();
 					ShellExecute(nullptr, _T("open"), string_wide_from_utf8_fast(url), nullptr, nullptr, SW_SHOW);
 				}
 				break;
