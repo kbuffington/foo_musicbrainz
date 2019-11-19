@@ -116,7 +116,7 @@ namespace mb
 			r.releasegroupid = to_str(rg["id"]);
 		}
 
-		if (prefs::bool_::short_date && r.date.get_length() > 4)
+		if (prefs::check::short_date && r.date.get_length() > 4)
 		{
 			std::string tmp = r.date.get_ptr();
 			r.date = tmp.substr(0, 4).c_str();
@@ -142,7 +142,7 @@ namespace mb
 
 	str8 get_server()
 	{
-		return prefs::bool_::server ? prefs::str_::server : "https://musicbrainz.org";
+		return prefs::check::server ? prefs::str::server : "https://musicbrainz.org";
 	}
 
 	str8 get_status_str(t_size idx)
@@ -168,7 +168,7 @@ namespace mb
 	{
 		if (j.is_null()) return "";
 		std::string s = j.is_string() ? j.get<std::string>() : j.dump();
-		if (prefs::bool_::ascii_punctuation)
+		if (prefs::check::ascii_punctuation)
 		{
 			pfc::string tmp(s.c_str());
 			for (const auto& [what, with] : ascii_replacements)
@@ -258,7 +258,7 @@ namespace mb
 			if (track.tracknumber == 1) subtitle = track.subtitle;
 			else track.subtitle = subtitle;
 
-			if (prefs::bool_::write_albumartist || release.is_various)
+			if (prefs::check::write_albumartist || release.is_various)
 			{
 				info[i].meta_set("ALBUM ARTIST", release.album_artist);
 			}
@@ -278,24 +278,24 @@ namespace mb
 				if (track.subtitle.get_length()) info[i].meta_set("DISCSUBTITLE", track.subtitle);
 			}
 
-			if (prefs::bool_::albumtype && get_type_index(release.primary_type) > 0)
+			if (prefs::check::albumtype && get_type_index(release.primary_type) > 0)
 			{
-				info[i].meta_set(prefs::str_::albumtype, release.primary_type);
+				info[i].meta_set(prefs::str::albumtype, release.primary_type);
 			}
 
-			if (prefs::bool_::albumstatus && get_status_index(release.status) > 0)
+			if (prefs::check::albumstatus && get_status_index(release.status) > 0)
 			{
-				info[i].meta_set(prefs::str_::albumstatus, release.status);
+				info[i].meta_set(prefs::str::albumstatus, release.status);
 			}
 
-			if (prefs::bool_::write_label_info)
+			if (prefs::check::write_label_info)
 			{
 				if (release.label.get_length()) info[i].meta_set("LABEL", release.label);
 				if (release.catalog.get_length()) info[i].meta_set("CATALOGNUMBER", release.catalog);
 				if (release.barcode.get_length()) info[i].meta_set("BARCODE", release.barcode);
 			}
 
-			if (prefs::bool_::write_ids)
+			if (prefs::check::write_ids)
 			{
 				if (release.discid.get_length()) info[i].meta_set("MUSICBRAINZ_DISCID", release.discid);
 				info[i].meta_set("MUSICBRAINZ_ALBUMID", release.albumid);
@@ -316,22 +316,22 @@ namespace mb
 				}
 			}
 
-			if (prefs::bool_::write_country && release.country.get_length())
+			if (prefs::check::write_country && release.country.get_length())
 			{
 				info[i].meta_set("RELEASECOUNTRY", release.country);
 			}
 
-			if (prefs::bool_::write_format && track.format.get_length())
+			if (prefs::check::write_format && track.format.get_length())
 			{
 				info[i].meta_set("MEDIA", track.format);
 			}
 
-			if (prefs::bool_::write_asin && release.asin.get_length())
+			if (prefs::check::write_asin && release.asin.get_length())
 			{
 				info[i].meta_set("ASIN", release.asin);
 			}
 
-			if (prefs::bool_::write_isrc)
+			if (prefs::check::write_isrc)
 			{
 				for (t_size j = 0; j < track.isrc.get_count(); ++j)
 				{

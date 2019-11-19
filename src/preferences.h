@@ -2,7 +2,7 @@
 
 namespace prefs
 {
-	namespace bool_
+	namespace check
 	{
 		extern cfg_bool server;
 		extern cfg_bool short_date;
@@ -18,7 +18,7 @@ namespace prefs
 		extern cfg_bool write_albumartist;
 	}
 
-	namespace str_
+	namespace str
 	{
 		extern cfg_string server;
 		extern cfg_string albumtype;
