@@ -24,21 +24,6 @@ namespace prefs
 		cfg_string albumtype(guids::str_albumtype, defaults::str_albumtype);
 		cfg_string albumstatus(guids::str_albumstatus, defaults::str_albumstatus);
 	}
-
-	struct check_cfg
-	{
-		cfg_bool* setting;
-		bool def;
-		CCheckBox check;
-	};
-
-	struct str_cfg
-	{
-		cfg_string* setting;
-		const char* def;
-		int id;
-		CEdit edit;
-	};
 }
 
 namespace mb
@@ -162,9 +147,24 @@ namespace mb
 		}
 
 	private:
+		struct check_cfg
+		{
+			cfg_bool* setting;
+			bool def;
+			CCheckBox check;
+		};
+
+		struct str_cfg
+		{
+			cfg_string* setting;
+			const char* def;
+			int id;
+			CEdit edit;
+		};
+
 		preferences_page_callback::ptr m_callback;
-		std::map<int, prefs::check_cfg> m_check_map;
-		std::map<int, prefs::str_cfg> m_str_map;
+		std::map<int, check_cfg> m_check_map;
+		std::map<int, str_cfg> m_str_map;
 	};
 
 	class my_preferences_page_impl : public preferences_page_impl<my_preferences_page_instance>
