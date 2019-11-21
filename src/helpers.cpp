@@ -116,7 +116,7 @@ namespace mb
 			r.releasegroupid = to_str(rg["id"]);
 		}
 
-		if (prefs::check::short_date && r.date.get_length() > 4)
+		if (prefs::check::short_date.get_value() && r.date.get_length() > 4)
 		{
 			std::string tmp = r.date.get_ptr();
 			r.date = tmp.substr(0, 4).c_str();
@@ -138,11 +138,6 @@ namespace mb
 			format << tmp;
 		}
 		return format;
-	}
-
-	str8 get_server()
-	{
-		return prefs::check::server ? prefs::str::server.get_ptr() : prefs::defaults::str_server;
 	}
 
 	str8 get_status_str(t_size idx)
@@ -168,7 +163,7 @@ namespace mb
 	{
 		if (j.is_null()) return "";
 		std::string s = j.is_string() ? j.get<std::string>() : j.dump();
-		if (prefs::check::ascii_punctuation)
+		if (prefs::check::ascii_punctuation.get_value())
 		{
 			pfc::string tmp(s.c_str());
 			for (const auto& [what, with] : ascii_replacements)
@@ -247,6 +242,8 @@ namespace mb
 		t_size count = handles.get_count();
 		std::vector<file_info_impl> info(count);
 
+		bool write_albumartist = prefs::check::write_albumartist.get_value() || release.is_various;
+
 		str8 subtitle;
 
 		for (t_size i = 0; i < count; ++i)
@@ -258,7 +255,7 @@ namespace mb
 			if (track.tracknumber == 1) subtitle = track.subtitle;
 			else track.subtitle = subtitle;
 
-			if (prefs::check::write_albumartist || release.is_various)
+			if (write_albumartist)
 			{
 				info[i].meta_set("ALBUM ARTIST", release.album_artist);
 			}
@@ -278,24 +275,24 @@ namespace mb
 				if (track.subtitle.get_length()) info[i].meta_set("DISCSUBTITLE", track.subtitle);
 			}
 
-			if (prefs::check::albumtype && get_type_index(release.primary_type) > 0)
+			if (prefs::check::albumtype.get_value() && get_type_index(release.primary_type) > 0)
 			{
-				info[i].meta_set(prefs::str::albumtype, release.primary_type);
+				info[i].meta_set(prefs::str::albumtype.get_ptr(), release.primary_type);
 			}
 
-			if (prefs::check::albumstatus && get_status_index(release.status) > 0)
+			if (prefs::check::albumstatus.get_value() && get_status_index(release.status) > 0)
 			{
-				info[i].meta_set(prefs::str::albumstatus, release.status);
+				info[i].meta_set(prefs::str::albumstatus.get_ptr(), release.status);
 			}
 
-			if (prefs::check::write_label_info)
+			if (prefs::check::write_label_info.get_value())
 			{
 				if (release.label.get_length()) info[i].meta_set("LABEL", release.label);
 				if (release.catalog.get_length()) info[i].meta_set("CATALOGNUMBER", release.catalog);
 				if (release.barcode.get_length()) info[i].meta_set("BARCODE", release.barcode);
 			}
 
-			if (prefs::check::write_ids)
+			if (prefs::check::write_ids.get_value())
 			{
 				if (release.discid.get_length()) info[i].meta_set("MUSICBRAINZ_DISCID", release.discid);
 				info[i].meta_set("MUSICBRAINZ_ALBUMID", release.albumid);
@@ -303,35 +300,38 @@ namespace mb
 				info[i].meta_set("MUSICBRAINZ_RELEASETRACKID", track.releasetrackid);
 				info[i].meta_set("MUSICBRAINZ_TRACKID", track.trackid);
 
-				for (t_size j = 0; j < release.albumartistid.get_count(); ++j)
-				{
-					if (j == 0) info[i].meta_remove_field("MUSICBRAINZ_ALBUMARTISTID");
-					info[i].meta_add("MUSICBRAINZ_ALBUMARTISTID", release.albumartistid[j]);
-				}
-
 				for (t_size j = 0; j < track.artistid.get_count(); ++j)
 				{
 					if (j == 0) info[i].meta_remove_field("MUSICBRAINZ_ARTISTID");
 					info[i].meta_add("MUSICBRAINZ_ARTISTID", track.artistid[j]);
 				}
+
+				if (write_albumartist)
+				{
+					for (t_size j = 0; j < release.albumartistid.get_count(); ++j)
+					{
+						if (j == 0) info[i].meta_remove_field("MUSICBRAINZ_ALBUMARTISTID");
+						info[i].meta_add("MUSICBRAINZ_ALBUMARTISTID", release.albumartistid[j]);
+					}
+				}
 			}
 
-			if (prefs::check::write_country && release.country.get_length())
+			if (prefs::check::write_country.get_value() && release.country.get_length())
 			{
 				info[i].meta_set("RELEASECOUNTRY", release.country);
 			}
 
-			if (prefs::check::write_format && track.format.get_length())
+			if (prefs::check::write_format.get_value() && track.format.get_length())
 			{
 				info[i].meta_set("MEDIA", track.format);
 			}
 
-			if (prefs::check::write_asin && release.asin.get_length())
+			if (prefs::check::write_asin.get_value() && release.asin.get_length())
 			{
 				info[i].meta_set("ASIN", release.asin);
 			}
 
-			if (prefs::check::write_isrc)
+			if (prefs::check::write_isrc.get_value())
 			{
 				for (t_size j = 0; j < track.isrc.get_count(); ++j)
 				{

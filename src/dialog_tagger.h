@@ -301,7 +301,7 @@ namespace mb
 			disc_combo.SetCurSel(current_disc);
 			UpdateDisc();
 
-			str8 url_str = PFC_string_formatter() << "<a href=\"" << get_server() << "/release/" << m_release_list[current_release].albumid << "\">MusicBrainz release page</a>";
+			str8 url_str = PFC_string_formatter() << "<a href=\"" << prefs::get_server() << "/release/" << m_release_list[current_release].albumid << "\">MusicBrainz release page</a>";
 			uSetWindowText(url, url_str);
 		}
 

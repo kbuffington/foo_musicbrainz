@@ -4,7 +4,7 @@
 
 namespace mb
 {
-	request_thread::request_thread(t_size p_type, query* p_query, metadb_handle_list_cref p_handles)
+	request_thread::request_thread(types p_type, query* p_query, metadb_handle_list_cref p_handles)
 		: m_type(p_type)
 		, m_query(p_query)
 		, m_handles(p_handles)
@@ -40,63 +40,69 @@ namespace mb
 			return;
 		}
 
-		if (m_type == discid)
+		switch (m_type)
 		{
-			str8 discid = to_str(j["id"]);
-			auto releases = j["releases"];
-			if (releases.is_array())
+		case types::discid:
 			{
-				for (const auto& release : releases)
+				str8 discid = to_str(j["id"]);
+				auto releases = j["releases"];
+				if (releases.is_array())
 				{
-					Release r = parser(release, handle_count);
-					r.discid = discid;
-					if (r.tracks.size())
+					for (const auto& release : releases)
 					{
-						m_release_list.emplace_back(r);
+						Release r = parser(release, handle_count);
+						r.discid = discid;
+						if (r.tracks.size())
+						{
+							m_release_list.emplace_back(r);
+						}
 					}
 				}
 			}
-		}
-		else if (m_type == search)
-		{
-			auto releases = j["releases"];
-			if (releases.is_array())
+			break;
+		case types::search:
 			{
-				pfc::string_list_impl ids;
-				filter_releases(releases, handle_count, ids);
-				const t_size count = ids.get_count();
-
-				for (t_size i = 0; i < count; ++i)
+				auto releases = j["releases"];
+				if (releases.is_array())
 				{
-					p_status.set_progress(i + 1, count);
-					p_status.set_title(PFC_string_formatter() << "Fetching " << (i + 1) << " of " << count);
-					Sleep(1100);
+					pfc::string_list_impl ids;
+					filter_releases(releases, handle_count, ids);
+					const t_size count = ids.get_count();
 
-					query q("release", ids[i]);
-					q.add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
-
-					json j2 = q.lookup(p_abort);
-					if (!j2.is_object())
+					for (t_size i = 0; i < count; ++i)
 					{
-						m_failed = true;
-						return;
-					}
+						p_status.set_progress(i + 1, count);
+						p_status.set_title(PFC_string_formatter() << "Fetching " << (i + 1) << " of " << count);
+						Sleep(1100);
 
-					Release r = parser(j2, handle_count);
-					if (r.tracks.size())
-					{
-						m_release_list.emplace_back(r);
+						query q("release", ids[i]);
+						q.add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
+
+						json j2 = q.lookup(p_abort);
+						if (!j2.is_object())
+						{
+							m_failed = true;
+							return;
+						}
+
+						Release r = parser(j2, handle_count);
+						if (r.tracks.size())
+						{
+							m_release_list.emplace_back(r);
+						}
 					}
 				}
 			}
-		}
-		else if (m_type == albumid)
-		{
-			Release r = parser(j, handle_count);
-			if (r.tracks.size())
+			break;
+		case types::albumid:
 			{
-				m_release_list.emplace_back(r);
+				Release r = parser(j, handle_count);
+				if (r.tracks.size())
+				{
+					m_release_list.emplace_back(r);
+				}
 			}
+			break;
 		}
 	}
 }

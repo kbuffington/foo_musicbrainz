@@ -7,7 +7,7 @@
 
 namespace mb
 {
-	static constexpr std::array<GUID, 4> context_guids =
+	static constexpr std::array<const GUID, 4> context_guids =
 	{
 		0x3ca8395b, 0x694e, 0x4845, { 0xb5, 0xea, 0x56, 0x30, 0x5e, 0x7c, 0x24, 0x48 },
 		0x77f1f5cd, 0xf295, 0x4ef4, { 0xba, 0x7b, 0xc7, 0x70, 0xaa, 0xc6, 0xd0, 0x1e },
@@ -130,7 +130,7 @@ namespace mb
 					auto q = new query("discid", t.get_discid());
 					q->add_param("cdstubs", "no");
 					q->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
-					auto cb = fb2k::service_new<request_thread>(request_thread::discid, q, p_data);
+					auto cb = fb2k::service_new<request_thread>(request_thread::types::discid, q, p_data);
 					threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 				}
 				break;
@@ -149,7 +149,6 @@ namespace mb
 
 						if (current_artist == nullptr || current_album == nullptr) break;
 
-						// Save album and artist of the first item
 						if (i == 0)
 						{
 							artist = current_artist;
@@ -160,7 +159,6 @@ namespace mb
 								album.reset();
 								break;
 							}
-							// Break if artist or album of current item are different from the first one
 						}
 						else if (strcmp(artist, current_artist) != 0 || strcmp(album, current_album) != 0)
 						{
@@ -187,7 +185,7 @@ namespace mb
 							auto q = new query("release");
 							q->add_param("query", encoded_search);
 							q->add_param("limit", "100");
-							auto cb = fb2k::service_new<request_thread>(request_thread::search, q, p_data);
+							auto cb = fb2k::service_new<request_thread>(request_thread::types::search, q, p_data);
 							threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 						}
 					}
@@ -232,7 +230,7 @@ namespace mb
 						{
 							auto q = new query("release", dlg.m_albumid_str);
 							q->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
-							auto cb = fb2k::service_new<request_thread>(request_thread::albumid, q, p_data);
+							auto cb = fb2k::service_new<request_thread>(request_thread::types::albumid, q, p_data);
 							threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 						}
 					}
@@ -245,7 +243,7 @@ namespace mb
 
 					toc t(p_data);
 
-					str8 url = get_server();
+					str8 url = prefs::get_server();
 					url << "/cdtoc/attach?toc=" << t.get_toc();
 					ShellExecute(nullptr, _T("open"), string_wide_from_utf8_fast(url), nullptr, nullptr, SW_SHOW);
 				}
@@ -259,5 +257,5 @@ namespace mb
 		}
 	};
 
-	contextmenu_item_factory_t<my_contextmenu_item_simple> g_my_contextmenu_item_simple;
+	FB2K_SERVICE_FACTORY(my_contextmenu_item_simple);
 }

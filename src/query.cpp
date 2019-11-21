@@ -5,7 +5,7 @@ namespace mb
 {
 	query::query(const char* entity, const char* id)
 	{
-		url << get_server() << "/ws/2/" << entity;
+		url << prefs::get_server() << "/ws/2/" << entity;
 		if (id != nullptr) url << "/" << id;
 		url << "?fmt=json";
 	}
