@@ -14,8 +14,8 @@ namespace mb
 	private:
 		unsigned int* tracks_lengths;
 		unsigned int tracks[100];
-		t_size num_tracks;
-		t_size cur_track;
+		size_t num_tracks;
+		size_t cur_track;
 		unsigned int pregap;
 		char* discid;
 		str8 toc_str;

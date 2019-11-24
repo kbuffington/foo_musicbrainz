@@ -31,7 +31,7 @@ namespace mb
 
 	void request_thread::run(threaded_process_status& p_status, abort_callback& p_abort)
 	{
-		const t_size handle_count = m_handles.get_count();
+		const size_t handle_count = m_handles.get_count();
 
 		json j = m_query->lookup(p_abort);
 		if (!j.is_object())
@@ -62,9 +62,9 @@ namespace mb
 				json releases = j.value("releases", json::array());
 				pfc::string_list_impl ids;
 				filter_releases(releases, handle_count, ids);
-				const t_size count = ids.get_count();
+				const size_t count = ids.get_count();
 
-				for (t_size i = 0; i < count; ++i)
+				for (size_t i = 0; i < count; ++i)
 				{
 					p_status.set_progress(i + 1, count);
 					p_status.set_title(PFC_string_formatter() << "Fetching " << (i + 1) << " of " << count);

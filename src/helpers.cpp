@@ -25,7 +25,7 @@ namespace mb
 		{ "―", "-" }
 	};
 
-	Release parser(json release, t_size handle_count)
+	Release parser(json release, size_t handle_count)
 	{
 		Release r;
 		r.is_various = false;
@@ -33,8 +33,8 @@ namespace mb
 		get_artist_credit(release, r.album_artist, r.albumartistid);
 
 		json medias = release.value("media", json::array());
-		const t_size release_totaltracks = std::accumulate(medias.begin(), medias.end(), 0, [](t_size t, json& j) { return t + j["tracks"].size(); });
-		const t_size totaldiscs = medias.size();
+		const size_t release_totaltracks = std::accumulate(medias.begin(), medias.end(), 0, [](size_t t, json& j) { return t + j["tracks"].size(); });
+		const size_t totaldiscs = medias.size();
 		const bool complete = release_totaltracks == handle_count;
 		r.partial_lookup_matches = 0;
 
@@ -43,10 +43,12 @@ namespace mb
 			json tracks = media.value("tracks", json::array());
 			if (complete || tracks.size() == handle_count)
 			{
+				if (!complete) r.partial_lookup_matches++;
+
 				str8 format = to_str(media["format"]);
 				str8 subtitle = to_str(media["title"]);
-				const t_size discnumber = media["position"].get<t_size>();
-				const t_size totaltracks = tracks.size();
+				const size_t discnumber = media["position"].get<size_t>();
+				const size_t totaltracks = tracks.size();
 
 				for (auto& track : tracks)
 				{
@@ -57,7 +59,7 @@ namespace mb
 					t.subtitle = subtitle;
 					t.title = to_str(track["title"]);
 					t.releasetrackid = to_str(track["id"]);
-					t.tracknumber = track["position"].get<t_size>();
+					t.tracknumber = track["position"].get<size_t>();
 					t.totaldiscs = totaldiscs;
 					t.totaltracks = totaltracks;
 
@@ -72,11 +74,6 @@ namespace mb
 
 					if (!r.is_various && !r.album_artist.equals(t.artist)) r.is_various = true;
 					r.tracks.emplace_back(t);
-				}
-
-				if (!complete)
-				{
-					r.partial_lookup_matches++;
 				}
 			}
 		}
@@ -114,6 +111,26 @@ namespace mb
 		return r;
 	}
 
+	size_t get_status_index(str8 str)
+	{
+		auto it = std::find_if(release_statuses.begin(), release_statuses.end(), [str](const str8& elem)
+			{
+				return _stricmp(elem, str) == 0;
+			});
+		if (it != release_statuses.end()) return std::distance(release_statuses.begin(), it);
+		return 0;
+	}
+
+	size_t get_type_index(str8 str)
+	{
+		auto it = std::find_if(release_group_types.begin(), release_group_types.end(), [str](const str8& elem)
+			{
+				return _stricmp(elem, str) == 0;
+			});
+		if (it != release_group_types.end()) return std::distance(release_group_types.begin(), it);
+		return 0;
+	}
+
 	str8 format_thingy(const std::vector<Track>& tracks)
 	{
 		str8 format;
@@ -129,12 +146,12 @@ namespace mb
 		return format;
 	}
 
-	str8 get_status_str(t_size idx)
+	str8 get_status_str(size_t idx)
 	{
 		return release_statuses[idx];
 	}
 
-	str8 get_type_str(t_size idx)
+	str8 get_type_str(size_t idx)
 	{
 		return release_group_types[idx];
 	}
@@ -164,32 +181,12 @@ namespace mb
 		return s.c_str();
 	}
 
-	t_size get_status_index(str8 str)
-	{
-		auto it = std::find_if(release_statuses.begin(), release_statuses.end(), [str](const str8& elem)
-			{
-				return _stricmp(elem, str) == 0;
-			});
-		if (it != release_statuses.end()) return std::distance(release_statuses.begin(), it);
-		return 0;
-	}
-
-	t_size get_type_index(str8 str)
-	{
-		auto it = std::find_if(release_group_types.begin(), release_group_types.end(), [str](const str8& elem)
-			{
-				return _stricmp(elem, str) == 0;
-			});
-		if (it != release_group_types.end()) return std::distance(release_group_types.begin(), it);
-		return 0;
-	}
-
-	void filter_releases(json releases, t_size count, pfc::string_list_impl& out)
+	void filter_releases(json releases, size_t count, pfc::string_list_impl& out)
 	{
 		for (auto& release : releases)
 		{
 			auto id = to_str(release["id"]);
-			t_size track_count = release.value("track-count", std::size_t(0));
+			size_t track_count = release.value("track-count", std::size_t(0));
 			if (track_count == count)
 			{
 				out.add_item(id);
@@ -199,7 +196,7 @@ namespace mb
 				json medias = release.value("media", json::array());
 				for (auto& media : medias)
 				{
-					t_size track_count = media.value("track-count", std::size_t(0));
+					size_t track_count = media.value("track-count", std::size_t(0));
 					if (track_count == count)
 					{
 						out.add_item(id);
@@ -220,16 +217,16 @@ namespace mb
 		}
 	}
 
-	void tagger(metadb_handle_list_cref handles, Release release, t_size current_disc)
+	void tagger(metadb_handle_list_cref handles, Release release, size_t current_disc)
 	{
-		t_size count = handles.get_count();
+		size_t count = handles.get_count();
 		std::vector<file_info_impl> info(count);
 
 		bool write_albumartist = prefs::check::write_albumartist.get_value() || release.is_various;
 
 		str8 subtitle;
 
-		for (t_size i = 0; i < count; ++i)
+		for (size_t i = 0; i < count; ++i)
 		{
 			info[i] = handles[i]->get_info_ref()->info();
 			auto track = release.tracks[i + (current_disc * count)];
@@ -283,7 +280,7 @@ namespace mb
 				info[i].meta_set("MUSICBRAINZ_RELEASETRACKID", track.releasetrackid);
 				info[i].meta_set("MUSICBRAINZ_TRACKID", track.trackid);
 
-				for (t_size j = 0; j < track.artistid.get_count(); ++j)
+				for (size_t j = 0; j < track.artistid.get_count(); ++j)
 				{
 					if (j == 0) info[i].meta_remove_field("MUSICBRAINZ_ARTISTID");
 					info[i].meta_add("MUSICBRAINZ_ARTISTID", track.artistid[j]);
@@ -291,7 +288,7 @@ namespace mb
 
 				if (write_albumartist)
 				{
-					for (t_size j = 0; j < release.albumartistid.get_count(); ++j)
+					for (size_t j = 0; j < release.albumartistid.get_count(); ++j)
 					{
 						if (j == 0) info[i].meta_remove_field("MUSICBRAINZ_ALBUMARTISTID");
 						info[i].meta_add("MUSICBRAINZ_ALBUMARTISTID", release.albumartistid[j]);
@@ -316,7 +313,7 @@ namespace mb
 
 			if (prefs::check::write_isrc.get_value())
 			{
-				for (t_size j = 0; j < track.isrc.get_count(); ++j)
+				for (size_t j = 0; j < track.isrc.get_count(); ++j)
 				{
 					if (j == 0) info[i].meta_remove_field("ISRC");
 					info[i].meta_add("ISRC", track.isrc[j]);

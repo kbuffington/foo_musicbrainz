@@ -43,8 +43,8 @@ namespace mb
 
 		bool context_check_lossless(metadb_handle_list_cref p_data)
 		{
-			const t_size count = p_data.get_count();
-			for (t_size i = 0; i < count; i++)
+			const size_t count = p_data.get_count();
+			for (size_t i = 0; i < count; i++)
 			{
 				if (p_data.get_item(i)->get_info_ref()->info().is_encoding_lossy()) return false;
 
@@ -57,9 +57,9 @@ namespace mb
 
 		bool context_check_samplerate(metadb_handle_list_cref p_data)
 		{
-			const t_size count = p_data.get_count();
+			const size_t count = p_data.get_count();
 			const t_int64 srate = p_data.get_item(0)->get_info_ref()->info().info_get_int("samplerate");
-			for (t_size i = 0; i < count; i++)
+			for (size_t i = 0; i < count; i++)
 			{
 				const t_int64 tmp = p_data.get_item(i)->get_info_ref()->info().info_get_int("samplerate");
 				const t_int64 samples = p_data.get_item(i)->get_info_ref()->info().info_get_length_samples();
@@ -109,16 +109,16 @@ namespace mb
 			return true;
 		}
 
-		t_size get_num_items() override
+		size_t get_num_items() override
 		{
 			return context_names.size();
 		}
 
-		void context_command(t_size p_index, metadb_handle_list_cref p_data, const GUID& p_caller) override
+		void context_command(size_t p_index, metadb_handle_list_cref p_data, const GUID& p_caller) override
 		{
 			HWND wnd = core_api::get_main_window();
-			const t_size count = p_data.get_count();
-			static constexpr t_size flags = threaded_process::flag_show_progress | threaded_process::flag_show_abort | threaded_process::flag_show_delayed;
+			const size_t count = p_data.get_count();
+			static constexpr size_t flags = threaded_process::flag_show_progress | threaded_process::flag_show_abort | threaded_process::flag_show_delayed;
 			switch (p_index)
 			{
 			case 0:
@@ -137,7 +137,7 @@ namespace mb
 			case 1:
 				{
 					str8 artist, album;
-					for (t_size i = 0; i < count; i++)
+					for (size_t i = 0; i < count; i++)
 					{
 						auto item = p_data.get_item(i);
 
@@ -194,7 +194,7 @@ namespace mb
 			case 2:
 				{
 					str8 album_id;
-					for (t_size i = 0; i < count; i++)
+					for (size_t i = 0; i < count; i++)
 					{
 						auto item = p_data.get_item(i);
 
@@ -251,7 +251,7 @@ namespace mb
 			}
 		}
 
-		void get_item_name(t_size p_index, pfc::string_base& p_out) override
+		void get_item_name(size_t p_index, pfc::string_base& p_out) override
 		{
 			p_out = context_names[p_index].first;
 		}

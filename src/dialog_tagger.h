@@ -90,7 +90,7 @@ namespace mb
 			release_list.SetSelectionModeSingle();
 			release_list.onSelChange = [&]()
 			{
-				t_size idx = release_list.GetFocusItem();
+				size_t idx = release_list.GetFocusItem();
 				if (idx != current_release && idx < release_count)
 				{
 					current_release = idx;
@@ -126,7 +126,7 @@ namespace mb
 
 			// Add release list rows
 			release_list.SetItemCount(release_count);
-			for (t_size i = 0; i < release_count; ++i)
+			for (size_t i = 0; i < release_count; ++i)
 			{
 				release_list.SetItemText(i, artist_column, m_release_list[i].album_artist);
 				release_list.SetItemText(i, release_column, m_release_list[i].title);
@@ -276,17 +276,17 @@ namespace mb
 
 			disc_combo.ResetContent();
 
-			t_size partial_lookup_matches = m_release_list[current_release].partial_lookup_matches;
+			size_t partial_lookup_matches = m_release_list[current_release].partial_lookup_matches;
 			if (partial_lookup_matches > 0)
 			{
-				for (t_size i = 0; i < partial_lookup_matches; ++i)
+				for (size_t i = 0; i < partial_lookup_matches; ++i)
 				{
 					disc_combo.AddString(string_wide_from_utf8_fast(PFC_string_formatter() << "Disc " << m_release_list[current_release].tracks[i * handle_count].discnumber << " of " << m_release_list[current_release].tracks[i * handle_count].totaldiscs));
 				}
 			}
 			else
 			{
-				t_size totaldiscs = m_release_list[current_release].tracks[0].totaldiscs;
+				size_t totaldiscs = m_release_list[current_release].tracks[0].totaldiscs;
 				if (totaldiscs == 1)
 				{
 					disc_combo.AddString(L"Showing the only disc");
@@ -306,19 +306,19 @@ namespace mb
 		}
 
 	private:
-		bool listCanSelectItem(ctx_t, t_size) override
+		bool listCanSelectItem(ctx_t, size_t) override
 		{
 			return false;
 		}
 
-		bool listIsColumnEditable(ctx_t, t_size sub_item) override
+		bool listIsColumnEditable(ctx_t, size_t sub_item) override
 		{
 			return sub_item > 1;
 		}
 
-		str8 listGetSubItemText(ctx_t, t_size item, t_size sub_item) override
+		str8 listGetSubItemText(ctx_t, size_t item, size_t sub_item) override
 		{
-			t_size track_idx = item + (current_disc * handle_count);
+			size_t track_idx = item + (current_disc * handle_count);
 			switch (sub_item)
 			{
 			case 0:
@@ -340,14 +340,14 @@ namespace mb
 			}
 		}
 
-		t_size listGetItemCount(ctx_t) override
+		size_t listGetItemCount(ctx_t) override
 		{
 			return handle_count;
 		}
 
-		void listSetEditField(ctx_t, t_size item, t_size sub_item, const char* value) override
+		void listSetEditField(ctx_t, size_t item, size_t sub_item, const char* value) override
 		{
-			t_size track_idx = item + (current_disc * handle_count);
+			size_t track_idx = item + (current_disc * handle_count);
 			switch (sub_item)
 			{
 			case 2:
@@ -362,9 +362,9 @@ namespace mb
 			}
 		}
 
-		void listSubItemClicked(ctx_t, t_size item, t_size sub_item) override
+		void listSubItemClicked(ctx_t, size_t item, size_t sub_item) override
 		{
-			t_size track_idx = item + (current_disc * handle_count);
+			size_t track_idx = item + (current_disc * handle_count);
 			if ((sub_item == 2 && m_release_list[current_release].tracks[track_idx].tracknumber == 1 && m_release_list[current_release].tracks[track_idx].totaldiscs > 1) || sub_item > 2)
 			{
 				track_list.TableEdit_Start(item, sub_item);
@@ -387,9 +387,9 @@ namespace mb
 		CWindow url;
 		metadb_handle_list m_handles;
 		std::vector<Release> m_release_list;
-		t_size current_release;
-		t_size current_disc;
-		t_size handle_count;
-		t_size release_count;
+		size_t current_release;
+		size_t current_disc;
+		size_t handle_count;
+		size_t release_count;
 	};
 }

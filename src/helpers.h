@@ -6,22 +6,23 @@ namespace mb
 	{
 		pfc::string_list_impl artistid;
 		pfc::string_list_impl isrc;
+		size_t discnumber;
+		size_t tracknumber;
+		size_t totaldiscs;
+		size_t totaltracks;
 		str8 artist;
 		str8 format;
 		str8 releasetrackid;
 		str8 subtitle;
 		str8 title;
 		str8 trackid;
-		t_size discnumber;
-		t_size tracknumber;
-		t_size totaldiscs;
-		t_size totaltracks;
 	};
 
 	struct Release
 	{
 		bool is_various;
 		pfc::string_list_impl albumartistid;
+		size_t partial_lookup_matches;
 		std::vector<Track> tracks;
 		str8 album_artist;
 		str8 albumid;
@@ -37,7 +38,6 @@ namespace mb
 		str8 releasegroupid;
 		str8 status;
 		str8 title;
-		t_size partial_lookup_matches;
 	};
 
 	static constexpr std::array<const char*, 12> release_group_types =
@@ -65,15 +65,15 @@ namespace mb
 		"Pseudo-Release"
 	};
 
-	Release parser(json release, t_size handle_count);
+	Release parser(json release, size_t handle_count);
+	size_t get_status_index(str8 str);
+	size_t get_type_index(str8 str);
 	str8 format_thingy(const std::vector<Track>& tracks);
-	str8 get_status_str(t_size idx);
-	str8 get_type_str(t_size idx);
+	str8 get_status_str(size_t idx);
+	str8 get_type_str(size_t idx);
 	str8 slasher(const str8& one, const str8& two);
 	str8 to_str(json j);
-	t_size get_status_index(str8 str);
-	t_size get_type_index(str8 str);
-	void filter_releases(json releases, t_size count, pfc::string_list_impl& out);
+	void filter_releases(json releases, size_t count, pfc::string_list_impl& out);
 	void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids);
-	void tagger(metadb_handle_list_cref handles, Release release, t_size current_disc);
+	void tagger(metadb_handle_list_cref handles, Release release, size_t current_disc);
 }

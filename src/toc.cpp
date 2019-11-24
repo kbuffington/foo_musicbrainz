@@ -12,9 +12,9 @@ namespace mb
 		cur_track = 0;
 		tracks_lengths = new unsigned int[num_tracks];
 		t_int64 samples;
-		t_size spf = p_data.get_item(0)->get_info_ref()->info().info_get_int("samplerate") == 48000 ? 640 : 588;
+		size_t spf = p_data.get_item(0)->get_info_ref()->info().info_get_int("samplerate") == 48000 ? 640 : 588;
 
-		for (t_size i = 0; i < num_tracks; i++)
+		for (size_t i = 0; i < num_tracks; i++)
 		{
 			samples = p_data.get_item(i)->get_info_ref()->info().info_get_length_samples();
 			if (i == 0)
@@ -99,7 +99,7 @@ namespace mb
 			toc_str << "1";
 			sprintf_s(tmp, " %d", num_tracks);
 			toc_str << tmp;
-			for (t_size i = 0; i <= num_tracks; i++)
+			for (size_t i = 0; i <= num_tracks; i++)
 			{
 				sprintf_s(tmp, " %d", tracks[i]);
 				toc_str << tmp;
