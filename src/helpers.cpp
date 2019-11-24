@@ -32,59 +32,51 @@ namespace mb
 
 		get_artist_credit(release, r.album_artist, r.albumartistid);
 
-		auto medias = release["media"];
-		if (medias.is_array())
+		json medias = release.value("media", json::array());
+		const t_size release_totaltracks = std::accumulate(medias.begin(), medias.end(), 0, [](t_size t, json& j) { return t + j["tracks"].size(); });
+		const t_size totaldiscs = medias.size();
+		const bool complete = release_totaltracks == handle_count;
+		r.partial_lookup_matches = 0;
+
+		for (auto& media : medias)
 		{
-			const t_size release_totaltracks = std::accumulate(medias.begin(), medias.end(), 0, [](t_size t, json& j) { return t + j["tracks"].size(); });
-			const t_size totaldiscs = medias.size();
-			r.partial_lookup_matches = 0;
-
-			for (auto& media : medias)
+			json tracks = media.value("tracks", json::array());
+			if (complete || tracks.size() == handle_count)
 			{
-				auto tracks = media["tracks"];
-				if (tracks.is_array() && (release_totaltracks == handle_count || tracks.size() == handle_count))
+				str8 format = to_str(media["format"]);
+				str8 subtitle = to_str(media["title"]);
+				const t_size discnumber = media["position"].get<t_size>();
+				const t_size totaltracks = tracks.size();
+
+				for (auto& track : tracks)
 				{
-					str8 format = to_str(media["format"]);
-					str8 subtitle = to_str(media["title"]);
-					const t_size discnumber = media["position"].get<t_size>();
-					const t_size totaltracks = tracks.size();
+					Track t;
+					get_artist_credit(track, t.artist, t.artistid);
+					t.discnumber = discnumber;
+					t.format = format;
+					t.subtitle = subtitle;
+					t.title = to_str(track["title"]);
+					t.releasetrackid = to_str(track["id"]);
+					t.tracknumber = track["position"].get<t_size>();
+					t.totaldiscs = totaldiscs;
+					t.totaltracks = totaltracks;
 
-					for (auto& track : tracks)
+					json recording = track.value("recording", json::object());
+					t.trackid = to_str(recording["id"]);
+
+					json isrcs = recording.value("isrcs", json::array());
+					for (auto& isrc : isrcs)
 					{
-						Track t;
-						get_artist_credit(track, t.artist, t.artistid);
-						t.discnumber = discnumber;
-						t.format = format;
-						t.subtitle = subtitle;
-						t.title = to_str(track["title"]);
-						t.releasetrackid = to_str(track["id"]);
-						t.tracknumber = track["position"].get<t_size>();
-						t.totaldiscs = totaldiscs;
-						t.totaltracks = totaltracks;
-
-						auto recording = track["recording"];
-						if (recording.is_object())
-						{
-							t.trackid = to_str(recording["id"]);
-
-							auto isrcs = recording["isrcs"];
-							if (isrcs.is_array())
-							{
-								for (auto& isrc : isrcs)
-								{
-									t.isrc.add_item(to_str(isrc));
-								}
-							}
-						}
-
-						if (!r.is_various && !r.album_artist.equals(t.artist)) r.is_various = true;
-						r.tracks.emplace_back(t);
+						t.isrc.add_item(to_str(isrc));
 					}
 
-					if (release_totaltracks != handle_count)
-					{
-						r.partial_lookup_matches++;
-					}
+					if (!r.is_various && !r.album_artist.equals(t.artist)) r.is_various = true;
+					r.tracks.emplace_back(t);
+				}
+
+				if (!complete)
+				{
+					r.partial_lookup_matches++;
 				}
 			}
 		}
@@ -97,8 +89,8 @@ namespace mb
 		r.status = to_str(release["status"]);
 		r.title = to_str(release["title"]);
 
-		auto label_info = release["label-info"];
-		if (label_info.is_array())
+		json label_info = release.value("label-info", json::array());
+		if (label_info.size())
 		{
 			auto label = label_info[0]["label"];
 			if (label.is_object())
@@ -108,13 +100,10 @@ namespace mb
 			r.catalog = to_str(label_info[0]["catalog-number"]);
 		}
 
-		auto rg = release["release-group"];
-		if (rg.is_object())
-		{
-			r.first_release_date = to_str(rg["first-release-date"]);
-			r.primary_type = to_str(rg["primary-type"]);
-			r.releasegroupid = to_str(rg["id"]);
-		}
+		json rg = release.value("release-group", json::object());
+		r.first_release_date = to_str(rg["first-release-date"]);
+		r.primary_type = to_str(rg["primary-type"]);
+		r.releasegroupid = to_str(rg["id"]);
 
 		if (prefs::check::short_date.get_value() && r.date.get_length() > 4)
 		{
@@ -200,24 +189,21 @@ namespace mb
 		for (auto& release : releases)
 		{
 			auto id = to_str(release["id"]);
-			auto track_count = release["track-count"];
-			if (track_count.is_number_unsigned() && track_count.get<t_size>() == count)
+			t_size track_count = release.value("track-count", std::size_t(0));
+			if (track_count == count)
 			{
 				out.add_item(id);
 			}
 			else
 			{
-				auto medias = release["media"];
-				if (medias.is_array())
+				json medias = release.value("media", json::array());
+				for (auto& media : medias)
 				{
-					for (auto& media : medias)
+					t_size track_count = media.value("track-count", std::size_t(0));
+					if (track_count == count)
 					{
-						auto track_count = media["track-count"];
-						if (track_count.is_number_unsigned() && track_count.get<t_size>() == count)
-						{
-							out.add_item(id);
-							break;
-						}
+						out.add_item(id);
+						break;
 					}
 				}
 			}
@@ -226,14 +212,11 @@ namespace mb
 
 	void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids)
 	{
-		auto artist_credit = j["artist-credit"];
-		if (artist_credit.is_array())
+		json artist_credit = j.value("artist-credit", json::array());
+		for (auto& artist : artist_credit)
 		{
-			for (auto& artist : artist_credit)
-			{
-				name << to_str(artist["name"]) << to_str(artist["joinphrase"]);
-				ids.add_item(to_str(artist["artist"]["id"]));
-			}
+			name << to_str(artist["name"]) << to_str(artist["joinphrase"]);
+			ids.add_item(to_str(artist["artist"]["id"]));
 		}
 	}
 

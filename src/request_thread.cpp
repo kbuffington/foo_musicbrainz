@@ -45,51 +45,45 @@ namespace mb
 		case types::discid:
 			{
 				str8 discid = to_str(j["id"]);
-				auto releases = j["releases"];
-				if (releases.is_array())
+				json releases = j.value("releases", json::array());
+				for (const auto& release : releases)
 				{
-					for (const auto& release : releases)
+					Release r = parser(release, handle_count);
+					r.discid = discid;
+					if (r.tracks.size())
 					{
-						Release r = parser(release, handle_count);
-						r.discid = discid;
-						if (r.tracks.size())
-						{
-							m_release_list.emplace_back(r);
-						}
+						m_release_list.emplace_back(r);
 					}
 				}
 			}
 			break;
 		case types::search:
 			{
-				auto releases = j["releases"];
-				if (releases.is_array())
+				json releases = j.value("releases", json::array());
+				pfc::string_list_impl ids;
+				filter_releases(releases, handle_count, ids);
+				const t_size count = ids.get_count();
+
+				for (t_size i = 0; i < count; ++i)
 				{
-					pfc::string_list_impl ids;
-					filter_releases(releases, handle_count, ids);
-					const t_size count = ids.get_count();
+					p_status.set_progress(i + 1, count);
+					p_status.set_title(PFC_string_formatter() << "Fetching " << (i + 1) << " of " << count);
+					Sleep(1100);
 
-					for (t_size i = 0; i < count; ++i)
+					query q("release", ids[i]);
+					q.add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
+
+					json j2 = q.lookup(p_abort);
+					if (!j2.is_object())
 					{
-						p_status.set_progress(i + 1, count);
-						p_status.set_title(PFC_string_formatter() << "Fetching " << (i + 1) << " of " << count);
-						Sleep(1100);
+						m_failed = true;
+						return;
+					}
 
-						query q("release", ids[i]);
-						q.add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
-
-						json j2 = q.lookup(p_abort);
-						if (!j2.is_object())
-						{
-							m_failed = true;
-							return;
-						}
-
-						Release r = parser(j2, handle_count);
-						if (r.tracks.size())
-						{
-							m_release_list.emplace_back(r);
-						}
+					Release r = parser(j2, handle_count);
+					if (r.tracks.size())
+					{
+						m_release_list.emplace_back(r);
 					}
 				}
 			}
