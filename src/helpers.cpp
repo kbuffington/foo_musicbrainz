@@ -33,7 +33,7 @@ namespace mb
 		get_artist_credit(release, r.album_artist, r.albumartistid);
 
 		json medias = release.value("media", json::array());
-		const size_t release_totaltracks = std::accumulate(medias.begin(), medias.end(), 0, [](size_t t, json& j) { return t + j["tracks"].size(); });
+		const size_t release_totaltracks = std::accumulate(medias.begin(), medias.end(), 0U, [](size_t t, json& j) { return t + j["tracks"].size(); });
 		const size_t totaldiscs = medias.size();
 		const bool complete = release_totaltracks == handle_count;
 		r.partial_lookup_matches = 0;
@@ -186,7 +186,7 @@ namespace mb
 		for (auto& release : releases)
 		{
 			auto id = to_str(release["id"]);
-			size_t track_count = release.value("track-count", std::size_t(0));
+			size_t track_count = release.value("track-count", 0U);
 			if (track_count == count)
 			{
 				out.add_item(id);
@@ -196,7 +196,7 @@ namespace mb
 				json medias = release.value("media", json::array());
 				for (auto& media : medias)
 				{
-					size_t track_count = media.value("track-count", std::size_t(0));
+					size_t track_count = media.value("track-count", 0U);
 					if (track_count == count)
 					{
 						out.add_item(id);
