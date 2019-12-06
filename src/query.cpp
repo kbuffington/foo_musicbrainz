@@ -17,7 +17,7 @@ namespace mb
 			// Download
 			auto http = http_client::get();
 			auto request = http->create_request("GET");
-			request->add_header("User-Agent", "foo_musicbrainz/" COMPONENT_VERSION);
+			request->add_header("User-Agent", PFC_string_formatter() << "foo_musicbrainz/" << component_version);
 			auto response = request->run_ex(url, p_abort);
 
 			// Get string
@@ -36,12 +36,12 @@ namespace mb
 				ptr->get_status(buffer);
 			}
 
-			popup_message::g_show(buffer, COMPONENT_TITLE);
+			popup_message::g_show(buffer, component_title);
 			return json();
 		}
 		catch (const std::exception& e)
 		{
-			popup_message::g_show(e.what(), COMPONENT_TITLE);
+			popup_message::g_show(e.what(), component_title);
 			return json();
 		}
 	}

@@ -123,8 +123,8 @@ namespace mb
 			{
 			case 0:
 				{
-					if (!context_check_count(p_data)) return popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
-					if (!context_check_samplerate(p_data)) return popup_message::g_show("The sample rate of each track must match and be either 44100 Hz or 48000 Hz. Also, the number of samples must match CD frame boundaries.", COMPONENT_TITLE, popup_message::icon_error);
+					if (!context_check_count(p_data)) return popup_message::g_show("Please select no more than 99 tracks.", component_title, popup_message::icon_error);
+					if (!context_check_samplerate(p_data)) return popup_message::g_show("The sample rate of each track must match and be either 44100 Hz or 48000 Hz. Also, the number of samples must match CD frame boundaries.", component_title, popup_message::icon_error);
 
 					toc t(p_data);
 					auto q = new query("discid", t.get_discid());
@@ -238,8 +238,8 @@ namespace mb
 				break;
 			case 3:
 				{
-					if (!context_check_count(p_data)) return popup_message::g_show("Please select no more than 99 tracks.", COMPONENT_TITLE, popup_message::icon_error);
-					if (!context_check_lossless(p_data)) return popup_message::g_show("Only lossless files with a sample rate of 44100Hz may be used for TOC submissions. Also, the number of samples must match CD frame boundaries.", COMPONENT_TITLE, popup_message::icon_error);
+					if (!context_check_count(p_data)) return popup_message::g_show("Please select no more than 99 tracks.", component_title, popup_message::icon_error);
+					if (!context_check_lossless(p_data)) return popup_message::g_show("Only lossless files with a sample rate of 44100Hz may be used for TOC submissions. Also, the number of samples must match CD frame boundaries.", component_title, popup_message::icon_error);
 
 					toc t(p_data);
 

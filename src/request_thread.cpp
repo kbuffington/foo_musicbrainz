@@ -25,7 +25,7 @@ namespace mb
 		}
 		else
 		{
-			popup_message::g_show("No matching results were found.", COMPONENT_TITLE);
+			popup_message::g_show("No matching results were found.", component_title);
 		}
 	}
 

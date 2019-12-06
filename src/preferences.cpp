@@ -234,7 +234,7 @@ namespace mb
 
 		const char* get_name() override
 		{
-			return COMPONENT_TITLE;
+			return component_title;
 		}
 	};
 
