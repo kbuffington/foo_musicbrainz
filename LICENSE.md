@@ -1,5 +1,4 @@
-Copyright (C) 2009-2012 Kirill Korolyov
-Copyright (C) 2015-2019 marc2003
+Copyright (C) 2009-2012 Kirill Korolyov, 2015-2019 marc2003
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
