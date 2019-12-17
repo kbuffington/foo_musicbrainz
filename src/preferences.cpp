@@ -78,7 +78,7 @@ namespace mb
 	public:
 		my_preferences_page_instance(preferences_page_callback::ptr p_callback) : m_callback(p_callback) {}
 
-		BEGIN_MSG_MAP(my_preferences_page_instance)
+		BEGIN_MSG_MAP_EX(my_preferences_page_instance)
 			MSG_WM_INITDIALOG(OnInitDialog)
 			COMMAND_CODE_HANDLER_EX(EN_UPDATE, OnChanged)
 			COMMAND_RANGE_HANDLER_EX(IDC_CHECK_SERVER, IDC_CHECK_WRITE_ALBUMARTIST, OnChanged)

@@ -48,7 +48,7 @@ namespace mb
 			release_count(p_release_list.size())
 		{}
 
-		BEGIN_MSG_MAP(dialog_tagger)
+		BEGIN_MSG_MAP_EX(dialog_tagger)
 			CHAIN_MSG_MAP_MEMBER(m_resizer)
 			MSG_WM_INITDIALOG(OnInitDialog)
 			MSG_WM_CLOSE(OnClose)

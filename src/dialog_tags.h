@@ -7,7 +7,7 @@ namespace mb
 	public:
 		dialog_tags(const str8& p_artist_str, const str8& p_album_str) : m_artist_str(p_artist_str), m_album_str(p_album_str) {}
 
-		BEGIN_MSG_MAP(dialog_tags)
+		BEGIN_MSG_MAP_EX(dialog_tags)
 			MSG_WM_INITDIALOG(OnInitDialog)
 			COMMAND_RANGE_HANDLER_EX(IDOK, IDCANCEL, OnCloseCmd)
 			COMMAND_CODE_HANDLER_EX(EN_UPDATE, OnUpdate)
