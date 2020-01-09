@@ -124,7 +124,7 @@ int SHA1Result( SHA1Context *context, uint8_t Message_Digest[SHA1HashSize])
  *      sha Error Code.
  *
  */
-int SHA1Input( SHA1Context *context, const uint8_t *message_array, unsigned length)
+int SHA1Input(SHA1Context *context, const uint8_t *message_array, uint32_t length)
 {
     if (!length)
     {

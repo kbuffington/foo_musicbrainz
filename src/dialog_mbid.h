@@ -45,8 +45,7 @@ namespace mb
 				return;
 			}
 
-			regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
-			m_ok.EnableWindow(regex_search(t.get_ptr(), rx));
+			m_ok.EnableWindow(is_uuid(t.get_ptr()));
 		}
 
 		CButton m_ok;

@@ -66,6 +66,7 @@ namespace mb
 	};
 
 	Release parser(json release, size_t handle_count);
+	bool is_uuid(const char* mbid);
 	size_t get_status_index(str8 str);
 	size_t get_type_index(str8 str);
 	str8 format_thingy(const std::vector<Track>& tracks);

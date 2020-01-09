@@ -111,6 +111,13 @@ namespace mb
 		return r;
 	}
 
+	bool is_uuid(const char* mbid)
+	{
+		if (mbid == nullptr) return false;
+		regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
+		return regex_search(mbid, rx);
+	}
+
 	size_t get_status_index(str8 str)
 	{
 		auto it = std::find_if(release_statuses.begin(), release_statuses.end(), [str](const str8& elem)

@@ -5,22 +5,19 @@ namespace mb
 	class toc
 	{
 	public:
-		toc(metadb_handle_list_cref p_data);
+		toc(metadb_handle_list_cref handles);
 		~toc();
 
-		char* get_discid();
-		const char* get_toc();
+		str8 get_discid();
+		str8 get_toc();
 
 	private:
-		unsigned int* tracks_lengths;
-		unsigned int tracks[100];
-		size_t num_tracks;
-		size_t cur_track;
-		unsigned int pregap;
-		char* discid;
+		str8 rfc822_binary(std::vector<uint8_t>& src);
+
+		std::vector<uint32_t> tracks;
+		str8 discid;
 		str8 toc_str;
-		void calculate_tracks();
-		void set_pregap(str8 msf);
-		unsigned char* rfc822_binary(void* src, unsigned long srcl, unsigned long& len);
+		uint32_t num_tracks = 0;
+		uint32_t pregap = 150;
 	};
 }

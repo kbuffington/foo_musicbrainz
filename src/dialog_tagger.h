@@ -37,15 +37,15 @@ namespace mb
 	class dialog_tagger : public CDialogImpl<dialog_tagger>, private IListControlOwnerDataSource
 	{
 	public:
-		dialog_tagger(const std::vector<Release>& p_release_list, metadb_handle_list_cref p_handles) :
-			m_release_list(p_release_list),
-			m_handles(p_handles),
+		dialog_tagger(const std::vector<Release>& release_list, metadb_handle_list_cref handles) :
+			m_release_list(release_list),
+			m_handles(handles),
 			m_resizer(resize_data, resize_min_max),
 			track_list(this),
 			current_release(0),
 			current_disc(0),
-			handle_count(p_handles.get_count()),
-			release_count(p_release_list.size())
+			handle_count(handles.get_count()),
+			release_count(release_list.size())
 		{}
 
 		BEGIN_MSG_MAP_EX(dialog_tagger)
@@ -143,12 +143,12 @@ namespace mb
 			track_list.AddColumnAutoWidth("Title");
 
 			// Fixed combo boxes
-			for (const auto& i : release_group_types)
+			for (pfc::stringp i : release_group_types)
 			{
 				type_combo.AddString(string_wide_from_utf8_fast(i));
 			}
 
-			for (const auto& i : release_statuses)
+			for (pfc::stringp i : release_statuses)
 			{
 				status_combo.AddString(string_wide_from_utf8_fast(i));
 			}
