@@ -111,16 +111,16 @@ namespace mb
 		return r;
 	}
 
-	bool is_uuid(const char* mbid)
+	bool is_uuid(pfc::stringp mbid)
 	{
-		if (mbid == nullptr) return false;
+		if (!mbid.length()) return false;
 		regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
-		return regex_search(mbid, rx);
+		return regex_search(mbid.get_ptr(), rx);
 	}
 
-	size_t get_status_index(str8 str)
+	size_t get_status_index(pfc::stringp str)
 	{
-		auto it = std::find_if(release_statuses.begin(), release_statuses.end(), [str](const str8& elem)
+		auto it = std::find_if(release_statuses.begin(), release_statuses.end(), [str](pfc::stringp elem)
 			{
 				return _stricmp(elem, str) == 0;
 			});
@@ -128,9 +128,9 @@ namespace mb
 		return 0;
 	}
 
-	size_t get_type_index(str8 str)
+	size_t get_type_index(pfc::stringp str)
 	{
-		auto it = std::find_if(release_group_types.begin(), release_group_types.end(), [str](const str8& elem)
+		auto it = std::find_if(release_group_types.begin(), release_group_types.end(), [str](pfc::stringp elem)
 			{
 				return _stricmp(elem, str) == 0;
 			});
@@ -163,13 +163,13 @@ namespace mb
 		return release_group_types[idx];
 	}
 
-	str8 slasher(const str8& one, const str8& two)
+	str8 slasher(pfc::stringp one, pfc::stringp two)
 	{
-		if (one.is_empty() && two.is_empty())
+		if (one.length() || two.length())
 		{
-			return "-";
+			return PFC_string_formatter() << one << "/" << two;
 		}
-		return PFC_string_formatter() << one << "/" << two;
+		return "-";
 	}
 
 	str8 to_str(json j)

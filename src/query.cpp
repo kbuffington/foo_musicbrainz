@@ -3,10 +3,10 @@
 
 namespace mb
 {
-	query::query(const char* entity, const char* id)
+	query::query(pfc::stringp entity, pfc::stringp id)
 	{
 		url << prefs::get_server() << "/ws/2/" << entity;
-		if (id != nullptr) url << "/" << id;
+		if (id.length()) url << "/" << id;
 		url << "?fmt=json";
 	}
 
@@ -46,7 +46,7 @@ namespace mb
 		}
 	}
 
-	void query::add_param(const char* param, const char* value)
+	void query::add_param(pfc::stringp param, pfc::stringp value)
 	{
 		url << "&" << param << "=" << value;
 	}

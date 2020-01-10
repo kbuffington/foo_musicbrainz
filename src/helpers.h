@@ -66,13 +66,13 @@ namespace mb
 	};
 
 	Release parser(json release, size_t handle_count);
-	bool is_uuid(const char* mbid);
-	size_t get_status_index(str8 str);
-	size_t get_type_index(str8 str);
+	bool is_uuid(pfc::stringp mbid);
+	size_t get_status_index(pfc::stringp str);
+	size_t get_type_index(pfc::stringp str);
 	str8 format_thingy(const std::vector<Track>& tracks);
 	str8 get_status_str(size_t idx);
 	str8 get_type_str(size_t idx);
-	str8 slasher(const str8& one, const str8& two);
+	str8 slasher(pfc::stringp one, pfc::stringp two);
 	str8 to_str(json j);
 	void filter_releases(json releases, size_t count, pfc::string_list_impl& out);
 	void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids);
