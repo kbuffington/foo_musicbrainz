@@ -9,14 +9,14 @@ namespace mb
 		~toc();
 
 		str8 get_discid();
-		str8 get_toc();
+		str8 get_toc_url();
 
 	private:
 		str8 rfc822_binary(std::vector<uint8_t>& src);
 
 		std::vector<uint32_t> tracks;
 		str8 discid;
-		str8 toc_str;
+		str8 toc_url;
 		uint32_t num_tracks = 0;
 		uint32_t pregap = 150;
 	};

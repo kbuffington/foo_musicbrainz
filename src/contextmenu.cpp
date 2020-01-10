@@ -205,10 +205,7 @@ namespace mb
 					if (!check_lossless(handles)) return popup_message::g_show("Only lossless files with a sample rate of 44100Hz may be used for TOC submissions. Also, the number of samples must match CD frame boundaries.", component_title, popup_message::icon_error);
 
 					toc t(handles);
-
-					str8 url = prefs::get_server();
-					url << "/cdtoc/attach?toc=" << t.get_toc();
-					ShellExecute(nullptr, _T("open"), string_wide_from_utf8_fast(url), nullptr, nullptr, SW_SHOW);
+					ShellExecute(nullptr, _T("open"), string_wide_from_utf8_fast(t.get_toc_url()), nullptr, nullptr, SW_SHOW);
 				}
 				break;
 			}

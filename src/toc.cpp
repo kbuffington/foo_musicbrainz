@@ -48,30 +48,30 @@ namespace mb
 				SHA1Input(&sha, (uint8_t*)tmp, 8);
 			}
 
-			std::vector<uint8_t> digest(20);
+			std::vector<uint8_t> digest(SHA1HashSize);
 			SHA1Result(&sha, digest.data());
 			discid = rfc822_binary(digest);
 		}
 		return discid;
 	}
 
-	str8 toc::get_toc()
+	str8 toc::get_toc_url()
 	{
-		if (toc_str.is_empty())
+		if (toc_url.is_empty())
 		{
-			toc_str << "1 " << num_tracks;
+			toc_url << prefs::get_server() << "/cdtoc/attach?toc=1 " << num_tracks;
 			for (uint32_t i = 0; i <= num_tracks; i++)
 			{
-				toc_str << " " << tracks[i];
+				toc_url << " " << tracks[i];
 			}
 		}
-		return toc_str;
+		return toc_url;
 	}
 
 	str8 toc::rfc822_binary(std::vector<uint8_t>& src)
 	{
 		uint8_t* s = src.data();
-		size_t srcl = src.size();
+		size_t srcl = SHA1HashSize;
 		std::string ret;
 		std::string v = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._";
 		for (size_t i = 0; srcl; s += 3)
