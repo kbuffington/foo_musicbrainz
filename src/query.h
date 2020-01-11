@@ -7,7 +7,7 @@ namespace mb
 	public:
 		query(pfc::stringp entity, pfc::stringp id = "");
 
-		json lookup(abort_callback& p_abort);
+		json lookup(abort_callback& abort);
 		void add_param(pfc::stringp param, pfc::stringp value);
 
 	private:

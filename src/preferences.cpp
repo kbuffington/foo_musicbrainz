@@ -76,7 +76,7 @@ namespace mb
 	class my_preferences_page_instance : public CDialogImpl<my_preferences_page_instance>, public preferences_page_instance
 	{
 	public:
-		my_preferences_page_instance(preferences_page_callback::ptr p_callback) : m_callback(p_callback) {}
+		my_preferences_page_instance(preferences_page_callback::ptr callback) : m_callback(callback) {}
 
 		BEGIN_MSG_MAP_EX(my_preferences_page_instance)
 			MSG_WM_INITDIALOG(OnInitDialog)
@@ -226,9 +226,9 @@ namespace mb
 			return preferences_page::guid_tagging;
 		}
 
-		bool get_help_url(pfc::string_base& p_out) override
+		bool get_help_url(pfc::string_base& out) override
 		{
-			p_out = "https://marc2k3.github.io/foo_musicbrainz.html";
+			out.set_string("https://marc2k3.github.io/foo_musicbrainz.html");
 			return true;
 		}
 

@@ -10,7 +10,7 @@ namespace mb
 		url << "?fmt=json";
 	}
 
-	json query::lookup(abort_callback& p_abort)
+	json query::lookup(abort_callback& abort)
 	{
 		try
 		{
@@ -18,11 +18,11 @@ namespace mb
 			auto http = http_client::get();
 			auto request = http->create_request("GET");
 			request->add_header("User-Agent", PFC_string_formatter() << "foo_musicbrainz/" << component_version);
-			auto response = request->run_ex(url, p_abort);
+			auto response = request->run_ex(url, abort);
 
 			// Get string
 			str8 buffer;
-			response->read_string_raw(buffer, p_abort);
+			response->read_string_raw(buffer, abort);
 
 			json j = json::parse(buffer.get_ptr(), nullptr, false);
 			if (j.is_object())

@@ -4,16 +4,16 @@
 
 namespace mb
 {
-	request_thread::request_thread(types p_type, query* p_query, metadb_handle_list_cref p_handles)
-		: m_type(p_type)
-		, m_query(p_query)
-		, m_handles(p_handles)
+	request_thread::request_thread(types type, query* q, metadb_handle_list_cref handles)
+		: m_type(type)
+		, m_query(q)
+		, m_handles(handles)
 		, m_failed(false) {}
 
-	void request_thread::on_done(HWND p_wnd, bool p_was_aborted)
+	void request_thread::on_done(HWND hwnd, bool was_aborted)
 	{
 		delete m_query;
-		if (p_was_aborted || m_failed) return;
+		if (was_aborted || m_failed) return;
 
 		if (m_release_list.size())
 		{
@@ -29,11 +29,11 @@ namespace mb
 		}
 	}
 
-	void request_thread::run(threaded_process_status& p_status, abort_callback& p_abort)
+	void request_thread::run(threaded_process_status& status, abort_callback& abort)
 	{
 		const size_t handle_count = m_handles.get_count();
 
-		json j = m_query->lookup(p_abort);
+		json j = m_query->lookup(abort);
 		if (!j.is_object())
 		{
 			m_failed = true;
@@ -66,14 +66,14 @@ namespace mb
 
 				for (size_t i = 0; i < count; ++i)
 				{
-					p_status.set_progress(i + 1, count);
-					p_status.set_title(PFC_string_formatter() << "Fetching " << (i + 1) << " of " << count);
+					status.set_progress(i + 1, count);
+					status.set_title(PFC_string_formatter() << "Fetching " << (i + 1) << " of " << count);
 					Sleep(1100);
 
 					query q("release", ids[i]);
 					q.add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
 
-					json j2 = q.lookup(p_abort);
+					json j2 = q.lookup(abort);
 					if (!j2.is_object())
 					{
 						m_failed = true;

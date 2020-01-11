@@ -13,10 +13,10 @@ namespace mb
 			albumid
 		};
 
-		request_thread(types p_type, query* p_query, metadb_handle_list_cref p_handles);
+		request_thread(types type, query* q, metadb_handle_list_cref handles);
 
-		void on_done(HWND p_wnd, bool p_was_aborted) override;
-		void run(threaded_process_status& p_status, abort_callback& p_abort) override;
+		void on_done(HWND hwnd, bool was_aborted) override;
+		void run(threaded_process_status& status, abort_callback& abort) override;
 
 	private:
 		bool m_failed;
