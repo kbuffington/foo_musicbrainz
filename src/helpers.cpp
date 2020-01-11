@@ -175,17 +175,21 @@ namespace mb
 	str8 to_str(json j)
 	{
 		if (j.is_null()) return "";
-		std::string s = j.is_string() ? j.get<std::string>() : j.dump();
-		if (prefs::check::ascii_punctuation.get_value())
+		if (j.is_string())
 		{
-			pfc::string tmp(s.c_str());
-			for (const auto& [what, with] : ascii_replacements)
+			std::string s = j.get<std::string>();
+			if (prefs::check::ascii_punctuation.get_value())
 			{
-				tmp = tmp.replace(what, with);
+				pfc::string tmp(s.c_str());
+				for (const auto& [what, with] : ascii_replacements)
+				{
+					tmp = tmp.replace(what, with);
+				}
+				return tmp.get_ptr();
 			}
-			return tmp.get_ptr();
+			return s.c_str();
 		}
-		return s.c_str();
+		return j.dump().c_str();
 	}
 
 	void filter_releases(json releases, size_t count, pfc::string_list_impl& out)
