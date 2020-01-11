@@ -1,3 +1,8 @@
+## 0.4.2
+- Ensure `Custom server` is respected everywhere, not just for the main lookup.
+- Improve error message display when server is unavailable.
+- Minor context menu fixes.
+
 ## 0.4.1
 - Fix regression from `0.4.0` where releases weren't sorted by date.
 - Show multiple formats in release list if present.
