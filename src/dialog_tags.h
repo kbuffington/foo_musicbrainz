@@ -5,7 +5,7 @@ namespace mb
 	class dialog_tags : public CDialogImpl<dialog_tags>
 	{
 	public:
-		dialog_tags(const str8& p_artist_str, const str8& p_album_str) : m_artist_str(p_artist_str), m_album_str(p_album_str) {}
+		dialog_tags(pfc::stringp artist_str, pfc::stringp album_str) : m_artist_str(artist_str), m_album_str(album_str) {}
 
 		BEGIN_MSG_MAP_EX(dialog_tags)
 			MSG_WM_INITDIALOG(OnInitDialog)

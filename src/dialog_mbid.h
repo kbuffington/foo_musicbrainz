@@ -5,7 +5,7 @@ namespace mb
 	class dialog_mbid : public CDialogImpl<dialog_mbid>
 	{
 	public:
-		dialog_mbid(const str8& p_albumid_str) : m_albumid_str(p_albumid_str) {}
+		dialog_mbid(pfc::stringp albumid_str) : m_albumid_str(albumid_str) {}
 
 		BEGIN_MSG_MAP_EX(dialog_mbid)
 			MSG_WM_INITDIALOG(OnInitDialog)
