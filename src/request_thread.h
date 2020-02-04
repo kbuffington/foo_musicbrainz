@@ -13,7 +13,7 @@ namespace mb
 			albumid
 		};
 
-		request_thread(types type, query* q, metadb_handle_list_cref handles);
+		request_thread(types type, std::unique_ptr<query> q, metadb_handle_list_cref handles);
 
 		void on_done(HWND hwnd, bool was_aborted) override;
 		void run(threaded_process_status& status, abort_callback& abort) override;
@@ -21,7 +21,7 @@ namespace mb
 	private:
 		bool m_failed;
 		metadb_handle_list m_handles;
-		query* m_query;
+		std::unique_ptr<query> m_query;
 		std::vector<Release> m_release_list;
 		types m_type;
 	};

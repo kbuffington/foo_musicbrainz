@@ -4,15 +4,14 @@
 
 namespace mb
 {
-	request_thread::request_thread(types type, query* q, metadb_handle_list_cref handles)
+	request_thread::request_thread(types type, std::unique_ptr<query> q, metadb_handle_list_cref handles)
 		: m_type(type)
-		, m_query(q)
+		, m_query(std::move(q))
 		, m_handles(handles)
 		, m_failed(false) {}
 
 	void request_thread::on_done(HWND hwnd, bool was_aborted)
 	{
-		delete m_query;
 		if (was_aborted || m_failed) return;
 
 		if (m_release_list.size())

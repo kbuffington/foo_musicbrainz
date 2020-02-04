@@ -83,10 +83,10 @@ namespace mb
 					if (!check_samplerate(handles)) return popup_message::g_show("The sample rate of each track must match and be either 44100 Hz or 48000 Hz. Also, the number of samples must match CD frame boundaries.", component_title, popup_message::icon_error);
 
 					toc t(handles);
-					auto q = new query("discid", t.get_discid());
+					auto q = std::make_unique<query>("discid", t.get_discid());
 					q->add_param("cdstubs", "no");
 					q->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
-					auto cb = fb2k::service_new<request_thread>(request_thread::types::discid, q, handles);
+					auto cb = fb2k::service_new<request_thread>(request_thread::types::discid, std::move(q), handles);
 					threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 				}
 				break;
@@ -139,10 +139,10 @@ namespace mb
 							str8 encoded_search;
 							pfc::urlEncode(encoded_search, search);
 
-							auto q = new query("release");
+							auto q = std::make_unique<query>("release");
 							q->add_param("query", encoded_search);
 							q->add_param("limit", "100");
-							auto cb = fb2k::service_new<request_thread>(request_thread::types::search, q, handles);
+							auto cb = fb2k::service_new<request_thread>(request_thread::types::search, std::move(q), handles);
 							threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 						}
 					}
@@ -191,9 +191,9 @@ namespace mb
 						dialog_mbid dlg(album_id);
 						if (dlg.DoModal(wnd) == IDOK)
 						{
-							auto q = new query("release", dlg.m_albumid_str);
+							auto q = std::make_unique<query>("release", dlg.m_albumid_str);
 							q->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
-							auto cb = fb2k::service_new<request_thread>(request_thread::types::albumid, q, handles);
+							auto cb = fb2k::service_new<request_thread>(request_thread::types::albumid, std::move(q), handles);
 							threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
 						}
 					}
