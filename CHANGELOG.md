@@ -1,7 +1,7 @@
 ## 0.4.3.2
 - Drop support for `Windows XP`/`Windows Vista`. `Windows 7` is the new minimum requirement.
 - The main tagger dialog now prevents editing of items that are disabled in the `Preferences`.
-- Revert all `ORIGINAL RELEASE DATE` `Preference` changes that were made in `0.4.3` and `0.4.3.1`. It now gets written exactly as it did before - only when it differs from `DATE`.
+- Revert all `ORIGINAL RELEASE DATE` `Preferences` that were added in `0.4.3` and `0.4.3.1`. It now gets written exactly as it did before - only when it differs from `DATE`.
 
 ## 0.4.2
 - Ensure `Custom server` is respected everywhere, not just for the main lookup.
