@@ -58,8 +58,7 @@
 #define IDC_CHECK_WRITE_MEDIA           1109
 #define IDC_CHECK_WRITE_ASIN            1110
 #define IDC_CHECK_WRITE_ISRC            1111
-#define IDC_CHECK_WRITE_ORIGINAL_DATE   1112
-#define IDC_CHECK_WRITE_ALBUMARTIST     1113
+#define IDC_CHECK_WRITE_ALBUMARTIST     1112
 
 #define IDC_EDIT_SERVER                 1120
 #define IDC_EDIT_ALBUMTYPE              1121
