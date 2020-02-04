@@ -106,6 +106,7 @@ copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\foobar2000-SDK\includes\json.hpp" />
     <ClInclude Include="dialog_mbid.h" />
     <ClInclude Include="dialog_tagger.h" />
     <ClInclude Include="dialog_tags.h" />

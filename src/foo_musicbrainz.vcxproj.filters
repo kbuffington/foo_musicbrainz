@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\includes">
+      <UniqueIdentifier>{c2bfdd2c-1ab4-45ca-a7d8-f91498698d27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dialog_mbid.h">
@@ -50,6 +53,9 @@
     </ClInclude>
     <ClInclude Include="foo_musicbrainz.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\foobar2000-SDK\includes\json.hpp">
+      <Filter>Header Files\includes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
