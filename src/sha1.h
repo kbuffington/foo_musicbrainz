@@ -1,41 +1,18 @@
 #pragma once
 #include <stdint.h>
 
-#ifndef _SHA_enum_
-#define _SHA_enum_
-enum
-{
-    shaSuccess = 0,
-    shaNull,            /* Null pointer parameter */
-    shaInputTooLong,    /* input data too long */
-    shaStateError       /* called Input after Result */
-};
-#endif
 #define SHA1HashSize 20
 
-/*
- *  This structure will hold context information for the SHA-1
- *  hashing operation
- */
-typedef struct SHA1Context
+struct SHA1Context
 {
-    uint32_t Intermediate_Hash[SHA1HashSize/4]; /* Message Digest  */
+	int_least16_t Message_Block_Index = 0;
+	std::array<uint8_t, 64> Message_Block;
+	std::array<uint32_t, 5> Intermediate_Hash = { 0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0 };
+	uint32_t Length_High = 0;
+	uint32_t Length_Low = 0;
+};
 
-    uint32_t Length_Low;            /* Message length in bits      */
-    uint32_t Length_High;           /* Message length in bits      */
-
-                               /* Index into message block array   */
-    int_least16_t Message_Block_Index;
-    uint8_t Message_Block[64];      /* 512-bit message blocks      */
-
-    int Computed;               /* Is the digest computed?         */
-    int Corrupted;             /* Is the message digest corrupted? */
-} SHA1Context;
-
-/*
- *  Function Prototypes
- */
-
-int SHA1Reset(SHA1Context*);
-int SHA1Input(SHA1Context*, const uint8_t*, uint32_t);
-int SHA1Result(SHA1Context*, uint8_t Message_Digest[SHA1HashSize]);
+void SHA1Input(SHA1Context* context, const uint8_t* message_array, uint32_t length);
+void SHA1PadMessage(SHA1Context* context);
+void SHA1ProcessMessageBlock(SHA1Context* context);
+void SHA1Result(SHA1Context* context, uint8_t Message_Digest[SHA1HashSize]);

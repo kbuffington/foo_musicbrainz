@@ -32,24 +32,23 @@ namespace mb
 	{
 		if (discid.is_empty())
 		{
-			SHA1Context sha;
-			SHA1Reset(&sha);
+			SHA1Context context;
 			char tmp[9];
 
 			sprintf_s(tmp, "%02X", 1);
-			SHA1Input(&sha, (uint8_t*)tmp, 2);
+			SHA1Input(&context, (uint8_t*)tmp, 2);
 
 			sprintf_s(tmp, "%02X", num_tracks);
-			SHA1Input(&sha, (uint8_t*)tmp, 2);
+			SHA1Input(&context, (uint8_t*)tmp, 2);
 
 			for (const auto track : tracks)
 			{
 				sprintf_s(tmp, "%08X", track);
-				SHA1Input(&sha, (uint8_t*)tmp, 8);
+				SHA1Input(&context, (uint8_t*)tmp, 8);
 			}
 
 			std::vector<uint8_t> digest(SHA1HashSize);
-			SHA1Result(&sha, digest.data());
+			SHA1Result(&context, digest.data());
 			discid = rfc822_binary(digest);
 		}
 		return discid;
@@ -74,13 +73,14 @@ namespace mb
 		size_t srcl = SHA1HashSize;
 		std::string ret;
 		std::string v = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._";
-		for (size_t i = 0; srcl; s += 3)
+		while (srcl)
 		{
 			ret += v[s[0] >> 2];
 			ret += v[((s[0] << 4) + (--srcl ? (s[1] >> 4) : 0)) & 0x3f];
 			ret += srcl ? v[((s[1] << 2) + (--srcl ? (s[2] >> 6) : 0)) & 0x3f] : '-';
 			ret += srcl ? v[s[2] & 0x3f] : '-';
 			if (srcl) srcl--;
+			s += 3;
 		}
 		return ret.c_str();
 	}
