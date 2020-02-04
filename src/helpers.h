@@ -11,7 +11,7 @@ namespace mb
 		size_t totaldiscs;
 		size_t totaltracks;
 		str8 artist;
-		str8 format;
+		str8 media;
 		str8 releasetrackid;
 		str8 subtitle;
 		str8 title;
@@ -32,7 +32,7 @@ namespace mb
 		str8 country;
 		str8 date;
 		str8 discid;
-		str8 first_release_date;
+		str8 original_release_date;
 		str8 label;
 		str8 primary_type;
 		str8 releasegroupid;
@@ -69,9 +69,9 @@ namespace mb
 	bool is_uuid(pfc::stringp mbid);
 	size_t get_status_index(pfc::stringp str);
 	size_t get_type_index(pfc::stringp str);
-	str8 format_thingy(const std::vector<Track>& tracks);
 	str8 get_status_str(size_t idx);
 	str8 get_type_str(size_t idx);
+	str8 media_thingy(const std::vector<Track>& tracks);
 	str8 slasher(pfc::stringp one, pfc::stringp two);
 	str8 to_str(json j);
 	void filter_releases(json releases, size_t count, pfc::string_list_impl& out);

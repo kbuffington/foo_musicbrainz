@@ -28,8 +28,8 @@
 
 #define IDC_LABEL_DATE                  1030
 #define IDC_EDIT_DATE                   1031
-#define IDC_LABEL_FIRST_RELEASE_DATE    1032
-#define IDC_EDIT_FIRST_RELEASE_DATE     1033
+#define IDC_LABEL_ORIGINAL_RELEASE_DATE 1032
+#define IDC_EDIT_ORIGINAL_RELEASE_DATE  1033
 #define IDC_LABEL_LABEL                 1034
 #define IDC_EDIT_LABEL                  1035
 #define IDC_LABEL_CATALOG               1036
@@ -51,14 +51,15 @@
 #define IDC_CHECK_SHORT_DATE            1102
 #define IDC_CHECK_ASCII_PUNCTUATION     1103
 #define IDC_CHECK_WRITE_IDS             1104
-#define IDC_CHECK_ALBUMTYPE             1105
-#define IDC_CHECK_ALBUMSTATUS           1106
+#define IDC_CHECK_WRITE_ALBUMTYPE       1105
+#define IDC_CHECK_WRITE_ALBUMSTATUS     1106
 #define IDC_CHECK_WRITE_LABEL_INFO      1107
 #define IDC_CHECK_WRITE_COUNTRY         1108
-#define IDC_CHECK_WRITE_FORMAT          1109
+#define IDC_CHECK_WRITE_MEDIA           1109
 #define IDC_CHECK_WRITE_ASIN            1110
 #define IDC_CHECK_WRITE_ISRC            1111
-#define IDC_CHECK_WRITE_ALBUMARTIST     1112
+#define IDC_CHECK_WRITE_ORIGINAL_DATE   1112
+#define IDC_CHECK_WRITE_ALBUMARTIST     1113
 
 #define IDC_EDIT_SERVER                 1120
 #define IDC_EDIT_ALBUMTYPE              1121

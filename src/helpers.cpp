@@ -55,7 +55,7 @@ namespace mb
 					Track t;
 					get_artist_credit(track, t.artist, t.artistid);
 					t.discnumber = discnumber;
-					t.format = format;
+					t.media = format;
 					t.subtitle = subtitle;
 					t.title = to_str(track["title"]);
 					t.releasetrackid = to_str(track["id"]);
@@ -98,7 +98,7 @@ namespace mb
 		}
 
 		json rg = release.value("release-group", json::object());
-		r.first_release_date = to_str(rg["first-release-date"]);
+		r.original_release_date = to_str(rg["first-release-date"]);
 		r.primary_type = to_str(rg["primary-type"]);
 		r.releasegroupid = to_str(rg["id"]);
 
@@ -138,21 +138,6 @@ namespace mb
 		return 0;
 	}
 
-	str8 format_thingy(const std::vector<Track>& tracks)
-	{
-		str8 format;
-		std::set<str8> set;
-		for (const auto& track : tracks)
-		{
-			str8 tmp = track.format;
-			if (set.count(tmp)) continue;
-			set.insert(tmp);
-			if (format.get_length()) format << ", ";
-			format << tmp;
-		}
-		return format;
-	}
-
 	str8 get_status_str(size_t idx)
 	{
 		return release_statuses[idx];
@@ -161,6 +146,21 @@ namespace mb
 	str8 get_type_str(size_t idx)
 	{
 		return release_group_types[idx];
+	}
+
+	str8 media_thingy(const std::vector<Track>& tracks)
+	{
+		str8 media;
+		std::set<str8> set;
+		for (const auto& track : tracks)
+		{
+			str8 tmp = track.media;
+			if (set.count(tmp)) continue;
+			set.insert(tmp);
+			if (media.get_length()) media << ", ";
+			media << tmp;
+		}
+		return media;
 	}
 
 	str8 slasher(pfc::stringp one, pfc::stringp two)
@@ -257,7 +257,6 @@ namespace mb
 			info[i].meta_set("TRACKNUMBER", std::to_string(track.tracknumber).c_str());
 			info[i].meta_set("TOTALTRACKS", std::to_string(track.totaltracks).c_str());
 			info[i].meta_set("DATE", release.date);
-			if (release.first_release_date.get_length() && !release.date.equals(release.first_release_date)) info[i].meta_set("ORIGINAL RELEASE DATE", release.first_release_date);
 
 			if (track.totaldiscs > 1)
 			{
@@ -266,12 +265,17 @@ namespace mb
 				if (track.subtitle.get_length()) info[i].meta_set("DISCSUBTITLE", track.subtitle);
 			}
 
-			if (prefs::check::albumtype.get_value() && get_type_index(release.primary_type) > 0)
+			if (release.original_release_date.get_length() && !release.date.equals(release.original_release_date))
+			{
+				info[i].meta_set("ORIGINAL RELEASE DATE", release.original_release_date);
+			}
+
+			if (prefs::check::write_albumtype.get_value() && get_type_index(release.primary_type) > 0)
 			{
 				info[i].meta_set(prefs::str::albumtype.get_ptr(), release.primary_type);
 			}
 
-			if (prefs::check::albumstatus.get_value() && get_status_index(release.status) > 0)
+			if (prefs::check::write_albumstatus.get_value() && get_status_index(release.status) > 0)
 			{
 				info[i].meta_set(prefs::str::albumstatus.get_ptr(), release.status);
 			}
@@ -312,9 +316,9 @@ namespace mb
 				info[i].meta_set("RELEASECOUNTRY", release.country);
 			}
 
-			if (prefs::check::write_format.get_value() && track.format.get_length())
+			if (prefs::check::write_media.get_value() && track.media.get_length())
 			{
-				info[i].meta_set("MEDIA", track.format);
+				info[i].meta_set("MEDIA", track.media);
 			}
 
 			if (prefs::check::write_asin.get_value() && release.asin.get_length())
