@@ -47,8 +47,7 @@ namespace mb
 				json releases = j.value("releases", json::array());
 				for (const auto& release : releases)
 				{
-					Release r = parser(release, handle_count);
-					r.discid = discid;
+					Release r = parser(release, handle_count, discid);
 					if (r.tracks.size())
 					{
 						m_release_list.emplace_back(r);

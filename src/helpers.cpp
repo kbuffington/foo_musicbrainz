@@ -25,10 +25,11 @@ namespace mb
 		{ "―", "-" }
 	};
 
-	Release parser(json release, size_t handle_count)
+	Release parser(json release, size_t handle_count, pfc::stringp discid)
 	{
 		Release r;
 		r.is_various = false;
+		r.discid = discid;
 
 		get_artist_credit(release, r.album_artist, r.albumartistid);
 
@@ -43,6 +44,21 @@ namespace mb
 			json tracks = media.value("tracks", json::array());
 			if (complete || tracks.size() == handle_count)
 			{
+				if (r.discid.get_length())
+				{
+					bool found = false;
+					auto discs = media.value("discs", json::array());
+					for (auto& disc : discs)
+					{
+						if (to_str(disc["id"]).equals(r.discid))
+						{
+							found = true;
+							break;
+						}
+					}
+					if (!found) continue;
+				}
+
 				if (!complete) r.partial_lookup_matches++;
 
 				str8 format = to_str(media["format"]);

@@ -65,7 +65,7 @@ namespace mb
 		"Pseudo-Release"
 	};
 
-	Release parser(json release, size_t handle_count);
+	Release parser(json release, size_t handle_count, pfc::stringp discid = "");
 	bool is_uuid(pfc::stringp mbid);
 	size_t get_status_index(pfc::stringp str);
 	size_t get_type_index(pfc::stringp str);
