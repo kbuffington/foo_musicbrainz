@@ -1,9 +1,67 @@
 #include "stdafx.h"
 #include "dialog_tagger.h"
 #include "request_thread.h"
+#include "thread_pool.h"
+#include <atomic>
+#include <mutex>
 
 namespace mb
 {
+	std::mutex adding_release;
+	std::atomic_uint32_t thread_counter = 0;
+
+	class get_release_info : public simple_thread_task {
+	public:
+		get_release_info(pfc::string mb_releaseid, size_t num_tracks, std::vector<Release>* release_list, 
+						 bool* failed, abort_callback& abort) 
+			: m_id(mb_releaseid)
+			, m_num_tracks(num_tracks)
+			, m_release_list(release_list)
+			, m_failed(failed)
+			, m_abort(abort) {}
+
+		void run() override
+		{
+			try {
+				thread_counter++;
+
+				query q("release", m_id);
+				q.add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
+
+				json j2 = q.lookup(m_abort);
+				if (!j2.is_object())
+				{
+					*m_failed = true;
+					thread_counter--;
+				}
+				else {
+					Release r = parser(j2, m_num_tracks);
+					if (r.tracks.size())
+					{
+						std::lock_guard<std::mutex> guard(adding_release);	// lock_guard is destroyed when exiting block
+						m_release_list->emplace_back(r);
+					}
+					else {
+						thread_counter--;
+					}
+				}
+
+			}
+			catch (std::exception const& e) {
+				m_failMsg = e.what();
+				FB2K_console_formatter() << component_title << ": " << m_failMsg;
+			}
+		}
+	private:
+		pfc::string8 m_failMsg;
+		const pfc::string m_id;
+		abort_callback& m_abort;
+		size_t m_num_tracks;
+		bool* m_failed;
+		std::vector<Release> * m_release_list;
+	};
+
+
 	request_thread::request_thread(types type, std::unique_ptr<query> q, metadb_handle_list_cref handles)
 		: m_type(type)
 		, m_query(std::move(q))
@@ -62,6 +120,8 @@ namespace mb
 				filter_releases(releases, handle_count, ids);
 				const size_t count = ids.get_count();
 
+				thread_counter = 0;
+
 				for (size_t i = 0; i < count; ++i)
 				{
 					status.set_progress(i + 1, count);
@@ -70,21 +130,28 @@ namespace mb
 						Sleep(1000);
 					}
 
-					query q("release", ids[i]);
-					q.add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
-
-					json j2 = q.lookup(abort);
-					if (!j2.is_object())
-					{
-						m_failed = true;
+					/**
+					 * this was pre-existing logic which would abort when we didn't receive anything back 
+					 * from musicbrainz. This would prevent hammering if mb is down, but also (silently!)
+					 * fails even if we had some number of requests that already completed successfully.
+					 * Keeping this for now, but it's subject to change later.
+					 **/
+					if (m_failed) {
+						FB2K_console_formatter() << component_title << ": Musicbrainz query failed.";
 						return;
 					}
 
-					Release r = parser(j2, handle_count);
-					if (r.tracks.size())
-					{
-						m_release_list.emplace_back(r);
-					}
+					// async requests
+					get_release_info* task = new get_release_info(ids[i], handle_count, &m_release_list, &m_failed, abort);
+					if (!simple_thread_pool::instance().enqueue(task)) delete task;
+				}
+				Sleep(10); // wait for last thread to start
+				while (m_release_list.size() < thread_counter) {
+					// Is there a better way to wait for all the threads to complete?
+					Sleep(10);
+				}
+				if (m_failed) {
+					FB2K_console_formatter() << component_title << ": Musicbrainz query failed.";
 				}
 			}
 			break;
