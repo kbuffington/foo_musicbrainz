@@ -91,6 +91,9 @@ namespace mb
 		const size_t handle_count = m_handles.get_count();
 
 		json j = m_query->lookup(abort);
+#ifdef DEBUG
+		FB2K_console_formatter() << component_title << ": " << m_query->get_url();
+#endif
 		if (!j.is_object())
 		{
 			m_failed = true;
@@ -124,11 +127,9 @@ namespace mb
 
 				for (size_t i = 0; i < count; ++i)
 				{
+					Sleep(1000);
+					status.set_title(PFC_string_formatter() << "Fetching release " << (i + 1) << " of " << count);
 					status.set_progress(i + 1, count);
-					status.set_title(PFC_string_formatter() << "Fetching " << (i + 1) << " of " << count);
-					if (i > 0) {
-						Sleep(1000);
-					}
 
 					/**
 					 * this was pre-existing logic which would abort when we didn't receive anything back 
@@ -146,7 +147,7 @@ namespace mb
 					if (!simple_thread_pool::instance().enqueue(task)) delete task;
 				}
 				Sleep(10); // wait for last thread to start
-				while (m_release_list.size() < thread_counter) {
+				while (m_release_list.size() < thread_counter && !abort.is_aborting()) {
 					// Is there a better way to wait for all the threads to complete?
 					Sleep(10);
 				}

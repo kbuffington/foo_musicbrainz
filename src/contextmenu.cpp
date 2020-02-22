@@ -7,11 +7,12 @@
 
 namespace mb
 {
-	static constexpr std::array<const GUID, 4> context_guids =
+	static constexpr std::array<const GUID, 5> context_guids =
 	{
 		0x3ca8395b, 0x694e, 0x4845, { 0xb5, 0xea, 0x56, 0x30, 0x5e, 0x7c, 0x24, 0x48 },
 		0x77f1f5cd, 0xf295, 0x4ef4, { 0xba, 0x7b, 0xc7, 0x70, 0xaa, 0xc6, 0xd0, 0x1e },
 		0xf453e537, 0x01e9, 0x4f2d, { 0x89, 0xdc, 0x42, 0x4d, 0x0e, 0xe5, 0x72, 0xfb },
+		0xd74ebc1b, 0x7529, 0x4c68, { 0xb8, 0x85, 0xbf, 0xb1, 0x34, 0x8c, 0xed, 0xc8 },
 		0x4d5e632c, 0x34f3, 0x4fda, { 0x8f, 0x71, 0x35, 0xa4, 0xb2, 0x5b, 0xea, 0x94 }
 	};
 
@@ -20,6 +21,7 @@ namespace mb
 		{ "Get tags from MusicBrainz (by TOC)", "Queries MusicBrainz server for tags for a complete CD using TOC." },
 		{ "Get tags from MusicBrainz (by artist & album)","Queries MusicBrainz server for tags for a complete CD using Artist/Album." },
 		{ "Get tags from MusicBrainz (by MusicBrainz album ID)","Queries MusicBrainz server for tags for a complete CD using MusicBrainz Album ID." },
+		{ "Get tags from MusicBrainz (by MusicBrainz release ID)","Queries MusicBrainz server for tags for a complete CD using MusicBrainz Release ID." },
 		{ "Add TOC to MusicBrainz", "Opens MusicBrainz TOC lookup page." }
 	};
 
@@ -46,9 +48,10 @@ namespace mb
 				break;
 			case 1:
 			case 2:
+			case 3:
 				result = true;
 				break;
-			case 3:
+			case 4:
 				result = check_count(handles) && check_lossless(handles);
 				break;
 			}
@@ -188,10 +191,10 @@ namespace mb
 					if (scope.can_create())
 					{
 						scope.initialize(wnd);
-						dialog_mbid dlg(album_id);
+						dialog_mbid dlg(album_id, "MusicBrainz Album ID");
 						if (dlg.DoModal(wnd) == IDOK)
 						{
-							auto q = std::make_unique<query>("release", dlg.m_albumid_str);
+							auto q = std::make_unique<query>("release", dlg.m_mbid_str);
 							q->add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
 							auto cb = fb2k::service_new<request_thread>(request_thread::types::albumid, std::move(q), handles);
 							threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
@@ -200,6 +203,57 @@ namespace mb
 				}
 				break;
 			case 3:
+				{
+					str8 relgroup_id;
+					for (size_t i = 0; i < count; i++)
+					{
+						const file_info_impl info = handles.get_item(i)->get_info_ref()->info();
+
+						auto current_relgroup_id = info.meta_get("MUSICBRAINZ_RELEASEGROUPID", 0);
+						if (current_relgroup_id == nullptr) current_relgroup_id = info.meta_get("MUSICBRAINZ RELEASEGROUPID", 0);
+
+						if (current_relgroup_id == nullptr)
+						{
+							relgroup_id.reset();
+							break;
+						}
+						else
+						{
+							if (i == 0)
+							{
+								if (is_uuid(current_relgroup_id))
+								{
+									relgroup_id = current_relgroup_id;
+								}
+								else
+								{
+									break;
+								}
+							}
+							else if (strcmp(relgroup_id, current_relgroup_id) != 0)
+							{
+								relgroup_id.reset();
+								break;
+							}
+						}
+					}
+
+					modal_dialog_scope scope;
+					if (scope.can_create())
+					{
+						scope.initialize(wnd);
+						dialog_mbid dlg(relgroup_id, "MusicBrainz Release Group ID");
+						if (dlg.DoModal(wnd) == IDOK)
+						{
+							auto q = std::make_unique<query>("release-group", dlg.m_mbid_str);
+							q->add_param("inc", "releases+media");
+							auto cb = fb2k::service_new<request_thread>(request_thread::types::search, std::move(q), handles);
+							threaded_process::get()->run_modeless(cb, flags, wnd, "Querying data from MusicBrainz");
+						}
+					}
+				}
+				break;
+			case 4:
 				{
 					if (!check_count(handles)) return popup_message::g_show("Please select no more than 99 tracks.", component_title, popup_message::icon_error);
 					if (!check_lossless(handles)) return popup_message::g_show("Only lossless files with a sample rate of 44100Hz may be used for TOC submissions. Also, the number of samples must match CD frame boundaries.", component_title, popup_message::icon_error);

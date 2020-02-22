@@ -50,4 +50,8 @@ namespace mb
 	{
 		url << "&" << param << "=" << value;
 	}
+
+	str8 query::get_url() {
+		return url;
+	}
 }
