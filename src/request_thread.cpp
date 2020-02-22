@@ -66,7 +66,9 @@ namespace mb
 				{
 					status.set_progress(i + 1, count);
 					status.set_title(PFC_string_formatter() << "Fetching " << (i + 1) << " of " << count);
-					Sleep(1100);
+					if (i > 0) {
+						Sleep(1000);
+					}
 
 					query q("release", ids[i]);
 					q.add_param("inc", "artists+labels+recordings+release-groups+artist-credits+isrcs");
