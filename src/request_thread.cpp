@@ -2,6 +2,7 @@
 #include "dialog_tagger.h"
 #include "request_thread.h"
 #include "thread_pool.h"
+#include "query_cache.h"
 #include <atomic>
 #include <mutex>
 
@@ -127,16 +128,14 @@ namespace mb
 
 				for (size_t i = 0; i < count; ++i)
 				{
-					Sleep(1000);
-					status.set_title(PFC_string_formatter() << "Fetching release " << (i + 1) << " of " << count);
-					status.set_progress(i + 1, count);
-
 					/**
 					 * this was pre-existing logic which would abort when we didn't receive anything back 
 					 * from musicbrainz. This would prevent hammering if mb is down, but also (silently!)
 					 * fails even if we had some number of requests that already completed successfully.
 					 * Keeping this for now, but it's subject to change later.
 					 **/
+					// TOOD: This code is now worthless since all the threads are spawned before queries are
+					// made. We'll need to abort elsewhere if we care enough.
 					if (m_failed) {
 						FB2K_console_formatter() << component_title << ": Musicbrainz query failed.";
 						return;
@@ -149,6 +148,8 @@ namespace mb
 				Sleep(10); // wait for last thread to start
 				while (m_release_list.size() < thread_counter && !abort.is_aborting()) {
 					// Is there a better way to wait for all the threads to complete?
+					status.set_title(PFC_string_formatter() << "Fetching release " << (m_release_list.size() + 1) << " of " << count);
+					status.set_progress(1 + m_release_list.size(), count);
 					Sleep(10);
 				}
 				if (m_failed) {

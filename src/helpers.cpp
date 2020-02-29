@@ -360,4 +360,8 @@ namespace mb
 			nullptr
 		);
 	}
+
+	uint64_t fileTimeToMilliseconds(uint64_t ft) {
+		return (ft - 116444736000000000 + /*rounding*/10000000 / 2) / 10000;
+	}
 }

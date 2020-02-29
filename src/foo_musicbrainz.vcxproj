@@ -114,6 +114,7 @@ copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%\"</Command>
     <ClInclude Include="helpers.h" />
     <ClInclude Include="preferences.h" />
     <ClInclude Include="query.h" />
+    <ClInclude Include="query_cache.h" />
     <ClInclude Include="request_thread.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="sha1.h" />
@@ -127,8 +128,11 @@ copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%\"</Command>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="helpers.cpp" />
+    <ClCompile Include="initquit.cpp" />
+    <ClCompile Include="LruCache.cpp" />
     <ClCompile Include="preferences.cpp" />
     <ClCompile Include="query.cpp" />
+    <ClCompile Include="query_cache.cpp" />
     <ClCompile Include="request_thread.cpp" />
     <ClCompile Include="sha1.cpp" />
     <ClCompile Include="thread_pool.cpp" />
