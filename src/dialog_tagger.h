@@ -119,9 +119,9 @@ namespace mb
 			// Add release list columns
 			release_list.AddColumnAutoWidth("Artist");
 			release_list.AddColumnAutoWidth("Release");
-			release_list.AddColumn("Date/Country", MulDiv(100, DPI.cx, 96));
+			release_list.AddColumn("Date/Country", MulDiv(90, DPI.cx, 96));
 			release_list.AddColumnAutoWidth("Label/Cat#");
-			release_list.AddColumn("Media", MulDiv(120, DPI.cx, 96));
+			release_list.AddColumn("Media", MulDiv(85, DPI.cx, 96));
 			release_list.AddColumn("Discs", MulDiv(40, DPI.cx, 96));
 
 			// Add release list rows
