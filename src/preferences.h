@@ -8,6 +8,9 @@ namespace prefs
 		extern cfg_bool short_date;
 		extern cfg_bool ascii_punctuation;
 		extern cfg_bool write_ids;
+		extern cfg_bool write_albumid;
+		extern cfg_bool write_discids;
+		extern cfg_bool write_trackids;
 		extern cfg_bool write_albumtype;
 		extern cfg_bool write_albumstatus;
 		extern cfg_bool write_label_info;

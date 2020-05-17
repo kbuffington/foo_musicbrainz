@@ -305,11 +305,17 @@ namespace mb
 
 			if (prefs::check::write_ids.get_value())
 			{
-				if (release.discid.get_length()) info[i].meta_set("MUSICBRAINZ_DISCID", release.discid);
-				info[i].meta_set("MUSICBRAINZ_ALBUMID", release.albumid);
 				info[i].meta_set("MUSICBRAINZ_RELEASEGROUPID", release.releasegroupid);
-				info[i].meta_set("MUSICBRAINZ_RELEASETRACKID", track.releasetrackid);
-				info[i].meta_set("MUSICBRAINZ_TRACKID", track.trackid);
+				if (prefs::check::write_discids.get_value() && release.discid.get_length()) {
+					info[i].meta_set("MUSICBRAINZ_DISCID", release.discid);
+				}
+				if (prefs::check::write_albumid.get_value()) {
+					info[i].meta_set("MUSICBRAINZ_ALBUMID", release.albumid);
+				}
+				if (prefs::check::write_trackids.get_value()) {
+					info[i].meta_set("MUSICBRAINZ_RELEASETRACKID", track.releasetrackid);
+					info[i].meta_set("MUSICBRAINZ_TRACKID", track.trackid);
+				}
 
 				for (size_t j = 0; j < track.artistid.get_count(); ++j)
 				{
