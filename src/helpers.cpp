@@ -221,14 +221,21 @@ namespace mb
 			else
 			{
 				json medias = release.value("media", json::array());
+				size_t total_tracks = 0;
+				bool added = false;
 				for (auto& media : medias)
 				{
 					size_t track_count = media.value("track-count", 0U);
+					total_tracks += track_count;
 					if (track_count == count)
 					{
 						out.add_item(id);
+						added = true;
 						break;
 					}
+				}
+				if (!added && total_tracks == count) {
+					out.add_item(id);
 				}
 			}
 		}
