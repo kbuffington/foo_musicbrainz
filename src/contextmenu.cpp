@@ -20,8 +20,8 @@ namespace mb
 	{
 		{ "Get tags from MusicBrainz (by TOC)", "Queries MusicBrainz server for tags for a complete CD using TOC." },
 		{ "Get tags from MusicBrainz (by artist & album)","Queries MusicBrainz server for tags for a complete CD using Artist/Album." },
-		{ "Get tags from MusicBrainz (by MusicBrainz album ID)","Queries MusicBrainz server for tags for a complete CD using MusicBrainz Album ID." },
-		{ "Get tags from MusicBrainz (by MusicBrainz release ID)","Queries MusicBrainz server for tags for a complete CD using MusicBrainz Release ID." },
+		{ "Get tags from MusicBrainz (by MB album ID)","Queries MusicBrainz server for tags for a complete CD using MusicBrainz Album ID." },
+		{ "Get tags from MusicBrainz (by MB release group ID)","Queries MusicBrainz server for tags for a complete CD using MusicBrainz Release Group ID." },
 		{ "Add TOC to MusicBrainz", "Opens MusicBrainz TOC lookup page." }
 	};
 
