@@ -186,7 +186,9 @@ namespace mb
 
 			for (auto& [key, value] : m_str_map)
 			{
-				value.edit.EnableWindow(m_check_map.at(value.id).check.IsChecked());
+				if (value.id && value.edit) {
+					value.edit.EnableWindow(m_check_map.at(value.id).check.IsChecked());
+				}
 			}
 
 			m_callback->on_state_changed();
