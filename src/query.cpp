@@ -44,10 +44,6 @@ namespace mb
 				}
 				last_http_request = fileTimeToMilliseconds(pfc::fileTimeNow());
 			}
-#ifdef DEBUG
-			// TODO: Remove this after beta
-			FB2K_console_formatter() << component_title << ": " << "Querying MB at: " << last_http_request;
-#endif
 			auto response = request->run_ex(url, abort);
 
 			// Get string
