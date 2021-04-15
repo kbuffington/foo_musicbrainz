@@ -102,15 +102,16 @@ namespace mb
 		r.status = to_str(release["status"]);
 		r.title = to_str(release["title"]);
 
-		json label_info = release.value("label-info", json::array());
-		if (label_info.size())
+		json label_infos = release.value("label-info", json::array());
+		if (label_infos.size())
 		{
-			auto label = label_info[0]["label"];
-			if (label.is_object())
-			{
-				r.label = to_str(label["name"]);
+			for (auto& label_info : label_infos) {
+				auto label = label_info["label"];
+				if (label.is_object()) {
+					r.label.add_item(to_str(label["name"]));
+				}
 			}
-			r.catalog = to_str(label_info[0]["catalog-number"]);
+			r.catalog = to_str(label_infos[0]["catalog-number"]);
 		}
 
 		json rg = release.value("release-group", json::object());
@@ -305,7 +306,12 @@ namespace mb
 
 			if (prefs::check::write_label_info.get_value())
 			{
-				if (release.label.get_length()) info[i].meta_set("LABEL", release.label);
+				for (size_t j = 0; j < release.label.get_count(); ++j)
+				{
+					if (j == 0) info[i].meta_remove_field("LABEL");
+					info[i].meta_add("LABEL", release.label[j]);
+				}
+			
 				if (release.catalog.get_length()) info[i].meta_set("CATALOGNUMBER", release.catalog);
 				if (release.barcode.get_length()) info[i].meta_set("BARCODE", release.barcode);
 			}

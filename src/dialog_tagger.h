@@ -1,5 +1,7 @@
 #pragma once
 
+#include <sstream>
+
 namespace mb
 {
 	static const CDialogResizeHelper::Param resize_data[] =
@@ -120,7 +122,7 @@ namespace mb
 			release_list.AddColumnAutoWidth("Artist");
 			release_list.AddColumnAutoWidth("Release");
 			release_list.AddColumn("Date/Country", MulDiv(90, DPI.cx, 96));
-			release_list.AddColumnAutoWidth("Label/Cat#");
+			release_list.AddColumnAutoWidth("Label(s)/Cat#");
 			release_list.AddColumn("Media", MulDiv(85, DPI.cx, 96));
 			release_list.AddColumn("Discs", MulDiv(40, DPI.cx, 96));
 
@@ -131,7 +133,8 @@ namespace mb
 				release_list.SetItemText(i, artist_column, m_release_list[i].album_artist);
 				release_list.SetItemText(i, release_column, m_release_list[i].title);
 				release_list.SetItemText(i, date_column, slasher(m_release_list[i].date, m_release_list[i].country));
-				release_list.SetItemText(i, label_column, slasher(m_release_list[i].label, m_release_list[i].catalog));
+				str8 label = getMultiValueString(m_release_list[i].label);
+				release_list.SetItemText(i, label_column, slasher(label, m_release_list[i].catalog));
 				release_list.SetItemText(i, media_column, media_thingy(m_release_list[i].tracks));
 				release_list.SetItemText(i, discs_column, std::to_string(m_release_list[i].tracks[0].totaldiscs).c_str());
 			}
@@ -198,7 +201,8 @@ namespace mb
 		void OnCatalogUpdate(UINT, int, CWindow)
 		{
 			uGetWindowText(catalog_edit, m_release_list[current_release].catalog);
-			release_list.SetItemText(current_release, label_column, slasher(m_release_list[current_release].label, m_release_list[current_release].catalog));
+			str8 label = getMultiValueString(m_release_list[current_release].label);
+			release_list.SetItemText(current_release, label_column, slasher(label, m_release_list[current_release].catalog));
 		}
 
 		void OnClose()
@@ -225,8 +229,42 @@ namespace mb
 
 		void OnLabelUpdate(UINT, int, CWindow)
 		{
-			uGetWindowText(label_edit, m_release_list[current_release].label);
-			release_list.SetItemText(current_release, label_column, slasher(m_release_list[current_release].label, m_release_list[current_release].catalog));
+			str8 labelStr;
+			uGetWindowText(label_edit, labelStr);
+			
+			std::vector<std::string> labels = parseMultiValueString(labelStr);
+			m_release_list[current_release].label.remove_all();
+			for (auto& label : labels) {
+				m_release_list[current_release].label.add_item(label.c_str());
+			}
+			release_list.SetItemText(current_release, label_column, slasher(labelStr, m_release_list[current_release].catalog));
+		}
+
+		/** Takes a string with 1 or more semi-colon separated values and returns a vector containing each separated value */
+		std::vector<std::string> parseMultiValueString(str8 mvString) {
+			std::stringstream ss(mvString.get_ptr());       // Insert the string into a stream
+			std::string buf;
+			std::vector<std::string> tokens; // Create vector to hold our values
+			regex trim("^\\s+|\\s+$");
+
+			while (getline(ss, buf, ';')) {
+				std::string trimmedVal = regex_replace(buf, trim, "");
+				tokens.push_back(trimmedVal);
+			}
+
+			return tokens;
+		}
+
+		/** Separates multi-value field into semi-colon delimited string */
+		str8 getMultiValueString(pfc::string_list_impl field) {
+			str8 buf = "";
+			for (size_t i = 0; i < field.get_count(); ++i) {
+				if (i > 0) {
+					buf += "; ";
+				}
+				buf += field[i];
+			}
+			return buf;
 		}
 
 		void OnOk(UINT, int, CWindow)
@@ -260,7 +298,7 @@ namespace mb
 			uSetWindowText(album_edit, m_release_list[current_release].title);
 			uSetWindowText(date_edit, m_release_list[current_release].date);
 			uSetWindowText(original_release_date_edit, m_release_list[current_release].original_release_date);
-			uSetWindowText(label_edit, m_release_list[current_release].label);
+			uSetWindowText(label_edit, getMultiValueString(m_release_list[current_release].label));
 			uSetWindowText(catalog_edit, m_release_list[current_release].catalog);
 			uSetWindowText(barcode_edit, m_release_list[current_release].barcode);
 

@@ -22,6 +22,7 @@ namespace mb
 	{
 		bool is_various;
 		pfc::string_list_impl albumartistid;
+		pfc::string_list_impl label;
 		size_t partial_lookup_matches;
 		std::vector<Track> tracks;
 		str8 album_artist;
@@ -33,7 +34,6 @@ namespace mb
 		str8 date;
 		str8 discid;
 		str8 original_release_date;
-		str8 label;
 		str8 primary_type;
 		str8 releasegroupid;
 		str8 status;
