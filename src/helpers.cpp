@@ -107,7 +107,7 @@ namespace mb
 		{
 			for (auto& label_info : label_infos) {
 				auto label = label_info["label"];
-				if (label.is_object()) {
+				if (label.is_object() && r.label.find_item(label["name"]) == ~0) {
 					r.label.add_item(to_str(label["name"]));
 				}
 			}
