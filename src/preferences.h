@@ -5,6 +5,7 @@ namespace prefs
 	namespace check
 	{
 		extern cfg_bool server;
+		extern cfg_bool use_orig_date;
 		extern cfg_bool short_date;
 		extern cfg_bool ascii_punctuation;
 		extern cfg_bool write_ids;

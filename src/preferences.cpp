@@ -5,6 +5,7 @@ namespace prefs
 	namespace guids
 	{
 		static constexpr GUID check_server = { 0x2ac00b3b, 0x1b04, 0x4fb2,{ 0xa9, 0x98, 0x5c, 0x16, 0x4, 0x9c, 0xce, 0x9d } };
+		static constexpr GUID check_use_orig_date = { 0xaedc99fc, 0xabf4, 0x40a2, { 0xa9, 0x67, 0xb8, 0x56, 0xbf, 0xc0, 0x88, 0xe6 } };
 		static constexpr GUID check_short_date = { 0x18734618, 0x7920, 0x4d24,{ 0x84, 0xa1, 0xb9, 0xd6, 0x6e, 0xd8, 0x25, 0xbc } };
 		static constexpr GUID check_ascii_punctuation = { 0xd08b1b7c, 0x38fd, 0x4689,{ 0x9e, 0x91, 0x8c, 0xdc, 0xbe, 0xc4, 0x26, 0x98 } };
 		static constexpr GUID check_write_ids = { 0x8c8b61e0, 0x8eea, 0x4c34,{ 0x9a, 0x51, 0x4d, 0xa9, 0x9c, 0xec, 0xcb, 0xbc } };
@@ -28,6 +29,7 @@ namespace prefs
 	namespace defaults
 	{
 		static constexpr bool check_server = false;
+		static constexpr bool check_use_orig_date = false;
 		static constexpr bool check_short_date = false;
 		static constexpr bool check_ascii_punctuation = false;
 		static constexpr bool check_write_ids = true;
@@ -51,6 +53,7 @@ namespace prefs
 	namespace check
 	{
 		cfg_bool server(guids::check_server, defaults::check_server);
+		cfg_bool use_orig_date(guids::check_use_orig_date, defaults::check_use_orig_date);
 		cfg_bool short_date(guids::check_short_date, defaults::check_short_date);
 		cfg_bool ascii_punctuation(guids::check_ascii_punctuation, defaults::check_ascii_punctuation);
 		cfg_bool write_ids(guids::check_write_ids, defaults::check_write_ids);
@@ -100,6 +103,7 @@ namespace mb
 			using namespace prefs;
 
 			m_check_map[IDC_CHECK_SERVER] = { &check::server, defaults::check_server };
+			m_check_map[IDC_CHECK_ORIG_DATE] = { &check::use_orig_date, defaults::check_use_orig_date };
 			m_check_map[IDC_CHECK_SHORT_DATE] = { &check::short_date, defaults::check_short_date };
 			m_check_map[IDC_CHECK_ASCII_PUNCTUATION] = { &check::ascii_punctuation, defaults::check_ascii_punctuation };
 			m_check_map[IDC_CHECK_WRITE_IDS] = { &check::write_ids, defaults::check_write_ids };
@@ -253,7 +257,7 @@ namespace mb
 
 		bool get_help_url(pfc::string_base& out) override
 		{
-			out.set_string("https://marc2k3.github.io/foo_musicbrainz.html");
+			out.set_string("https://kbuffington.github.io/foo_jscript_panel/foo_musicbrainz.html");
 			return true;
 		}
 

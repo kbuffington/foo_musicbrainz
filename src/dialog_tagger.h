@@ -163,6 +163,8 @@ namespace mb
 			label_edit.EnableWindow(label_enabled);
 			catalog_edit.EnableWindow(label_enabled);
 			barcode_edit.EnableWindow(label_enabled);
+			const bool use_orig_date = prefs::check::use_orig_date.get_value();
+			original_release_date_edit.EnableWindow(!use_orig_date);
 			type_combo.EnableWindow(prefs::check::write_albumtype.get_value());
 			status_combo.EnableWindow(prefs::check::write_albumstatus.get_value());
 
@@ -212,8 +214,10 @@ namespace mb
 
 		void OnDateUpdate(UINT, int, CWindow)
 		{
-			uGetWindowText(date_edit, m_release_list[current_release].date);
-			release_list.SetItemText(current_release, date_column, slasher(m_release_list[current_release].date, m_release_list[current_release].country));
+			if (!prefs::check::use_orig_date.get_value()) {
+				uGetWindowText(date_edit, m_release_list[current_release].date);
+				release_list.SetItemText(current_release, date_column, slasher(m_release_list[current_release].date, m_release_list[current_release].country));
+			}
 		}
 
 		void OnDiscChange(UINT, int, CWindow)
@@ -296,8 +300,13 @@ namespace mb
 		{
 			uSetWindowText(album_artist_edit, m_release_list[current_release].album_artist);
 			uSetWindowText(album_edit, m_release_list[current_release].title);
-			uSetWindowText(date_edit, m_release_list[current_release].date);
-			uSetWindowText(original_release_date_edit, m_release_list[current_release].original_release_date);
+			if (prefs::check::use_orig_date.get_value()) {
+				uSetWindowText(date_edit, m_release_list[current_release].original_release_date);
+			}
+			else {
+				uSetWindowText(date_edit, m_release_list[current_release].date);
+				uSetWindowText(original_release_date_edit, m_release_list[current_release].original_release_date);
+			}
 			uSetWindowText(label_edit, getMultiValueString(m_release_list[current_release].label));
 			uSetWindowText(catalog_edit, m_release_list[current_release].catalog);
 			uSetWindowText(barcode_edit, m_release_list[current_release].barcode);

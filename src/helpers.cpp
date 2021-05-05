@@ -119,10 +119,16 @@ namespace mb
 		r.primary_type = to_str(rg["primary-type"]);
 		r.releasegroupid = to_str(rg["id"]);
 
-		if (prefs::check::short_date.get_value() && r.date.get_length() > 4)
+		if (prefs::check::short_date.get_value())
 		{
-			std::string tmp = r.date.get_ptr();
-			r.date = tmp.substr(0, 4).c_str();
+			if (r.date.get_length() > 4) {
+				std::string tmp = r.date.get_ptr();
+				r.date = tmp.substr(0, 4).c_str();
+			}
+			if (prefs::check::use_orig_date.get_value() && r.original_release_date.get_length() > 4) {
+				std::string tmp = r.original_release_date.get_ptr();
+				r.original_release_date = tmp.substr(0, 4).c_str();
+			}
 		}
 
 		return r;
@@ -280,18 +286,22 @@ namespace mb
 			info[i].meta_set("TITLE", track.title);
 			info[i].meta_set("TRACKNUMBER", std::to_string(track.tracknumber).c_str());
 			info[i].meta_set("TOTALTRACKS", std::to_string(track.totaltracks).c_str());
-			info[i].meta_set("DATE", release.date);
+			if (prefs::check::use_orig_date.get_value()) {
+				info[i].meta_set("DATE", release.original_release_date);
+			}
+			else {
+				info[i].meta_set("DATE", release.date);
+				if (release.original_release_date.get_length() && !release.date.equals(release.original_release_date))
+				{
+					info[i].meta_set("ORIGINAL RELEASE DATE", release.original_release_date);
+				}
+			}
 
 			if (track.totaldiscs > 1)
 			{
 				info[i].meta_set("DISCNUMBER", std::to_string(track.discnumber).c_str());
 				info[i].meta_set("TOTALDISCS", std::to_string(track.totaldiscs).c_str());
 				if (track.subtitle.get_length()) info[i].meta_set("DISCSUBTITLE", track.subtitle);
-			}
-
-			if (release.original_release_date.get_length() && !release.date.equals(release.original_release_date))
-			{
-				info[i].meta_set("ORIGINAL RELEASE DATE", release.original_release_date);
 			}
 
 			if (prefs::check::write_albumtype.get_value() && get_type_index(release.primary_type) > 0)
