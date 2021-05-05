@@ -95,7 +95,7 @@ namespace mb
 				break;
 			case 1:
 				{
-					str8 artist, album;
+					str8 artist, album, albumStripped;
 					for (size_t i = 0; i < count; i++)
 					{
 						const file_info_impl info = handles.get_item(i)->get_info_ref()->info();
@@ -114,16 +114,16 @@ namespace mb
 						}
 						else
 						{
+							auto album_copy = _strdup(current_album);
 							if (i == 0)
 							{
 								artist = current_artist;
 								album = current_album;
+								albumStripped = stripAlbumEditionStrings(album_copy);
 							}
-							else if (strcmp(artist, current_artist) != 0 || strcmp(album, current_album) != 0)
-							{
-								artist.reset();
-								album.reset();
-								break;
+							else {
+								if (strcmp(artist, current_artist) != 0) artist.reset();
+								if (strcmp(album, current_album) != 0) album.reset();
 							}
 						}
 					}
@@ -132,7 +132,7 @@ namespace mb
 					if (scope.can_create())
 					{
 						scope.initialize(wnd);
-						dialog_tags dlg(artist, album);
+						dialog_tags dlg(artist, album, albumStripped);
 						if (dlg.DoModal(wnd) == IDOK)
 						{
 							str8 search;
@@ -304,6 +304,63 @@ namespace mb
 				if (info.info_get_length_samples() % bits != 0) return false;
 			}
 			return true;
+		}
+
+		pfc::string8 stripAlbumEditionStrings(pfc::string8 albumTitle)
+		{
+			std::list<pfc::string8> albumEditions;
+
+			albumEditions.push_back("10th Anniversary");
+			albumEditions.push_back("20th Anniversary");
+			albumEditions.push_back("25th Anniversary");
+			albumEditions.push_back("30th Anniversary");
+			albumEditions.push_back("7\" Vinyl");
+			albumEditions.push_back("12\" Vinyl");
+			albumEditions.push_back("Bonus Disc");
+			albumEditions.push_back("CD1");
+			albumEditions.push_back("CD2");
+			albumEditions.push_back("CD3");
+			albumEditions.push_back("CD4");
+			albumEditions.push_back("Deluxe Edition");
+			albumEditions.push_back("Disc 1");
+			albumEditions.push_back("Disc 2");
+			albumEditions.push_back("Disc 3");
+			albumEditions.push_back("Disc 4");
+			albumEditions.push_back("Disc One");
+			albumEditions.push_back("Disc Two");
+			albumEditions.push_back("Disc Three");
+			albumEditions.push_back("Disc Four");
+			albumEditions.push_back("Expanded Edition");
+			albumEditions.push_back("Japan Edition");
+			albumEditions.push_back("Japanese Edition");
+			albumEditions.push_back("Limited Edition");
+			albumEditions.push_back("Ltd. Edition");
+			albumEditions.push_back("Remastered");
+			albumEditions.push_back("Remastered Edition");
+			albumEditions.push_back("Special Edition");
+			albumEditions.push_back("Target Exclusive");
+			albumEditions.push_back("UK Edition");
+			albumEditions.push_back("Vinyl Edition");
+			albumEditions.push_back("Vinyl Reissue");
+
+			for (auto const& i : albumEditions) {
+				pfc::string8 albumLower = stringToLower(albumTitle);
+				pfc::string8 searchLower = stringToLower(i);
+				t_size start = albumLower.find_last(searchLower);
+				if (start >= 0 && start <= 2e5) {
+					//t_size end = start + strlen(i);
+					//if (end < strlen(albumTitle) - 1 && (albumTitle[end + 1] == ']' || albumTitle[end + 1] == '}' || albumTitle[end + 1] == ')')) {
+					//	end++;
+					//}
+					if (start > 0 && (albumTitle[start - 1] == '[' || albumTitle[start - 1] == '{' || albumTitle[start - 1] == '(')) {
+						start--;
+					}
+					if (start > 0 && albumTitle[start - 1] == ' ') start--;
+
+					albumTitle.truncate(start);
+				}
+			}
+			return albumTitle;
 		}
 	};
 

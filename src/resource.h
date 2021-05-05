@@ -17,6 +17,7 @@
 #define IDC_EDIT_ARTIST                 1012
 #define IDC_LABEL_ALBUM                 1013
 #define IDC_EDIT_ALBUM                  1014
+#define IDC_CHECK_ALBUM_EDITION         1015
 
 #define IDD_TAGGER                      1020
 #define IDC_GROUPBOX_RELEASE            1021
