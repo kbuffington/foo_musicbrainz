@@ -308,44 +308,10 @@ namespace mb
 
 		pfc::string8 stripAlbumEditionStrings(pfc::string8 albumTitle)
 		{
-			std::list<pfc::string8> albumEditions;
-
-			albumEditions.push_back("10th Anniversary");
-			albumEditions.push_back("20th Anniversary");
-			albumEditions.push_back("25th Anniversary");
-			albumEditions.push_back("30th Anniversary");
-			albumEditions.push_back("7\" Vinyl");
-			albumEditions.push_back("12\" Vinyl");
-			albumEditions.push_back("Bonus Disc");
-			albumEditions.push_back("CD1");
-			albumEditions.push_back("CD2");
-			albumEditions.push_back("CD3");
-			albumEditions.push_back("CD4");
-			albumEditions.push_back("Deluxe Edition");
-			albumEditions.push_back("Disc 1");
-			albumEditions.push_back("Disc 2");
-			albumEditions.push_back("Disc 3");
-			albumEditions.push_back("Disc 4");
-			albumEditions.push_back("Disc One");
-			albumEditions.push_back("Disc Two");
-			albumEditions.push_back("Disc Three");
-			albumEditions.push_back("Disc Four");
-			albumEditions.push_back("Expanded Edition");
-			albumEditions.push_back("Japan Edition");
-			albumEditions.push_back("Japanese Edition");
-			albumEditions.push_back("Limited Edition");
-			albumEditions.push_back("Ltd. Edition");
-			albumEditions.push_back("Remastered");
-			albumEditions.push_back("Remastered Edition");
-			albumEditions.push_back("Special Edition");
-			albumEditions.push_back("Target Exclusive");
-			albumEditions.push_back("UK Edition");
-			albumEditions.push_back("Vinyl Edition");
-			albumEditions.push_back("Vinyl Reissue");
-
-			for (auto const& i : albumEditions) {
+			for (auto i : mb::album_descriptors) {
+				pfc::string8 descriptor = i;
 				pfc::string8 albumLower = stringToLower(albumTitle);
-				pfc::string8 searchLower = stringToLower(i);
+				pfc::string8 searchLower = stringToLower(descriptor);
 				t_size start = albumLower.find_last(searchLower);
 				if (start >= 0 && start <= 2e5) {
 					//t_size end = start + strlen(i);

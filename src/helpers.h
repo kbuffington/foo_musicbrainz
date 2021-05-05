@@ -65,6 +65,45 @@ namespace mb
 		"Pseudo-Release"
 	};
 
+	static constexpr std::array<const char*, 44> album_descriptors =
+	{
+		"10th Anniversary",
+		"20th Anniversary",
+		"25th Anniversary",
+		"30th Anniversary",
+		"7\" Vinyl",
+		"12\" Vinyl",
+		"Bonus Disc",
+		"Bonus Track",
+		"CD1", "CD2", "CD3", "CD4",
+		"CD#1", "CD#2", "CD#3", "CD#4",
+		"CD #1", "CD #2", "CD #3", "CD #4",
+		"Deluxe Edition",
+		"Digipack",
+		"Disc 1",
+		"Disc 2",
+		"Disc 3",
+		"Disc 4",
+		"Disc One",
+		"Disc Two",
+		"Disc Three",
+		"Disc Four",
+		"Expanded Edition",
+		"Japan Edition",
+		"Japanese Edition",
+		"Limited Edition",
+		"Ltd. Edition",
+		"Promo",
+		"Remastered",
+		"Remastered Edition",
+		"SACD",
+		"Special Edition",
+		"Target Exclusive",
+		"UK Edition",
+		"Vinyl Edition",
+		"Vinyl Reissue"
+	};
+
 	Release parser(json release, size_t handle_count, pfc::stringp discid = "");
 	bool is_uuid(pfc::stringp mbid);
 	size_t get_status_index(pfc::stringp str);
