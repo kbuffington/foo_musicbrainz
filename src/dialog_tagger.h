@@ -218,6 +218,9 @@ namespace mb
 				uGetWindowText(date_edit, m_release_list[current_release].date);
 				release_list.SetItemText(current_release, date_column, slasher(m_release_list[current_release].date, m_release_list[current_release].country));
 			}
+			else {
+				uGetWindowText(date_edit, m_release_list[current_release].original_release_date);
+			}
 		}
 
 		void OnDiscChange(UINT, int, CWindow)
