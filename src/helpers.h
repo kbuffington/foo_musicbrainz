@@ -65,7 +65,7 @@ namespace mb
 		"Pseudo-Release"
 	};
 
-	static constexpr std::array<const char*, 44> album_descriptors =
+	static constexpr std::array<const char*, 45> album_descriptors =
 	{
 		"10th Anniversary",
 		"20th Anniversary",
@@ -94,9 +94,11 @@ namespace mb
 		"Limited Edition",
 		"Ltd. Edition",
 		"Promo",
+		"Reissue",
 		"Remastered",
 		"Remastered Edition",
 		"SACD",
+		"SHM-CD"
 		"Special Edition",
 		"Target Exclusive",
 		"UK Edition",
