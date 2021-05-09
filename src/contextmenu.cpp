@@ -43,25 +43,26 @@ namespace mb
 		bool context_get_display(uint32_t index, metadb_handle_list_cref handles, pfc::string_base& out, uint32_t& displayflags, const GUID& caller) override
 		{
 			bool result = false;
-			if (!queryingMB) {
-				switch (index)
-				{
-				case 0:
-					result = check_count(handles) && check_samplerate(handles);
-					break;
-				case 1:
-				case 2:
-				case 3:
-					result = true;
-					break;
-				case 4:
-					result = check_count(handles) && check_lossless(handles);
-					break;
-				}
-				if (result)
-				{
-					get_item_name(index, out);
-				}
+			switch (index)
+			{
+			case 0:
+				result = check_count(handles) && check_samplerate(handles);
+				break;
+			case 1:
+			case 2:
+			case 3:
+				result = true;
+				break;
+			case 4:
+				result = check_count(handles) && check_lossless(handles);
+				break;
+			}
+			if (result)
+			{
+				get_item_name(index, out);
+			}
+			if (queryingMB) {
+				displayflags = FLAG_DISABLED_GRAYED;
 			}
 			return result;
 		}
