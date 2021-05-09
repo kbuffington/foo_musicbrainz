@@ -7,6 +7,8 @@
 
 namespace mb
 {
+	bool queryingMB = false;
+
 	static constexpr std::array<const GUID, 5> context_guids =
 	{
 		0x3ca8395b, 0x694e, 0x4845, { 0xb5, 0xea, 0x56, 0x30, 0x5e, 0x7c, 0x24, 0x48 },
@@ -41,23 +43,25 @@ namespace mb
 		bool context_get_display(uint32_t index, metadb_handle_list_cref handles, pfc::string_base& out, uint32_t& displayflags, const GUID& caller) override
 		{
 			bool result = false;
-			switch (index)
-			{
-			case 0:
-				result = check_count(handles) && check_samplerate(handles);
-				break;
-			case 1:
-			case 2:
-			case 3:
-				result = true;
-				break;
-			case 4:
-				result = check_count(handles) && check_lossless(handles);
-				break;
-			}
-			if (result)
-			{
-				get_item_name(index, out);
+			if (!queryingMB) {
+				switch (index)
+				{
+				case 0:
+					result = check_count(handles) && check_samplerate(handles);
+					break;
+				case 1:
+				case 2:
+				case 3:
+					result = true;
+					break;
+				case 4:
+					result = check_count(handles) && check_lossless(handles);
+					break;
+				}
+				if (result)
+				{
+					get_item_name(index, out);
+				}
 			}
 			return result;
 		}
@@ -308,16 +312,11 @@ namespace mb
 
 		pfc::string8 stripAlbumEditionStrings(pfc::string8 albumTitle)
 		{
-			for (auto i : mb::album_descriptors) {
-				pfc::string8 descriptor = i;
+			for (pfc::stringp descriptor : album_descriptors) {
 				pfc::string8 albumLower = stringToLower(albumTitle);
 				pfc::string8 searchLower = stringToLower(descriptor);
 				t_size start = albumLower.find_last(searchLower);
 				if (start >= 0 && start <= 2e5) {
-					//t_size end = start + strlen(i);
-					//if (end < strlen(albumTitle) - 1 && (albumTitle[end + 1] == ']' || albumTitle[end + 1] == '}' || albumTitle[end + 1] == ')')) {
-					//	end++;
-					//}
 					if (start > 0 && (albumTitle[start - 1] == '[' || albumTitle[start - 1] == '{' || albumTitle[start - 1] == '(')) {
 						start--;
 					}

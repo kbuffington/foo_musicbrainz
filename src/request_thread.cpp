@@ -119,6 +119,7 @@ namespace mb
 			break;
 		case types::search:
 			{
+				queryingMB = true;
 				json releases = j.value("releases", json::array());
 				pfc::string_list_impl ids;
 				filter_releases(releases, handle_count, ids);
@@ -152,6 +153,7 @@ namespace mb
 					status.set_progress(1 + m_release_list.size(), count);
 					Sleep(10);
 				}
+				queryingMB = false;
 				if (m_failed) {
 					FB2K_console_formatter() << component_title << ": Musicbrainz query failed.";
 				}

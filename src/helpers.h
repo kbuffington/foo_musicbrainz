@@ -119,4 +119,6 @@ namespace mb
 	void get_artist_credit(json j, str8& name, pfc::string_list_impl& ids);
 	void tagger(metadb_handle_list_cref handles, Release release, size_t current_disc);
 	uint64_t fileTimeToMilliseconds(uint64_t ft);
+
+	extern bool queryingMB;
 }
