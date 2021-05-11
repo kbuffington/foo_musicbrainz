@@ -33,36 +33,43 @@ namespace mb
 			// Download
 			auto http = http_client::get();
 			auto request = http->create_request("GET");
+		
 			request->add_header("User-Agent", PFC_string_formatter() << "foo_musicbrainz/" << component_version);
 			{
 				std::lock_guard<std::mutex> guard(querying_mb);	// lock_guard is destroyed when exiting block
 
 				uint64_t now = fileTimeToMilliseconds(pfc::fileTimeNow());
-				if (now < last_http_request + 1000) {
+				if (now < last_http_request + 1000 && !abort.is_aborting()) {
 					uint32_t delay = (uint32_t)(last_http_request + 1000 - now);
 					Sleep(delay);
 				}
 				last_http_request = fileTimeToMilliseconds(pfc::fileTimeNow());
 			}
-			auto response = request->run_ex(url, abort);
+			if (!abort.is_aborting()) {
+				auto response = request->run_ex(url, abort);
+				response->read_string_raw(buffer, abort);
 
-			// Get string
-			response->read_string_raw(buffer, abort);
-			json j = json::parse(buffer.get_ptr(), nullptr, false);
-			if (j.is_object())
-			{
-				cache.set(url, buffer);
-				return j;
+				// Get string
+				json j = json::parse(buffer.get_ptr(), nullptr, false);
+				if (j.is_object())
+				{
+					cache.set(url, buffer);
+					return j;
+				}
+
+				http_reply::ptr ptr;
+				if (response->cast(ptr))
+				{
+					ptr->get_status(buffer);
+				}
+
 			}
 
-			http_reply::ptr ptr;
-			if (response->cast(ptr))
-			{
-				ptr->get_status(buffer);
-			}
-	
-			popup_message::g_show(buffer, component_title);
 			return json();
+		}
+		catch (exception_aborted) {
+			// ignore
+			FB2K_console_formatter() << component_title << ": User aborted";
 		}
 		catch (const std::exception& e)
 		{

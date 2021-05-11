@@ -48,6 +48,9 @@ namespace mb
 				}
 
 			}
+			//catch (exception_aborted) {
+			//	// ignore
+			//}
 			catch (std::exception const& e) {
 				m_failMsg = e.what();
 				FB2K_console_formatter() << component_title << ": " << m_failMsg;
