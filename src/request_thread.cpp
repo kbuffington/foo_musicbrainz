@@ -48,9 +48,6 @@ namespace mb
 				}
 
 			}
-			//catch (exception_aborted) {
-			//	// ignore
-			//}
 			catch (std::exception const& e) {
 				m_failMsg = e.what();
 				FB2K_console_formatter() << component_title << ": " << m_failMsg;
@@ -132,32 +129,23 @@ namespace mb
 
 				for (size_t i = 0; i < count; ++i)
 				{
-					/**
-					 * this was pre-existing logic which would abort when we didn't receive anything back 
-					 * from musicbrainz. This would prevent hammering if mb is down, but also (silently!)
-					 * fails even if we had some number of requests that already completed successfully.
-					 * Keeping this for now, but it's subject to change later.
-					 **/
-					// TOOD: This code is now worthless since all the threads are spawned before queries are
-					// made. We'll need to abort elsewhere if we care enough.
-					if (m_failed) {
-						FB2K_console_formatter() << component_title << ": Musicbrainz query failed.";
-						return;
-					}
-
 					// async requests
 					get_release_info* task = new get_release_info(ids[i], handle_count, &m_release_list, &m_failed, abort);
 					if (!simple_thread_pool::instance().enqueue(task)) delete task;
 				}
 				Sleep(10); // wait for last thread to start
-				while (m_release_list.size() < thread_counter && !abort.is_aborting()) {
+				size_t size = -1;	// m_release_list.size can never be > 200
+				while (m_release_list.size() < thread_counter) {
 					// Is there a better way to wait for all the threads to complete?
-					status.set_title(PFC_string_formatter() << "Fetching release " << (m_release_list.size() + 1) << " of " << count);
-					status.set_progress(1 + m_release_list.size(), count);
+					if (m_release_list.size() != size) {
+						size = m_release_list.size();
+						status.set_title(PFC_string_formatter() << "Fetching release " << (size + 1) << " of " << count);
+						status.set_progress(size + 1, count);
+					}
 					Sleep(10);
 				}
 				queryingMB = false;
-				if (m_failed) {
+				if (m_failed && !abort.is_aborting()) {
 					FB2K_console_formatter() << component_title << ": Musicbrainz query failed.";
 				}
 			}

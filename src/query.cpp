@@ -68,8 +68,9 @@ namespace mb
 			return json();
 		}
 		catch (exception_aborted) {
-			// ignore
+			// don't show popup
 			FB2K_console_formatter() << component_title << ": User aborted";
+			return json();
 		}
 		catch (const std::exception& e)
 		{
