@@ -136,9 +136,9 @@ namespace mb
 
 	bool is_uuid(pfc::stringp mbid)
 	{
-		if (!mbid.length()) return false;
+		if (!pfc::stringp_length(mbid)) return false;
 		regex rx("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
-		return regex_search(mbid.get_ptr(), rx);
+		return regex_search(mbid, rx);
 	}
 
 	size_t get_status_index(pfc::stringp str)
@@ -188,7 +188,7 @@ namespace mb
 
 	str8 slasher(pfc::stringp one, pfc::stringp two)
 	{
-		if (one.length() || two.length())
+		if (pfc::stringp_length(one) || pfc::stringp_length(two))
 		{
 			return PFC_string_formatter() << one << "/" << two;
 		}

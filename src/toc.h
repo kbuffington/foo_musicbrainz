@@ -17,7 +17,7 @@ namespace mb
 		std::vector<uint32_t> tracks;
 		str8 discid;
 		str8 toc_url;
-		uint32_t num_tracks = 0;
+		size_t num_tracks = 0;
 		uint32_t pregap = 150;
 	};
 }

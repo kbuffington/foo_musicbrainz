@@ -36,7 +36,7 @@ namespace mb {
 	}
 	
 	int query_cache::hashCode(str8 text) {
-		int hash = 0, strlen = text.length(), i;
+		int hash = 0, strlen = (int) text.length(), i;
 		char character;
 		if (strlen == 0)
 			return hash;
