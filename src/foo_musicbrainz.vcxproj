@@ -166,9 +166,8 @@ copy /Y "$(TargetDir)$(TargetName).pdb" "D:\Source\foobar2000_portable\user-comp
     <PostBuildEvent>
       <Command>set component_path=$(SolutionDir)..\component
 copy /Y "$(TargetPath)" "%component_path%\"
-copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%\"
-copy /Y "$(TargetPath)" "D:\Source\foobar2000_portable\user-components\$(ProjectName)\"
-copy /Y "$(TargetDir)$(TargetName).pdb" "D:\Source\foobar2000_portable\user-components\$(ProjectName)\"</Command>
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\pdbs\"
+copy /Y "$(TargetPath)" "D:\Source\foobar2000_portable\user-components\$(ProjectName)\"</Command>
       <Message>Copying to component directory and portable install</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -198,7 +197,7 @@ copy /Y "$(TargetDir)$(TargetName).pdb" "D:\Source\foobar2000_portable\user-comp
     <PostBuildEvent>
       <Command>set component_path=$(SolutionDir)..\component
 copy /Y "$(TargetPath)" "%component_path%\x64\"
-copy /Y "$(TargetDir)$(TargetName).pdb" "%component_path%\x64\"
+copy /Y "$(TargetDir)$(TargetName).pdb" "$(SolutionDir)..\pdbs\x64\"
 copy /Y "$(TargetPath)" "D:\Source\foobar2000-2.0x64_portable\profile\user-components-x64\$(ProjectName)\"</Command>
       <Message>Copying to 2.0 x64 components folder</Message>
     </PostBuildEvent>
