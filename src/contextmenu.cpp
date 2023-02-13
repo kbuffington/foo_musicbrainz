@@ -4,6 +4,7 @@
 #include "query.h"
 #include "request_thread.h"
 #include "toc.h"
+#include <foobar2000/SDK/coreDarkMode.h>
 
 namespace mb
 {

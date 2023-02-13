@@ -361,5 +361,6 @@ MigrationBackup/
 
 # End of https://www.gitignore.io/api/visualstudio
 
-# Storing PDB just in case
+# Storing PDBs just in case
 !src/Release/foo_musicbrainz/foo_musicbrainz.pdb
+!src/x64/Release/foo_musicbrainz.pdb

@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include <foobar2000/SDK/coreDarkMode.h>
+
 namespace prefs
 {
 	namespace guids
@@ -101,6 +103,7 @@ namespace mb
 		BOOL OnInitDialog(CWindow, LPARAM)
 		{
 			using namespace prefs;
+			m_hooks.AddDialogWithControls(*this);
 
 			m_check_map[IDC_CHECK_SERVER] = { &check::server, defaults::check_server };
 			m_check_map[IDC_CHECK_ORIG_DATE] = { &check::use_orig_date, defaults::check_use_orig_date };
@@ -163,7 +166,7 @@ namespace mb
 		{
 			t_uint32 state = preferences_state::resettable;
 			if (has_changed()) state |= preferences_state::changed;
-			return state;
+			return state | preferences_state::dark_mode_supported;
 		}
 
 		void apply() override
@@ -220,6 +223,8 @@ namespace mb
 		}
 
 	private:
+		fb2k::CCoreDarkModeHooks m_hooks;
+
 		struct check_cfg
 		{
 			cfg_bool* setting;

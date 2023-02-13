@@ -1,5 +1,7 @@
 #pragma once
 
+#include <foobar2000/SDK/coreDarkMode.h>
+
 namespace mb
 {
 	class dialog_mbid : public CDialogImpl<dialog_mbid>
@@ -19,6 +21,8 @@ namespace mb
 
 		BOOL OnInitDialog(CWindow, LPARAM)
 		{
+			m_hooks.AddDialogWithControls(*this);
+
 			m_ok = GetDlgItem(IDOK);
 			m_mbid_edit = GetDlgItem(IDC_EDIT_MBID);
 			CEdit m_mbid_title = GetDlgItem(IDC_STATIC);
@@ -56,5 +60,8 @@ namespace mb
 		CEdit m_mbid_edit;
 		str8 m_mbid_str;
 		str8 m_group_title_str;
+
+	private:
+		fb2k::CCoreDarkModeHooks m_hooks;
 	};
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <sstream>
+#include <foobar2000/SDK/coreDarkMode.h>
 
 namespace mb
 {
@@ -101,6 +102,9 @@ namespace mb
 			};
 
 			track_list.CreateInDialog(*this, IDC_LIST_TRACK);
+			// Do this AFTER creating all CListControls, so dark mode hook talks to new CListControl rather than shortlived placeholders
+			m_hooks.AddDialogWithControls(*this);
+
 
 			type_combo = GetDlgItem(IDC_COMBO_TYPE);
 			status_combo = GetDlgItem(IDC_COMBO_STATUS);
@@ -364,6 +368,8 @@ namespace mb
 		}
 
 	private:
+		fb2k::CCoreDarkModeHooks m_hooks;
+
 		bool listCanSelectItem(ctx_t, size_t) override
 		{
 			return false;
