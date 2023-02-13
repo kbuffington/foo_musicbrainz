@@ -1,5 +1,7 @@
 #pragma once
 
+#include <foobar2000/SDK/coreDarkMode.h>
+
 namespace mb
 {
 	class dialog_tags : public CDialogImpl<dialog_tags>
@@ -18,6 +20,8 @@ namespace mb
 
 		BOOL OnInitDialog(CWindow, LPARAM)
 		{
+			m_hooks.AddDialogWithControls(*this);
+
 			m_ok = GetDlgItem(IDOK);
 			m_artist_edit = GetDlgItem(IDC_EDIT_ARTIST);
 			m_album_edit = GetDlgItem(IDC_EDIT_ALBUM);
@@ -71,5 +75,8 @@ namespace mb
 		str8 m_album_str;
 		str8 m_album_stripped_str;
 		bool lastCheckVal = true;
+	
+	private:
+		fb2k::CCoreDarkModeHooks m_hooks;
 	};
 }

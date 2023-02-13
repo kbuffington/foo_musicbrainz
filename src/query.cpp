@@ -12,7 +12,7 @@ namespace mb
 	query::query(pfc::stringp entity, pfc::stringp id)
 	{
 		url << prefs::get_server() << "/ws/2/" << entity;
-		if (id.length()) url << "/" << id;
+		if (pfc::stringp_length(id)) url << "/" << id;
 		url << "?fmt=json";
 	}
 

@@ -38,7 +38,7 @@ namespace mb
 			sprintf_s(tmp, "%02X", 1);
 			SHA1Input(&context, (uint8_t*)tmp, 2);
 
-			sprintf_s(tmp, "%02X", num_tracks);
+			sprintf_s(tmp, "%02X", (unsigned) num_tracks);
 			SHA1Input(&context, (uint8_t*)tmp, 2);
 
 			for (const auto track : tracks)

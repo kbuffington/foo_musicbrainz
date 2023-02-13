@@ -29,7 +29,7 @@ mono_crash.*
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
-x64/
+src/x64/
 x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
@@ -361,5 +361,6 @@ MigrationBackup/
 
 # End of https://www.gitignore.io/api/visualstudio
 
-# Storing PDB just in case
-!src/Release/foo_musicbrainz/foo_musicbrainz.pdb
+# Storing PDBs just in case
+!pdbs/foo_musicbrainz.pdb
+!pdbs/x64/foo_musicbrainz.pdb

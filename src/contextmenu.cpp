@@ -4,6 +4,7 @@
 #include "query.h"
 #include "request_thread.h"
 #include "toc.h"
+#include <foobar2000/SDK/coreDarkMode.h>
 
 namespace mb
 {
@@ -73,12 +74,12 @@ namespace mb
 			return true;
 		}
 
-		size_t get_num_items() override
+		unsigned get_num_items() override
 		{
-			return context_names.size();
+			return (unsigned) context_names.size();
 		}
 
-		void context_command(size_t index, metadb_handle_list_cref handles, const GUID& caller) override
+		void context_command(unsigned index, metadb_handle_list_cref handles, const GUID& caller) override
 		{
 			HWND wnd = core_api::get_main_window();
 			const size_t count = handles.get_count();
@@ -270,7 +271,7 @@ namespace mb
 			}
 		}
 
-		void get_item_name(size_t index, pfc::string_base& out) override
+		void get_item_name(unsigned index, pfc::string_base& out) override
 		{
 			out = context_names[index].first;
 		}
@@ -313,7 +314,7 @@ namespace mb
 
 		pfc::string8 stripAlbumEditionStrings(pfc::string8 albumTitle)
 		{
-			for (pfc::stringp descriptor : album_descriptors) {
+			for (pfc::string8 descriptor : album_descriptors) {
 				pfc::string8 albumLower = stringToLower(albumTitle);
 				pfc::string8 searchLower = stringToLower(descriptor);
 				t_size start = albumLower.find_last(searchLower);

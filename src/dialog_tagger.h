@@ -1,6 +1,7 @@
 #pragma once
 
 #include <sstream>
+#include <foobar2000/SDK/coreDarkMode.h>
 
 namespace mb
 {
@@ -101,6 +102,9 @@ namespace mb
 			};
 
 			track_list.CreateInDialog(*this, IDC_LIST_TRACK);
+			// Do this AFTER creating all CListControls, so dark mode hook talks to new CListControl rather than shortlived placeholders
+			m_hooks.AddDialogWithControls(*this);
+
 
 			type_combo = GetDlgItem(IDC_COMBO_TYPE);
 			status_combo = GetDlgItem(IDC_COMBO_STATUS);
@@ -314,8 +318,8 @@ namespace mb
 			uSetWindowText(catalog_edit, m_release_list[current_release].catalog);
 			uSetWindowText(barcode_edit, m_release_list[current_release].barcode);
 
-			type_combo.SetCurSel(get_type_index(m_release_list[current_release].primary_type));
-			status_combo.SetCurSel(get_status_index(m_release_list[current_release].status));
+			type_combo.SetCurSel((int) get_type_index(m_release_list[current_release].primary_type));
+			status_combo.SetCurSel((int) get_status_index(m_release_list[current_release].status));
 
 			auto DPI = track_list.GetDPI();
 			track_list.ResizeColumn(2, m_release_list[current_release].tracks[0].totaldiscs > 1 ? MulDiv(120, DPI.cx, 96) : 0);
@@ -356,7 +360,7 @@ namespace mb
 			}
 
 			current_disc = 0;
-			disc_combo.SetCurSel(current_disc);
+			disc_combo.SetCurSel((int) current_disc);
 			UpdateDisc();
 
 			str8 url_str = PFC_string_formatter() << "<a href=\"" << prefs::get_server() << "/release/" << m_release_list[current_release].albumid << "\">MusicBrainz release page</a>";
@@ -364,6 +368,8 @@ namespace mb
 		}
 
 	private:
+		fb2k::CCoreDarkModeHooks m_hooks;
+
 		bool listCanSelectItem(ctx_t, size_t) override
 		{
 			return false;
